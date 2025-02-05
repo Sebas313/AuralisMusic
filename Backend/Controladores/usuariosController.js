@@ -1,5 +1,6 @@
 import Usuario from "../Modelos/usuariosModelos.js";
 import formulario from "nodemailer";
+import jwt from "jsonwebtoken"
 
 export const Registro = async (req, res) => {
   const { nombre, email, password } = req.body;
@@ -49,4 +50,59 @@ export const Registro = async (req, res) => {
   }
 };
 
-export default { Registro };
+export const login = async (req, res) => {
+    try{
+        const {nombre, email, password}= req.body;
+        // Validar los campos requeridos
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email y contraseña son requeridos.' });
+      }
+
+      // Comparar contraseñas
+    const isMatch = await bcrypt.compare(password, Usuario.password);
+
+      // Si la contraseña no coincide, retorna un error
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Credenciales incorrectas.' });
+    }
+    
+    // Buscar al usuario en la base de datos
+    const usuario = await Usuario.findOne({ email })
+      
+
+    // Si no se encuentra el usuario, retorna un error
+    if (!Usuario) {
+        return res.status(401).json({ message: 'Credenciales incorrectas.' });
+      }
+// Generar un token JWT con expiración
+const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Expira en 1 hora
+
+// Responder con el token y los datos del usuario
+res.status(200).json({
+  message: 'Inicio de sesión exitoso.',
+  token,
+  user: {
+    nombre: usuario.nombre,
+    email: usuario.email,
+  },
+});
+} catch (error) {
+res.status(500).json({ message: 'error interno del servidor, no se envio el token' });
+}
+};
+
+// Validación del token
+export const tokenIsValid = (req, res) => {
+    const token = req.header('Authorization')?.split(' ')[1]; // Obtiene solo el token de 'Bearer token'
+  
+    if (!token) return res.status(401).json({ message: 'No se proporcionó token, autorización denegada.' });
+  
+    try {
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      res.status(200).json({ valid: true });
+    } catch (error) {
+      res.status(401).json({ message: 'Token no válido.' });
+    }
+  };    
+
+export default { Registro,login, tokenIsValid };
