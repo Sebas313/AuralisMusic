@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.post("/Registro",usuariosController.Registro)
 
-export default usuariosrutas
+export default router
