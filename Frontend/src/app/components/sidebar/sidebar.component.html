@@ -1,0 +1,30 @@
+<div class="sidebar" [class.expanded]="isExpanded">
+    <!-- Barra de búsqueda -->
+    <div class="search-bar">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Buscar canción..."
+        [readonly]="!isSearchVisible"
+        (click)="toggleSearch()"
+        (input)="filterSongs()" 
+      />
+    </div>
+  
+    <!-- Lista de canciones -->
+    <ul class="song-list" *ngIf="isSearchVisible && filteredSongs.length > 0">
+      <li *ngFor="let song of filteredSongs">
+        <img [src]="song.image" alt="Cover" class="song-image" />
+        <div class="song-info">
+          <h4>{{ song.title }}</h4>
+          <p>{{ song.artist }}</p>
+        </div>
+        <div class="song-actions">
+          <button title="Reproducir" (click)="playSong(song)">▶️</button>
+          <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  
