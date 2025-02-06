@@ -35,20 +35,20 @@ export const ObtenerTodas = async (req, res) => {
   export const ObtenerPorId = async (req, res) => {
     const { id } = req.params;
   
-    // Verificar que el id sea un ObjectId válido
+   
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });
     }
   
     try {
-      // Buscar la canción por ID
+    
       const cancion = await Canciones.findById(id);
   
       if (!cancion) {
         return res.status(404).json({ message: "Canción no encontrada" });
       }
   
-      // Responder con la canción encontrada
+     
       res.status(200).json(cancion);
     } catch (error) {
       console.error("Error al obtener la canción", error.message);
