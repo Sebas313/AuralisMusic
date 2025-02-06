@@ -1,6 +1,5 @@
 import mongoose from "mongoose"
 const usuarioSchema = new mongoose.Schema({
-
     artista: String,
     cancion: String,
     album: String,
