@@ -6,6 +6,6 @@ const router = express.Router();
 router.post("/Registro",usuariosController.Registro)
 
 router.post("/Login",usuariosController.login)
-router.post("/Validacion", usuariosController.tokenIsValid)
+router.post("/Validacion", usuariosController.tokenValido)
 
 export default router
