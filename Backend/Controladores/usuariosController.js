@@ -1,6 +1,6 @@
 import Usuario from "../Modelos/usuariosModelos.js";
-import formulario from "nodemailer";
 import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 
 export const Registro = async (req, res) => {
   const { nombre, email, password } = req.body;
@@ -11,36 +11,38 @@ export const Registro = async (req, res) => {
       password,
     });
 
-    if (post.nombre == undefined || post.nombre == null || post.nombre == "") {
-      response.json({
-        state: false,
-        mensaje: "el campo nombre es oblogatorio",
-      });
-      return false;
-    }
+    //validaciones que hay que corregir
 
-    if (post.email == undefined || post.email == null || post.email == "") {
-      response.json({ state: false, mensaje: "el campo email es oblogatorio" });
-      return false;
-    }
+    // if (post.nombre == undefined || post.nombre == null || post.nombre == "") {
+    //   response.json({
+    //     state: false,
+    //     mensaje: "el campo nombre es oblogatorio",
+    //   });
+    //   return false;
+    // }
 
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (regex.test(post.email) == false) {
-      response.json({ state: false, mensaje: "el email no es valido" });
-      return false;
-    }
+    // if (post.email == undefined || post.email == null || post.email == "") {
+    //   response.json({ state: false, mensaje: "el campo email es oblogatorio" });
+    //   return false;
+    // }
 
-    if (
-      post.password == undefined ||
-      post.password == null ||
-      post.password == ""
-    ) {
-      response.json({
-        state: false,
-        mensaje: "el campo password es oblogatorio",
-      });
-      return false;
-    }
+    // const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (regex.test(post.email) == false) {
+    //   response.json({ state: false, mensaje: "el email no es valido" });
+    //   return false;
+    // }
+
+    // if (
+    //   post.password == undefined ||
+    //   post.password == null ||
+    //   post.password == ""
+    // ) {
+    //   response.json({
+    //     state: false,
+    //     mensaje: "el campo password es oblogatorio",
+    //   });
+    //   return false;
+    // }
 
     await NuevoUsuario.save();
     res.status(201).json("Usuario Registrado");
@@ -54,55 +56,59 @@ export const login = async (req, res) => {
     try{
         const {nombre, email, password}= req.body;
         // Validar los campos requeridos
+
+        //  // Buscar al usuario en la base de datos
+    const usuario = await Usuario.findOne({ email });
+
     if (!email || !password) {
         return res.status(400).json({ message: 'Email y contraseña son requeridos.' });
       }
 
+// Si no se encuentra el usuario, retorna un error
+    if (!usuario) {
+        return res.status(401).json({ message: 'Credenciales incorrectas.' });
+      }
+
       // Comparar contraseñas
-    const isMatch = await bcrypt.compare(password, Usuario.password);
+    const validacionContraseña = bcrypt.compare(password, usuario.password);
 
       // Si la contraseña no coincide, retorna un error
-    if (!isMatch) {
+    if (!validacionContraseña) {
       return res.status(401).json({ message: 'Credenciales incorrectas.' });
     }
     
-    // Buscar al usuario en la base de datos
-    const usuario = await Usuario.findOne({ email })
-      
-
-    // Si no se encuentra el usuario, retorna un error
-    if (!Usuario) {
-        return res.status(401).json({ message: 'Credenciales incorrectas.' });
-      }
 // Generar un token JWT con expiración
-const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Expira en 1 hora
+const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Expira en 1 hora
+res.json({token});
 
-// Responder con el token y los datos del usuario
-res.status(200).json({
-  message: 'Inicio de sesión exitoso.',
-  token,
-  user: {
-    nombre: usuario.nombre,
-    email: usuario.email,
-  },
-});
+// // Responder los datos del usuario
+// res.status(200).json({
+//   message: 'Inicio de sesión exitoso.',
+//   token,
+//   user: {
+//     nombre: usuario.nombre,
+//     email: usuario.email,
+//   },
+// });
 } catch (error) {
 res.status(500).json({ message: 'error interno del servidor, no se envio el token' });
 }
 };
 
 // Validación del token
-export const tokenIsValid = (req, res) => {
+export const tokenValido = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1]; // Obtiene solo el token de 'Bearer token'
   
     if (!token) return res.status(401).json({ message: 'No se proporcionó token, autorización denegada.' });
   
     try {
-      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      const verificado = jwt.verify(token, process.env.JWT_SECRET);
+      req.usuario = verificado;
+      next();
       res.status(200).json({ valid: true });
     } catch (error) {
       res.status(401).json({ message: 'Token no válido.' });
     }
   };    
 
-export default { Registro,login, tokenIsValid };
+export default { Registro,login, tokenValido };
