@@ -58,9 +58,7 @@ export const login = async (req, res) => {
         return res.status(400).json({ message: 'Email y contraseña son requeridos.' });
       }
 
-      
     const isMatch = await bcrypt.compare(password, Usuario.password);
-
   
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenciales incorrectas.' });
