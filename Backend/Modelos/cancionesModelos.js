@@ -6,8 +6,6 @@ const usuarioSchema = new mongoose.Schema({
     album: String,
     genero: String,
     id: String
-
-
 });
 
 const Canciones = mongoose.model("Canciones", usuarioSchema)
