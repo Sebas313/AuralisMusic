@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { User, LoginResponse, RegisterResponse } from '../models/user.model'; 
+import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/user.model'; 
 import { tap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
@@ -14,7 +14,7 @@ export class UserService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   register(registerData: FormData): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, registerData).pipe(
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, registerData).pipe(
       tap((response: RegisterResponse) => {
         if (response?.user?._id && response.token) {
           localStorage.setItem('userId', response.user._id);
