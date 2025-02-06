@@ -11,7 +11,7 @@ export const Registro = async (req, res) => {
       password,
     });
 
-    if (post.nombre == undefined || post.nombre == null || post.nombre == "") {
+ /*    if (post.nombre == undefined || post.nombre == null || post.nombre == "") {
       response.json({
         state: false,
         mensaje: "el campo nombre es oblogatorio",
@@ -41,7 +41,7 @@ export const Registro = async (req, res) => {
       });
       return false;
     }
-
+ */
     await NuevoUsuario.save();
     res.status(201).json("Usuario Registrado");
   } catch (error) {
