@@ -1,16 +1,18 @@
-import { Component, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { SongService } from '../../services/song.service'; // Asegúrate de importar correctamente el servicio
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule], // Agregar HttpClientModule
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent {
-  @Output() songSelected = new EventEmitter<any>();  // Emitir la canción seleccionada
+export class SidebarComponent implements OnInit {
+  @Output() songSelected = new EventEmitter<any>();
 
   isExpanded = false;
   isSearchVisible = false;
@@ -18,14 +20,26 @@ export class SidebarComponent {
   currentSong: any = null;
   isPlaying = false;
   playlist: any[] = [];
-  // Lista de canciones de ejemplo
-  songs = [
-    { title: 'Hotline Bling', artist: 'Billie Eilish', image: 'assets/song1.jpg', audioUrl: 'assets/song1.mp3' },
-    { title: 'Anrretor', artist: 'Yann Tiersen', image: 'assets/song2.jpg', audioUrl: 'assets/song2.mp3' },
-    { title: 'Back To Her Men', artist: 'Damian Rice', image: 'assets/song3.jpg', audioUrl: 'assets/song3.mp3' }
-  ];
+  songs: any[] = [];
+  filteredSongs: any[] = [];
 
-  filteredSongs = [...this.songs];
+  constructor(private songService: SongService) {}
+
+  ngOnInit() {
+    this.fetchSongs();
+  }
+
+  fetchSongs() {
+    this.songService.getSongs().subscribe(
+      (data) => {
+        this.songs = data;
+        this.filteredSongs = [...this.songs]; // Inicializar la lista filtrada
+      },
+      (error) => {
+        console.error('Error al obtener las canciones:', error);
+      }
+    );
+  }
 
   toggleSidebar() {
     this.isExpanded = !this.isExpanded;
@@ -49,13 +63,15 @@ export class SidebarComponent {
       this.filteredSongs = [...this.songs];
     }
   }
+
   addToPlaylist(song: any) {
     if (!this.playlist.includes(song)) {
-      this.playlist.push(song);  // Solo agregar si no está ya en la playlist
+      this.playlist.push(song);
     }
   }
+
   playSong(song: any) {
-    this.songSelected.emit(song);  // Emitir la canción seleccionada
+    this.songSelected.emit(song);
   }
 
   @HostListener('document:click', ['$event'])
@@ -64,7 +80,6 @@ export class SidebarComponent {
     const searchBar = document.querySelector('.search-bar');
     const songList = document.querySelector('.song-list');
 
-    // Si el clic es fuera del sidebar, la barra de búsqueda y la lista de canciones, cerrar la búsqueda
     if (sidebar && !sidebar.contains(event.target as Node) && searchBar && !searchBar.contains(event.target as Node) && songList && !songList.contains(event.target as Node)) {
       this.isSearchVisible = false;
     }
