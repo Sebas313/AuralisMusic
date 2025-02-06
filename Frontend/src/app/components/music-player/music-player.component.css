@@ -1,38 +1,38 @@
 .player {
-    position: fixed;        /* Fija el reproductor al fondo */
-    bottom: 0;              /* Asegura que esté en la parte inferior de la página */
+    position: fixed;      
+    bottom: 0;             
     left: 0;
-    width: 100%;            /* Ocupa todo el ancho de la pantalla */
-    background-color: #222; /* Color oscuro para el fondo */
+    width: 100%;           
+    background-color: #222;
     color: white;
     padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 1000;          /* Asegura que el reproductor esté por encima de otros elementos */
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3); /* Sombra para que se distinga */
+    z-index: 1000;          
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3); 
   }
   
   .player .song-image {
-    width: 50px;            /* Tamaño de la imagen de la canción */
+    width: 50px;           
     height: 50px;
-    object-fit: cover;      /* Mantiene la proporción de la imagen */
+    object-fit: cover;      
     margin-right: 10px;
   }
   
   .player .song-info {
-    flex-grow: 1;           /* Ocupa el espacio disponible */
+    flex-grow: 1;           
   }
   
   .player .controls button {
-    background: none;       /* Sin fondo */
-    border: none;           /* Sin borde */
+    background: none;      
+    border: none;           
     color: white;
     font-size: 24px;
     cursor: pointer;
   }
   
   .player .controls button:hover {
-    opacity: 0.7;           /* Efecto de opacidad en el hover */
+    opacity: 0.7;          
   }
   

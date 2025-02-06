@@ -12,14 +12,15 @@
   
   .sidebar.expanded {
     width: 300px; 
-    background-color: #121212; 
+    background-color: #000000; 
+    color: white;
   }
   
   
   .search-bar {
     display: flex;
     align-items: center;
-    background: #333;
+    background: #000000;
     padding: 15px;
     border-radius: 5px;
   }
@@ -72,7 +73,7 @@
   .sidebar {
     position: relative;
     width: 300px;
-    background-color: #333;
+    background-color: #000000;
     color: white;
     padding: px;
     display: flex;
@@ -83,7 +84,7 @@
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    background-color: #444;
+    background-color: #030303;
     border: none;
     color: white;
   }

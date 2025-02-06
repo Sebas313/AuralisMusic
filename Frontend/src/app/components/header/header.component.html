@@ -1,11 +1,15 @@
 <header class="header">
-    <img src="assets/logo.png" alt="Logo" class="logo" />
-  
-    <a routerLink="/home" class="btn">HOME</a>
-  
-    <div class="header-buttons">
-      <button class="btn">MI CUENTA</button>
-      <a routerLink="/playlist" class="btn">PLAYLIST</a>
+  <img src="assets/logo.png" alt="Logo" class="logo" />
+
+  <a routerLink="/home" class="btn">HOME</a>
+
+  <div class="header-buttons">
+    <div class="dropdown">
+      <button class="btn" (click)="toggleMenu()">MI CUENTA</button>
+      <div class="dropdown-menu" [class.show]="menuOpen">
+        <a routerLink="/playlist" class="dropdown-item">Mi playlist</a>
+        <a (click)="logout()" class="dropdown-item">Cerrar sesión</a>
+      </div>
     </div>
-  </header>
-  
+  </div>
+</header>
