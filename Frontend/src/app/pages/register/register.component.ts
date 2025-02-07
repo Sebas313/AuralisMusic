@@ -29,38 +29,34 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.loading = true; 
-      this.errorMessage = null; 
-      this.successMessage = null; 
-
-      const formData = new FormData();
-      formData.append('nombre', this.registerForm.value.nombre);
-      formData.append('email', this.registerForm.value.email);
-      formData.append('password', this.registerForm.value.password);
-
-      if (this.registerForm.value.avatar) {
-        formData.append('avatar', this.registerForm.value.avatar);
-      }
-
-      this.userService.register(formData).subscribe({
+      this.loading = true;
+      this.errorMessage = null;
+      this.successMessage = null;
+  
+      const usuario = {
+        nombre: this.registerForm.value.nombre,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password
+      };
+  
+      this.userService.register(usuario).subscribe({
         next: (response) => {
           this.successMessage = '¡Registro exitoso!';
           this.errorMessage = null;
           this.loading = false;
-
-         
-          this.router.navigate(['/login']);  
+          this.router.navigate(['/login']);
         },
         error: (error) => {
           console.error("Error al registrar el usuario:", error);
           this.errorMessage = error.error?.message || 'Error al registrar el usuario.';
-          this.loading = false; 
+          this.loading = false;
         },
       });
     } else {
       this.errorMessage = 'Por favor, completa todos los campos correctamente.';
     }
   }
+  
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;

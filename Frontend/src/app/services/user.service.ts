@@ -13,7 +13,7 @@ export class UserService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  register(registerData: FormData): Observable<RegisterResponse> {
+  register(registerData: { nombre: string; email: string; password: string }): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/Registro`, registerData).pipe(
       tap((response: RegisterResponse) => {
         if (response?.user?._id && response.token) {
@@ -24,6 +24,7 @@ export class UserService {
       catchError(this.handleError<RegisterResponse>('Error al registrar el usuario'))
     );
   }
+  
 
   
 
