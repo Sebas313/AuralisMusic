@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SongService {
-  private apiUrl = 'https://localHost:3000/Api/song'; // Reemplaza con la URL de tu API
+  private apiUrl = 'https://localHost:3000/Api/canciones'; 
 
   constructor(private http: HttpClient) {}
 
