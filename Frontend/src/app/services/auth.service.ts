@@ -35,12 +35,12 @@ export class AuthService {
   register(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post<any>(`${this.apiUrl}/register`, { email, password }, { headers });
+    return this.http.post<any>(`${this.apiUrl}/Registro`, { email, password }, { headers });
   }
   login(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post<any>(`${this.apiUrl}/login`, { email, password }, { headers }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/Login`, { email, password }, { headers }).pipe(
       tap(response => {
         if (response.token) {
           this.setToken(response.token); 

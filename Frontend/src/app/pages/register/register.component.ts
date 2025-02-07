@@ -23,7 +23,7 @@ export class RegisterComponent {
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      avatar: [null],
+      
     });
   }
 
@@ -38,7 +38,6 @@ export class RegisterComponent {
       formData.append('email', this.registerForm.value.email);
       formData.append('password', this.registerForm.value.password);
 
-      // Verifica que avatar no sea null o undefined antes de agregarlo
       if (this.registerForm.value.avatar) {
         formData.append('avatar', this.registerForm.value.avatar);
       }
@@ -49,8 +48,8 @@ export class RegisterComponent {
           this.errorMessage = null;
           this.loading = false;
 
-          // Redirigir al usuario a la página de inicio de sesión o principal
-          this.router.navigate(['/login']);  // O redirige según sea necesario
+         
+          this.router.navigate(['/login']);  
         },
         error: (error) => {
           console.error("Error al registrar el usuario:", error);

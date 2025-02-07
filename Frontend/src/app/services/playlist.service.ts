@@ -14,6 +14,6 @@ export class PlaylistService {
   }
 
   addSongToPlaylist(playlistName: string, song: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${playlistName}/songs`, song);
+    return this.http.post<any>(`${this.apiUrl}/${playlistName}/canciones`, song);
   }
 }

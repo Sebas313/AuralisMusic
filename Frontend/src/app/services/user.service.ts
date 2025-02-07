@@ -9,12 +9,12 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class UserService {
-  public apiUrl = 'http://localhost:3000/api';
+  public apiUrl = 'http://localhost:3000/Api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   register(registerData: FormData): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, registerData).pipe(
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/Registro`, registerData).pipe(
       tap((response: RegisterResponse) => {
         if (response?.user?._id && response.token) {
           localStorage.setItem('userId', response.user._id);
@@ -25,14 +25,10 @@ export class UserService {
     );
   }
 
-  uploadAvatar(userId: string, formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/users/avatar/${userId}`, formData).pipe(
-      catchError(this.handleError('Error al subir el avatar'))
-    );
-  }
+  
 
   login(credentials: { email: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: LoginResponse) => {
         if (response?.token) {
           this.authService.setToken(response.token);
@@ -42,17 +38,9 @@ export class UserService {
     );
   }
 
-  fetchUserProfile(userId: string): Observable<User> {
-    return this.http.get<User>(`http://localhost:3000/api/user/profile/${userId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).pipe(
-        catchError(err => {
-            console.error('Error al obtener el perfil del usuario', err);
-            return throwError(err);
-        })
-    );
-}
-
+  logout(): void {
+    this.authService.removeToken();
+  }
 
 
   isLogged(): boolean {
@@ -61,9 +49,10 @@ export class UserService {
 
   private handleError<T>(defaultMessage: string) {
     return (error: any): Observable<T> => {
-      const errorMessage = error.error?.message || defaultMessage;
-      console.error(defaultMessage, error);
+      console.error("Error completo:", error);
+      const errorMessage = error.error ? JSON.stringify(error.error) : defaultMessage;
       return throwError(() => new Error(errorMessage));
     };
   }
+  
 }
