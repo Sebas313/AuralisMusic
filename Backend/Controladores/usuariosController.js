@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import mongoose from "mongoose";
 
+
 export const Registro = async (req, res) => {
   const { nombre, email, password } = req.body;
   try {
@@ -12,54 +13,17 @@ export const Registro = async (req, res) => {
       password,
     });
 
-    //validaciones que hay que corregir
-
-    // if (post.nombre == undefined || post.nombre == null || post.nombre == "") {
-    //   response.json({
-    //     state: false,
-    //     mensaje: "el campo nombre es oblogatorio",
-    //   });
-    //   return false;
-    // }
-
-    // if (post.email == undefined || post.email == null || post.email == "") {
-    //   response.json({ state: false, mensaje: "el campo email es oblogatorio" });
-    //   return false;
-    // }
-
-    // const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (regex.test(post.email) == false) {
-    //   response.json({ state: false, mensaje: "el email no es valido" });
-    //   return false;
-    // }
-
-    // if (
-    //   post.password == undefined ||
-    //   post.password == null ||
-    //   post.password == ""
-    // ) {
-    //   response.json({
-    //     state: false,
-    //     mensaje: "el campo password es oblogatorio",
-    //   });
-    //   return false;
-    // }
-
     await NuevoUsuario.save();
     res.status(201).json("Usuario Registrado");
   } catch (error) {
     console.error("Error al registrar el usuario", error.message);
-    res.status(500).json({ message: "Error al registrar el usuario.", error:error.message })
+    res.status(500).json({ message: "Error al registrar el usuario.", error: error.message });
   }
 };
 
 export const login = async (req, res) => {
-    try{
-        const {nombre, email, password}= req.body;
-        // Validar los campos requeridos
-
-        //  // Buscar al usuario en la base de datos
-    const usuario = await Usuario.findOne({ email });
+  try {
+    const { email, password } = req.body;
 
     //Dejar que se puede leer el id de mongo
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -67,46 +31,42 @@ export const login = async (req, res) => {
     }
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email y contraseña son requeridos.' });
-      }
+      return res.status(400).json({ message: 'Email y contraseña son requeridos.' });
+    }
 
-// Si no se encuentra el usuario, retorna un error
+    const usuario = await Usuario.findOne({ email });
+
     if (!usuario) {
-        return res.status(401).json({ message: 'Credenciales incorrectas.' });
-      }
-
-      // Comparar contraseñas
-    const validacionContraseña = bcrypt.compare(password, usuario.password);
-
-      // Si la contraseña no coincide, retorna un error
-    if (!validacionContraseña) {
       return res.status(401).json({ message: 'Credenciales incorrectas.' });
     }
-    
-// Generar un token JWT con expiración
-const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Expira en 1 hora
-res.json({token});
 
-// // Responder los datos del usuario
-// res.status(200).json({
-//   message: 'Inicio de sesión exitoso.',
-//   token,
-//   user: {
-//     nombre: usuario.nombre,
-//     email: usuario.email,
-//   },
-// });
-} catch (error) {
-res.status(500).json({ message: 'error interno del servidor, no se envio el token' });
-}
+    const isMatch = await bcrypt.compare(password, usuario.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Credenciales incorrectas.' });
+    }
+
+    const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(200).json({
+      message: 'Inicio de sesión exitoso.',
+      token,
+      user: {
+        nombre: usuario.nombre,
+        email: usuario.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor, no se pudo enviar el token.' });
+  }
 };
 
-// Validación del token
 export const tokenValido = (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1]; // Obtiene solo el token de 'Bearer token'
+  const token = req.header('Authorization')?.split(' ')[1];
   
-    if (!token) return res.status(401).json({ message: 'No se proporcionó token, autorización denegada.' });
+  if (!token) return res.status(401).json({ message: 'No se proporcionó token, autorización denegada.' });
   
+
     try {
       const verificado = jwt.verify(token, process.env.JWT_SECRET);
       req.usuario = verificado;
@@ -176,3 +136,15 @@ export default {
    eliminarUsuario,
    actualizarUsuario 
   };
+
+  try {
+    const verificado = jwt.verify(token, process.env.JWT_SECRET);
+    req.usuario = verificado;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token no válido.' });
+  }
+};
+
+
+

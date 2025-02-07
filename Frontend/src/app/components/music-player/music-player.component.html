@@ -1,0 +1,16 @@
+<div class="player" *ngIf="currentSong">
+    <div class="player-container">
+      <img class="song-image" [src]="currentSong.image" alt="Song cover" />
+      <div class="song-info">
+        <h4>{{ currentSong.title }}</h4>
+        <p>{{ currentSong.artist }}</p>
+        <div class="song-time">{{ currentTime }} / {{ totalTime }}</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button (click)="prevSong()">⏮️</button>
+      <button (click)="togglePlay()">{{ isPlaying ? '⏸️' : '▶️' }}</button>
+      <button (click)="nextSong()">⏭️</button>
+    </div>
+  </div>
+  

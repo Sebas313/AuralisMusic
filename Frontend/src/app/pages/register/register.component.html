@@ -1,0 +1,72 @@
+<main>
+  <section id="register" class="d-flex flex-row">
+
+    <div class="image-section"></div>
+
+
+    <div class="form-section">
+      <div class="section-text-combo">
+        <h2>Registrarse</h2>
+      </div>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            class="form-control" 
+            formControlName="nombre" 
+            placeholder="Tu nombre" 
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo Electrónico</label>
+          <input 
+            type="email" 
+            id="email" 
+            class="form-control" 
+            formControlName="email" 
+            placeholder="E-mail" 
+          />
+        </div>
+
+        <div class="mb-3 position-relative">
+          <label for="password" class="form-label">Contraseña</label>
+          <input 
+            type="password" 
+            id="password"
+            class="form-control" 
+            formControlName="password" 
+            [type]="passwordVisible ? 'text' : 'password'" 
+            placeholder="Contraseña"
+          />
+          <button 
+            type="button" 
+            (click)="togglePasswordVisibility()" 
+            class="position-absolute end-0 top-0 mt-2 me-3"
+          >
+            <i [ngClass]="passwordVisible ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+
+      
+
+     
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+
+ 
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+      </form>
+
+ 
+      <div class="mt-3">
+        <p>¿Ya tienes una cuenta? <a [routerLink]="['/login']">Inicia sesión aquí</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
