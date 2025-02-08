@@ -1,9 +1,9 @@
 import "dotenv/config";
 import express from "express";
-import connectDB from "./config/database.js";
-import usuariosrutas from "./rutas/usuariosrutas.js";
+import connectDB from "./src/config/database.js"
+import usuariosrutas from "./src/rutas/usuariosrutas.js";
 import cors from 'cors';
-import cancionesrutas from './rutas/cancionesrutas.js'
+import cancionesrutas from './src/rutas/cancionesrutas.js'
 
 const app = express();
 app.use(express.json());
