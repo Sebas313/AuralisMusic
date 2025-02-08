@@ -56,7 +56,7 @@ export const ObtenerTodas = async (req, res) => {
     }
   };
   
-  export const Actualizar = async (req, res) => {
+  export const Actualizar = async (req, res) => { 
     const { id } = req.params; 
     const { artista, cancion, album, genero } = req.body;
   
