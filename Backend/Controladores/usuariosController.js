@@ -130,10 +130,11 @@ export const obtenerUsuario = async (req, res) => {
 export const actualizarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
+    const {nombre,email,password} = req.body
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });
     }
-    const usuario = await Usuario.findByIdAndUpdate(id, req.body, { new: true });
+    const usuario = await Usuario.findByIdAndUpdate(id, {nombre,email,password}, { new: true });
     if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
     res.status(200).json(usuario);
   } catch (error) {
