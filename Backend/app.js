@@ -4,6 +4,8 @@ import connectDB from "./config/database.js";
 import usuariosrutas from "./rutas/usuariosrutas.js";
 import cors from 'cors';
 import cancionesrutas from './rutas/cancionesrutas.js'
+import cantanteController from "./Controladores/cantanteController.js";
+import cantantesrutas from "./rutas/cantantesrutas.js";
 
 const app = express();
 app.use(express.json());
@@ -11,7 +13,7 @@ connectDB().catch(err => console.error('Error en la connección de la base de da
 app.use(cors());
 
 app.use("/Api",usuariosrutas)
-
+app.use("/Api",cantantesrutas)
 app.use("/Api",cancionesrutas)
 
 app.listen(process.env.PORT || 3000, () => {
