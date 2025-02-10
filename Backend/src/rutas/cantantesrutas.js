@@ -1,5 +1,5 @@
 import express from "express";
-import cantanteController from "../Controladores/cantanteController.js";
+import cantanteController from "../Controladores/Controladores/cantanteController.js";
 const router =express.Router();
 
 router.get("/Cantante",cantanteController.listarCantantes);

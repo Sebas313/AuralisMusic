@@ -4,8 +4,8 @@ import connectDB from "./src/config/database.js"
 import usuariosrutas from "./src/rutas/usuariosrutas.js";
 import cors from 'cors';
 import cancionesrutas from './rutas/cancionesrutas.js'
-import cantanteController from "./Controladores/cantanteController.js";
-import cantantesrutas from "./rutas/cantantesrutas.js";
+import cantanteController from "./src/Controladores/Controladores/cantanteController.js";
+import cantantesrutas from "./src/rutas/cantantesrutas.js";
 import cancionesrutas from './src/rutas/cancionesrutas.js'
 
 
