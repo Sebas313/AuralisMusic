@@ -1,4 +1,4 @@
-import Cantante from "../../Modelos/cantanteModelos.js"
+import Cantante from "../Modelos/cantanteModelos.js";
 import mongoose from "mongoose";
 
 export const listarCantantes = async (req, res) => {
