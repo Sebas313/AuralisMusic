@@ -1,0 +1,13 @@
+<ul class="song-list">
+  <li *ngFor="let song of songs">
+    <img [src]="song.image" alt="Cover" class="song-image" />
+    <div class="song-info">
+      <h4>{{ song.cancion }}</h4>
+      <p>{{ song.cantante }}</p>
+    </div>
+    <div class="song-actions">
+      <button title="Reproducir" (click)="playSong(song)">▶️</button>
+      <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
+    </div>
+  </li>
+</ul>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SongListComponent } from './song-list.component';
+import { RandomSongListComponent } from './random-song-list.component';
 
-describe('SongListComponent', () => {
-  let component: SongListComponent;
-  let fixture: ComponentFixture<SongListComponent>;
+describe('RandomSongListComponent', () => {
+  let component: RandomSongListComponent;
+  let fixture: ComponentFixture<RandomSongListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SongListComponent]
+      imports: [RandomSongListComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SongListComponent);
+    fixture = TestBed.createComponent(RandomSongListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

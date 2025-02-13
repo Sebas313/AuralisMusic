@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-music-player',
@@ -8,33 +8,27 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
   templateUrl: './music-player.component.html',
   styleUrls: ['./music-player.component.css']
 })
-export class MusicPlayerComponent implements OnInit, OnDestroy {
+export class MusicPlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() currentSong: any;
   @Input() isPlaying: boolean = false;
+  @Input() playlist: any[] = [];  // Ahora recibe la playlist
 
   currentTime: string = '00:00';
-  totalTime: string = '03:00';
+  totalTime: string = '00:00';
   audio!: HTMLAudioElement;
-  
-  // Lista de canciones (este es un ejemplo, puedes obtenerlas de un servicio o base de datos)
-  songs = [
-    { title: 'Hotline Bling', artist: 'Drake', image: 'assets/song1.jpg', audioUrl: 'assets/song1.mp3' },
-    { title: 'Clocks', artist: 'Coldplay', image: 'assets/song2.jpg', audioUrl: 'assets/song2.mp3' },
-    { title: 'Shape of You', artist: 'Ed Sheeran', image: 'assets/song3.jpg', audioUrl: 'assets/song3.mp3' }
-  ];
-  
-  currentSongIndex: number = 0; // Índice de la canción actual en la lista
+  currentSongIndex: number = 0;
 
   ngOnInit() {
-    if (this.songs.length > 0) {
-      this.currentSong = this.songs[this.currentSongIndex]; // Inicializa la primera canción
-      this.audio = new Audio(this.currentSong.audioUrl);
-      this.audio.addEventListener('timeupdate', () => this.updateTime());
-      this.audio.addEventListener('ended', () => this.nextSong());
-      this.audio.volume = 0.5;
-      if (this.isPlaying) {
-        this.audio.play();
-      }
+    this.audio = new Audio();
+    this.audio.addEventListener('timeupdate', () => this.updateTime());
+    this.audio.addEventListener('ended', () => this.nextSong());
+    this.audio.volume = 0.5;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['currentSong'] && this.currentSong) {
+      this.currentSongIndex = this.playlist.findIndex(song => song === this.currentSong);
+      this.playCurrentSong();
     }
   }
 
@@ -60,29 +54,28 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     this.currentTime = this.formatTime(currentSeconds);
   }
 
+  nextSong() {
+    if (this.playlist.length > 0) {
+      this.currentSongIndex = (this.currentSongIndex + 1) % this.playlist.length;
+      this.currentSong = this.playlist[this.currentSongIndex];
+      this.playCurrentSong();
+    }
+  }
 
   prevSong() {
-    if (this.currentSongIndex > 0) {
-      this.currentSongIndex--;
-      this.currentSong = this.songs[this.currentSongIndex];
+    if (this.playlist.length > 0) {
+      this.currentSongIndex = (this.currentSongIndex - 1 + this.playlist.length) % this.playlist.length;
+      this.currentSong = this.playlist[this.currentSongIndex];
       this.playCurrentSong();
     }
   }
 
- 
-  nextSong() {
-    if (this.currentSongIndex < this.songs.length - 1) {
-      this.currentSongIndex++;
-      this.currentSong = this.songs[this.currentSongIndex];
-      this.playCurrentSong();
-    }
-  }
-
- 
   playCurrentSong() {
-    this.audio.pause(); 
+    if (this.audio) {
+      this.audio.pause();
+    }
     this.audio = new Audio(this.currentSong.audioUrl);
-    this.audio.play(); 
+    this.audio.play();
     this.isPlaying = true;
     this.audio.addEventListener('timeupdate', () => this.updateTime());
     this.audio.addEventListener('ended', () => this.nextSong());
