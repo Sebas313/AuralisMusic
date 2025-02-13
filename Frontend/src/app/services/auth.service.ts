@@ -2,14 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/Api'; // URL de tu API
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   setToken(token: string): void {
     localStorage.setItem('user_token', token);
@@ -33,10 +33,21 @@ export class AuthService {
   }
 
   register(email: string, password: string): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-    return this.http.post<any>(`${this.apiUrl}/Registro`, { email, password }, { headers });
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+  
+    return this.http.post<any>(`${this.apiUrl}/registro`, { email, password }, { headers }).pipe(
+      tap((response: any) => {
+        if (response.success) {
+          // Redirige a la página de verificación con el email como parámetro
+          this.router.navigate(['/verificar-codigo'], { queryParams: { email } });
+        }
+      })
+    );
   }
+  verifyCode(email: string, code: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/verificar-codigo`, { email, code });
+  }
+  
   login(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 

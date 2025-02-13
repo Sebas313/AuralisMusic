@@ -14,8 +14,8 @@ export interface User {
   }
   
   export interface RegisterResponse {
-    user: User; // Asegúrate de que esto esté correcto
-    token: string; // Agrega esta línea
+    user: User; 
+    token: string; 
   }
   
   export interface LoginResponse {
