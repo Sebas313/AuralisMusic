@@ -6,6 +6,7 @@
 
     <!-- Sección del formulario -->
     <div class="form-section">
+      <div class="image-section2"></div>
       <h2>Iniciar sesión</h2>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -16,17 +17,24 @@
         </div>
 
         <!-- Campo de contraseña con icono -->
-        <div class="input-container position-relative">
+        <div class="mb-3">
           <label for="password" class="form-label">Contraseña</label>
-          <input 
-            type="{{ showPassword ? 'text' : 'password' }}" 
-            id="password" 
-            formControlName="password" 
-            placeholder="" 
-          />
-          <button type="button" (click)="togglePasswordVisibility()" class="eye-icon">
-            <i [ngClass]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-          </button>
+          <div class="input-container">
+            <input 
+              type="password" 
+              id="password"
+              class="form-control" 
+              formControlName="password" 
+              [type]="passwordVisible ? 'text' : 'password'" 
+              placeholder=""
+            />
+            <span 
+              (click)="togglePasswordVisibility()" 
+              class="password-toggle"
+            >
+              {{ passwordVisible ? '🔓' : '🔒 ' }}
+            </span>
+          </div>
         </div>
 
         <!-- Mensaje de error -->
