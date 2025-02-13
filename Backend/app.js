@@ -18,6 +18,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 connectDB().catch(err => console.error('Error en la connección de la base de datos', err)); // Handle connection error
 app.use(cors());
 
