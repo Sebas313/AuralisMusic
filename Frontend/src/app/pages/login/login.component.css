@@ -31,17 +31,17 @@ body, html {
 
 /* Image section */
 .image-section {
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: url('/assets/dj-image.jpg') no-repeat center center/cover;
-  min-height: 100%;
+  width: 45%; 
+  height: 90vh; 
+  margin: 30px 0 30px 70px; 
+  background: url('../../../assets/image\ 59.png') no-repeat center center/cover;
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
 }
-
 /* Form section */
 .form-section {
   width: 50%;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -57,6 +57,27 @@ h2 {
   margin-bottom: 20px;
 }
 
+.form-section {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  align-items: flex-start;
+  text-align: left;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  height: 100%;
+  max-width: 400px;
+}
+
+/* Ajustes de texto */
+h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -64,27 +85,45 @@ form {
   max-width: 300px;
 }
 
+/* Estilos mejorados para labels e inputs */
+label {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #B2A179;
+}
+
 input {
   padding: 12px;
-  margin-top: 8px;
-  border: 1px solid #8f8d8d;
-  border-radius: 5px;
+  margin-bottom: 15px;
+  border: none;
+  border-bottom: 2px solid rgb(66, 65, 65); /* Línea blanca abajo */
   font-size: 14px;
-  background-color: #222;
-  color: #cecbcb;
+  background-color: transparent; /* Quita el fondo oscuro */
+  color: #fff; /* Texto blanco */
   width: 100%;
+  outline: none; /* Quita el borde azul al hacer clic */
+  transition: border-color 0.3s; /* Efecto suave */
+}
+input:focus {
+  border-bottom: 2px solid #B2A179; 
 }
 
 .btn {
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding: 8px; 
+  padding-left: 8px;
+  padding-right: 7px;
   background-color: #B2A179;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 30px; 
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px; 
   transition: background-color 0.3s;
+ 
 }
 
 .btn:hover {
@@ -102,18 +141,24 @@ p{
   color: #B2A179;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   #login {
       flex-direction: column;
       height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
   }
   .image-section {
-      width: 100%;
-      height: 200px;
+      display: none; /* Oculta la imagen */
   }
   .form-section {
       width: 100%;
       padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
   }
 }
