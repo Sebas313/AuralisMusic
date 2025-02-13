@@ -18,6 +18,7 @@ body, html {
   justify-content: center;
 }
 
+
 /* Main container */
 #login {
   display: flex;
@@ -29,25 +30,78 @@ body, html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Image section */
-.image-section {
-  width: 45%; 
-  height: 90vh; 
-  margin: 30px 0 30px 70px; 
-  background: url('../../../assets/image\ 59.png') no-repeat center center/cover;
-  border-radius: 20px; 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-}
-/* Form section */
 .form-section {
-  width: 50%;
-  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 40px;
   align-items: center;
-  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 65%; /* Ajusta la posición más a la derecha */
+  transform: translate(-50%, -50%);
+  min-width: 350px;
+  max-width: 450px;
+  padding: 40px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: auto;
+}
+/* Image section */
+.image-section {
+  width: 40%; 
+  height: 90vh;
+  padding-left: 90px; 
+  margin: 80px 30px 80px 100px; 
+  background: url('../../../assets/image\ 59.png') no-repeat center center/cover;
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+
+}
+.image-section2 {
+  width: 44%;
+  height: 100px;
+  min-height: 70px;
+  margin: 30px auto; /* Centra horizontalmente */
+  background: url('../../../assets/logo.png') no-repeat center center;
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center; /* Centra contenido horizontalmente */
+  align-items: center; /* Centra contenido verticalmente */
+}
+
+
+/* Form section */
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%;
+  padding-right: 2.5rem; /* Espacio para el emoji */
+}
+
+.input-container .password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 32%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  user-select: none;
 }
 .section-text-combo{
   color: azure;
@@ -55,20 +109,6 @@ body, html {
 h2 {
   font-size: 28px;
   margin-bottom: 20px;
-}
-
-.form-section {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 40px;
-  align-items: flex-start;
-  text-align: left;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  height: 100%;
-  max-width: 400px;
 }
 
 /* Ajustes de texto */
@@ -140,7 +180,6 @@ a {
 p{
   color: #B2A179;
 }
-
 @media (max-width: 768px) {
   #login {
       flex-direction: column;
@@ -149,9 +188,25 @@ p{
       justify-content: center;
       align-items: center;
   }
+
   .image-section {
-      display: none; /* Oculta la imagen */
+      display: none; /* Oculta la imagen grande */
   }
+
+  .image-section2 {
+    width: 100%;
+    max-width: 300px; /* Ajusta el ancho */
+    height: 150px; /* Ajusta la altura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; /* Centra el contenedor */
+    padding-top: 20px; /* Baja un poco el logo */
+    background: url("../../../assets/logo.png") no-repeat center center;
+    background-size: contain;
+} 
+
+
   .form-section {
       width: 100%;
       padding: 30px;
@@ -160,5 +215,8 @@ p{
       justify-content: center;
       align-items: center;
       text-align: center;
+      top: 50%;
+      left: 50%; 
   }
 }
+

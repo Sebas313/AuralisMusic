@@ -7,15 +7,15 @@
 }
 
 .logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 120px;
   height: 40px;
   background: url('../../../assets/logo.png') no-repeat center center;
   background-size: contain;
-  border: none;
-  overflow: hidden;
+}
+
+
+.logo-container {
+  border: none; /* Asegura que el contenedor no tenga bordes */
 }
 
 
