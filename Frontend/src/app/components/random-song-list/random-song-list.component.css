@@ -1,0 +1,53 @@
+.random-song-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente si el contenedor tiene altura suficiente */
+    width: 100%;
+    padding: 20px;
+}
+
+.song-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 80%; /* Ajusta el ancho de la lista */
+    max-width: 600px; /* Evita que sea demasiado ancha */
+}
+
+.song-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e1e1e;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.song-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.song-info {
+    flex-grow: 1;
+}
+
+.song-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.song-actions button:hover {
+    opacity: 0.7;
+}

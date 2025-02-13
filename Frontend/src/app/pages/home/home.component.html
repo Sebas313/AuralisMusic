@@ -3,20 +3,16 @@
 <div class="home-container">
   <div class="sidebar-container">
     <app-sidebar (songSelected)="playSong($event)"></app-sidebar>
-
   </div>
 
   <div class="content">
-    <div class="song-list-container">
-      <app-song-list (songSelected)="playSong($event)"></app-song-list> 
-    </div>
+    <app-random-song-list (songSelected)="onSongSelected($event)"></app-random-song-list>
   </div>
-</div>
 
-
-
-<app-music-player 
+  <app-music-player 
   *ngIf="showMusicPlayer" 
   [currentSong]="currentSong" 
-  [isPlaying]="isPlaying">
-</app-music-player>
+  [isPlaying]="isPlaying"
+  [playlist]="playlist">
+  </app-music-player>
+</div>

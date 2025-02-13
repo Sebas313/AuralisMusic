@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class PlaylistService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/Api/playlists';
+  private apiUrl = 'http://localhost:3000/Api';
 
   getPlaylists(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
