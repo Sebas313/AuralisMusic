@@ -6,11 +6,12 @@ import cors from 'cors';
 import cancionesrutas from "./src/rutas/cancionesrutas.js"
 import cantantesrutas from "./src/rutas/cantantesrutas.js";
 
+console.log('MongoDB URI:', process.env.MONGODB_URI); 
 
 
 const app = express();
 app.use(express.json());
-connectDB().catch(err => console.error('Error en la connección de la base de datos', err)); // Handle connection error
+connectDB().catch(err => console.error('Error en la connección de la base de datos', err)); 
 app.use(cors());
 
 app.use("/Api",usuariosrutas)
