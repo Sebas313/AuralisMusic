@@ -4,8 +4,7 @@ const usuarioSchema = new mongoose.Schema({
     cancion: String,
     album: String,
     genero: String,
-    imagen: String,
-    
+    imagen: String, 
 });
 
 const Canciones = mongoose.model("Canciones", usuarioSchema)

@@ -3,64 +3,22 @@ import Cantante from "../Modelos/cantanteModelos.js";
 import mongoose from 'mongoose';
 
 
-export const asignarGenero = async (tipo)=>{
-  if(typeof tipo !== "string" || tipo.trim() === ""){
-    throw new Error("el genero proporcionado debe ser un string no vacío")
-  }
-  const generoMap ={
-    'rock':'Rock',
-    'pop': 'Pop',
-    'metal':'metal',
-    'hip-hop & rap':'Hip-Hop & Rap',
-    'R&B & Soul':'R&B & Soul',
-    'eeggae': 'Reggae',
-    'electronic & Dance':'Electronic & Dance',
-    'indie':'Indie',
-    'post-rock & experimental':'Post-Rock & Experimental',
-    'psychedelic':'Psychedelic',
-    'industrial':'Industrial',
-    'folk & World Music': 'Folk & World Music',
-    'salsa':'Salsa',
-    'merengue':'Merengue',
-    'cumbia':'Cumbia',
-    'bachata':'Bachata',
-    'tango':'Tango',
-    'vallenato':'Vallenato',
-    'bolero':'Bolero',
-    'ranchera':'Ranchera',
-    'reggaetón':'Reggaetón',
-    'norteña':'Norteña',
-    'k-pop':'K-Pop'
-  };
-  const nombreGenero = generoMap[tipo.toLowerCase()]
 
-  if(!nombreGenero){
-    throw new Error(`No existe un genero para el tipo:${tipo}`)
-  }
-  let genero = await Canciones.findOne({name:nombreGenero});
-  if(!genero){
-    genero = await Canciones.create({name:nombreGenero})
-  }
-  return genero._id;
-}
 export const Crear = async (req, res) => {
     try {
-      const { cantante, cancion, album, imagen, tipo} = req.body;
+      const { cantante, cancion, album, imagen, genero} = req.body;
 
-      console.log("datos recibidos", req.body)
       const cantanteEncontrado = await Cantante.findOne({ nombre: cantante });
 
       if (!cantanteEncontrado) {
         return res.status(400).json({ message: `No se encontró el cantante: ${cantante}` });
       }
 
-      const generoTipo = await asignarGenero(tipo);
-
       const NuevaCancion = new Canciones({
         cantante: cantanteEncontrado._id,
         cancion,
         album,
-        genero: generoTipo,
+        genero,
         imagen,
       });
 
