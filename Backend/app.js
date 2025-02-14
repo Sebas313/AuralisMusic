@@ -5,6 +5,7 @@ import usuariosrutas from "./src/rutas/usuariosrutas.js";
 import cors from 'cors';
 import cancionesrutas from "./src/rutas/cancionesrutas.js"
 import cantantesrutas from "./src/rutas/cantantesrutas.js";
+import playlistrutas from "./src/rutas/playlistrutas.js"
 
 
 console.log('MongoDB URI:', process.env.MONGODB_URI); 
@@ -45,6 +46,7 @@ app.post('Images/Multi', upload.array('photos',3), (req,res)=>{
 app.use("/Api",usuariosrutas)
 app.use("/Api",cantantesrutas)
 app.use("/Api",cancionesrutas)
+app.use("/Api",playlistrutas)
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server running on port ${process.env.PORT || 3000}`);
