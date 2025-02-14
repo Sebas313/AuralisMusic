@@ -44,17 +44,22 @@ export class SidebarComponent implements OnInit {
   toggleSidebar() {
     this.isExpanded = !this.isExpanded;
   }
-
-  filterSongs() {
-    if (this.searchQuery.trim()) {
-      this.filteredSongs = this.songs.filter(song =>
-        song.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        song.artist.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    } else {
-      this.filteredSongs = [...this.songs];
+  filterSongs(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const searchTerm = inputElement.value.trim().toLowerCase();
+  
+    if (!searchTerm) {
+      this.filteredSongs = this.songs; // Si el input está vacío, muestra todas las canciones
+      return;
     }
+  
+    this.filteredSongs = this.songs.filter(song => 
+      song.cancion?.toLowerCase().includes(searchTerm)
+    );
   }
+  
+  
+  
 
   toggleSearch() {
     this.isSearchVisible = !this.isSearchVisible;

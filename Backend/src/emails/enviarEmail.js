@@ -31,10 +31,36 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
     to: email,
     subject: 'Verificación de cuenta', 
     html: `
-      <h2>¡Bienvenido!</h2>
-      <p>Para activar tu cuenta, por favor haz clic en el siguiente enlace:</p>
-      <a href="http://localhost:4200/${verificationCode}">Verificar mi cuenta</a>
-      <p>Este enlace es válido solo por 24 horas.</p>
+  <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd;">
+  
+  <!-- Logo -->
+  <div style="margin-bottom: 20px;">
+    <img src="../public/uploads/logo.png" alt="Logo" style="max-width: 150px;">
+  </div>
+
+  <h2 style="color: #B2A179;">¡Bienvenido!</h2>
+  
+  <p style="color: #333; font-size: 16px;">
+    Gracias por registrarte. Para activar tu cuenta, haz clic en el siguiente botón:
+  </p>
+
+  <a href="http://localhost:4200/${verificationCode}" 
+     style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 5px; margin-top: 10px;">
+    Verificar mi cuenta
+  </a>
+
+  <p style="color: #666; font-size: 14px; margin-top: 20px;">
+    Este enlace es válido solo por <strong>24 horas</strong>.
+  </p>
+
+  <hr style="margin: 20px 0; border: 0.5px solid #ddd;">
+  
+  <p style="color: #999; font-size: 12px;">
+    Si no te has registrado en nuestro sitio, puedes ignorar este correo.
+  </p>
+</div>
+
+     
     `,
   };
 

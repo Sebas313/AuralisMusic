@@ -18,15 +18,30 @@ body, html {
 /* Contenedor principal */
 #register {
   display: flex;
+  flex-wrap: wrap; /* Evita que los elementos se superpongan en pantallas pequeñas */
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh; /* Se adapta según el contenido */
   background-color: #000000;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Sección de imagen */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem; 
+}
+.form-container {
+  min-width: 350px; /* Ajusta el mínimo para evitar que se haga muy pequeño */
+  max-width: 500px; /* Ajusta según el diseño */
+  flex: 1;
+}
+
 .image-section {
   width: 45%; 
   height: 90vh; 
@@ -37,9 +52,12 @@ body, html {
 
 }
 
+
 /* Sección del formulario */
 .form-section {
-  width: 50%;
+  flex: 1.2; /* El formulario ocupará más espacio que la imagen */
+  min-width: 350px; /* Evita que se haga demasiado pequeño */
+  max-width: 450px; /* Mantiene una buena proporción */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -48,9 +66,9 @@ body, html {
   text-align: left;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.7);
-  height: 100%;
-  max-width: 400px;
+  width: auto; /* Permite que se ajuste automáticamente */
 }
+
 
 /* Ajustes de texto */
 h2 {
@@ -89,6 +107,46 @@ input {
 input:focus {
   border-bottom: 2px solid #B2A179; 
 }
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%;
+  padding-right: 2.5rem; /* Espacio para el emoji */
+}
+
+.input-container .password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 32%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  user-select: none; /* Evita selección de texto al hacer clic */
+}
+.image-section2 {
+  width: 44%;
+  height: 100px; /* Asegurar que la imagen tenga espacio */
+  min-height: 70px; /* Ajusta según necesidad */
+  margin: 30px 0 30px 70px;
+  background: url('../../../assets/logo.png') no-repeat center center;
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10; /* Asegurar que esté encima */
+}
+
 
 .btn {
   margin-top: 15px;
@@ -121,4 +179,41 @@ a {
 
 p {
   color: #B2A179;
+}
+@media (max-width: 768px) {
+  #register {
+      flex-direction: column;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .image-section {
+      display: none; /* Oculta la imagen grande */
+  }
+
+  .image-section2 {
+    width: 100%;
+    max-width: 300px; /* Ajusta el ancho */
+    height: 150px; /* Ajusta la altura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; /* Centra el contenedor */
+    padding-top: 20px; /* Baja un poco el logo */
+    background: url("../../../assets/logo.png") no-repeat center center;
+    background-size: contain;
+}
+
+
+  .form-section {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+  }
 }

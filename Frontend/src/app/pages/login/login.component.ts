@@ -15,9 +15,9 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, ReactiveFormsModule, RouterModule],  // Importa estos módulos aquí
 })
 export class LoginComponent {
+  passwordVisible: boolean = false
   loginForm: FormGroup;
   errorMessage: string = '';
-  showPassword: boolean = false;
   private loginSubscription: Subscription | undefined;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
@@ -57,10 +57,10 @@ export class LoginComponent {
     }
   }
 
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
+ 
+ togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
-
   ngOnDestroy() {
     if (this.loginSubscription) {
       this.loginSubscription.unsubscribe();

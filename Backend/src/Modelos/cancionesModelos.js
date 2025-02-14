@@ -1,10 +1,11 @@
 import mongoose from "mongoose"
 const usuarioSchema = new mongoose.Schema({
-    artista: String,
+    cantante: {type:mongoose.Schema.Types.ObjectId, ref:"Cantante", requiered:true},
     cancion: String,
     album: String,
     genero: String,
-    id: String
+    imagen: String,
+    
 });
 
 const Canciones = mongoose.model("Canciones", usuarioSchema)
