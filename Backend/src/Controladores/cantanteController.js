@@ -1,6 +1,23 @@
-import Cantante from "../../Modelos/cantanteModelos.js"
+import Cantante from "../Modelos/cantanteModelos.js";
 import mongoose from "mongoose";
 
+export const crearCantante = async (req,res)=>{
+  try{
+    const{nombre, genero, canciones, avatar} = req.body;
+    const nuevoCantante = new Cantante({
+      nombre,
+      genero,
+      canciones,
+      avatar,
+    })
+
+    await nuevoCantante.save();
+    res.status(201).json("cantante guardado");
+  }catch(error){
+    console.error("Error al guardar el cantante", error.message);
+    res.status(500).json({ message: "Error al guardar el cantante"})
+  }
+}
 export const listarCantantes = async (req, res) => {
   try {
     const cantantes = await Cantante.find();
@@ -58,6 +75,7 @@ export const eliminarCantante = async (req, res) => {
 };
 
 export default {
+  crearCantante,
     listarCantantes,
     obtenerCantante,
     actualizarCantante,

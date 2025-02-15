@@ -120,9 +120,11 @@ export const obtenerUsuario = async (req, res) => {
       return res.status(400).json({ message: "ID no válido" });
     }
     const usuario = await Usuario.findById(id);
-    if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+    if (!usuario) {return res.status(404).json({ message: "Usuario no encontrado" });}
+
     res.status(200).json(usuario);
   } catch (error) {
+    console.error("Error en obtener usuario", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };

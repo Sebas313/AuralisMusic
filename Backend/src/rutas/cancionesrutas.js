@@ -1,10 +1,10 @@
-
-
 import express from "express"
-
 import cancionesController from "../Controladores/cancionesController.js";
+import upload from "../config/multer.js";
 
 const router = express.Router();
+
+router.post("/canciones", upload.single("image"), cancionesController.Crear);
 
 router.post("/canciones",cancionesController.Crear);
 
