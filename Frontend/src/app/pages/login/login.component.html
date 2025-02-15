@@ -1,43 +1,53 @@
+
 <main>
-  <section id="login" class="d-flex flex-row">
+  <section id="login">
     <!-- Sección de imagen -->
     <div class="image-section"></div>
 
     <!-- Sección del formulario -->
     <div class="form-section">
-      <div class="section-text-combo">
-        <h2>Iniciar sesión</h2>
-      </div>
+      <div class="image-section2"></div>
+      <h2>Iniciar sesión</h2>
+
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="email" class="form-label"></label>
-          <input type="email" id="email" class="form-control" formControlName="email" placeholder="E-mail" />
-        </div>
-        <div class="mb-3 position-relative">
-          <label for="password" class="form-label"></label>
-          <input 
-            type="password" 
-            id="password"
-            class="form-control" 
-            formControlName="password" 
-            [type]="showPassword ? 'text' : 'password'"
-            placeholder="Contraseña"
-          />
-          <button type="button" (click)="togglePasswordVisibility()" class="position-absolute end-0 top-0 mt-2 me-3">
-            <i [ngClass]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-          </button>
+        <!-- Campo de correo -->
+        <label for="password" class="form-label">Email</label>
+        <div class="input-container">
+          <input type="email" id="email" formControlName="email" placeholder="" />
         </div>
 
-        <!-- Mostrar mensaje de error -->
+        <!-- Campo de contraseña con icono -->
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <div class="input-container">
+            <input 
+              type="password" 
+              id="password"
+              class="form-control" 
+              formControlName="password" 
+              [type]="passwordVisible ? 'text' : 'password'" 
+              placeholder=""
+            />
+            <span 
+              (click)="togglePasswordVisibility()" 
+              class="password-toggle"
+            >
+              {{ passwordVisible ? '🔓' : '🔒 ' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Mensaje de error -->
         <div *ngIf="errorMessage" class="alert alert-danger">
           {{ errorMessage }}
         </div>
-        
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+
+        <!-- Botón de login -->
+        <button type="submit" class="btn">Iniciar sesión</button>
       </form>
 
       <!-- Enlace para registrarse -->
-      <div class="mt-3">
+      <div class="register-link">
         <p>¿No tienes una cuenta? <a [routerLink]="['/register']">Regístrate aquí</a></p>
       </div>
     </div>

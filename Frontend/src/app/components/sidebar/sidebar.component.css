@@ -1,125 +1,89 @@
-
 .sidebar {
-   
-     width: 800PX;
+  width: 800px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+  overflow: visible; /* Asegura que el input no se oculte */
+  position: fixed; /* Hace que la sidebar se mantenga fija sin afectar otros elementos */
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 
-    padding: 10px;
-    margin: 10PX;
-    border-radius: 10px;
-    transition: width 0.3s ease-in-out; 
-    overflow: hidden;
-  }
-  
-  .sidebar.expanded {
-    width: 300px; 
-    background-color: #000000; 
-    color: white;
-  }
-  
-  
-  .search-bar {
-    display: flex;
-    align-items: center;
-    background: #000000;
-    padding: 15px;
-    border-radius: 5px;
-  }
-  
-  .search-bar input {
-    flex: 1;
-    background: none;
-    border: none;
-    color: white;
-  }
-  
-  .filter-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: white;
-  }
-  
+  color: white;
+  z-index: 100; /* Se asegura de que esté por encima del contenido */
+}
 
-  .song-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .song-list li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .song-image {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-  }
-  
-  .song-info {
-    flex: 1;
-  }
-  
-  .song-actions button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    margin-left: 5px;
-  }
-  
-  
-  .sidebar {
-    position: relative;
-    width: 300px;
-    background-color: #000000;
-    color: white;
-    padding: px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .search-bar input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #030303;
-    border: none;
-    color: white;
-  }
-  
-  .song-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .song-list li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .song-image {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-  }
-  
-  .song-info h4, .song-info p {
-    margin: 0;
-  }
-  
-  .song-actions button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  .song-actions button:hover {
-    color: #ccc;
-  }
-  
+.sidebar.expanded {
+  width: 300px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #000000;
+  padding: 15px;
+  border-radius: 5px;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  z-index: 150; /* Asegura que esté por encima de la lista */
+}
+
+.search-bar input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: white;
+  width: 100%;
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.song-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 60px; /* Evita que el input se solape con la lista */
+  position: absolute; /* Permite que la lista se superponga sin mover otros elementos */
+  width: 100%;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.9); /* Fondo semi-transparente para destacar */
+}
+
+.song-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  background: #111;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.song-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.song-info {
+  flex: 1;
+}
+
+.song-actions button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.song-actions button:hover {
+  color: #ccc;
+}

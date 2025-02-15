@@ -7,8 +7,18 @@
 }
 
 .logo {
+  width: 120px;
   height: 40px;
+  background: url('../../../assets/logo.png') no-repeat center center;
+  background-size: contain;
 }
+
+
+.logo-container {
+  border: none; /* Asegura que el contenedor no tenga bordes */
+}
+
+
 
 .btn {
   background: #000000;
