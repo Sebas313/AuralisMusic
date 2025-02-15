@@ -1,14 +1,25 @@
 import Canciones from "../Modelos/cancionesModelos.js";
+import Cantante from "../Modelos/cantanteModelos.js";
 import mongoose from 'mongoose';
 
+
+
 export const Crear = async (req, res) => {
-    const { artista, cancion, album, genero } = req.body;
     try {
+      const { cantante, cancion, album, imagen, genero} = req.body;
+
+      const cantanteEncontrado = await Cantante.findOne({ nombre: cantante });
+
+      if (!cantanteEncontrado) {
+        return res.status(400).json({ message: `No se encontró el cantante: ${cantante}` });
+      }
+
       const NuevaCancion = new Canciones({
-        artista,
+        cantante: cantanteEncontrado._id,
         cancion,
         album,
-        genero
+        genero,
+        imagen,
       });
 
       
@@ -59,7 +70,7 @@ export const ObtenerTodas = async (req, res) => {
   
   export const Actualizar = async (req, res) => {
     const { id } = req.params; 
-    const { artista, cancion, album, genero } = req.body;
+    const { cantante, cancion, album, genero } = req.body;
   
     try {
       
@@ -70,7 +81,7 @@ export const ObtenerTodas = async (req, res) => {
   
       const cancionActualizada = await Canciones.findByIdAndUpdate(
         id,
-        { artista, cancion, album, genero },
+        { cantante, cancion, album, genero },
         { new: true } 
       );
   

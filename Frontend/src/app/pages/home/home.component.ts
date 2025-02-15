@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
-import { SongListComponent } from '../../components/song-list/song-list.component';
-import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 
+import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
+import { SongService } from '../../services/song.service';
+import { RandomSongListComponent } from '../../components/random-song-list/random-song-list.component';
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent, SidebarComponent, SongListComponent, CommonModule, MusicPlayerComponent,],
+  imports: [HeaderComponent, SidebarComponent, CommonModule, MusicPlayerComponent,  RandomSongListComponent ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -17,11 +18,7 @@ export class HomeComponent {
   isPlaying: boolean = false; 
   showMusicPlayer: boolean = false; 
   playlist: any[] = []; 
-  songs = [
-    { title: 'Hotline Bling', artist: 'Drake', image: 'assets/song1.jpg', audioUrl: 'assets/song1.mp3' },
-    { title: 'Clocks', artist: 'Coldplay', image: 'assets/song2.jpg', audioUrl: 'assets/song2.mp3' },
-    { title: 'Shape of You', artist: 'Ed Sheeran', image: 'assets/song3.jpg', audioUrl: 'assets/song3.mp3' }
-  ];
+  songs = [];
 
 
  
@@ -43,9 +40,14 @@ export class HomeComponent {
     this.showMusicPlayer = false;  
   }
 
+  
   onSongSelected(song: any) {
     this.currentSong = song;
     this.isPlaying = true;
     this.showMusicPlayer = true; 
+  
+    if (!this.playlist.some(s => s.audioUrl === song.audioUrl)) {
+      this.playlist.push(song);
+    }
   }
-}
+}  

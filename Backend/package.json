@@ -7,8 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "seed":"node src/seeders/cancionesSeeders.js",
-    "Seed":"node src/seeders/usuariosSeeders.js"
+    "seed": "node src/seeders/cancionesSeeders.js",
+    "Seed": "node src/seeders/usuariosSeeders.js",
+    "See": "node src/seeders/cantantesSeeders.js"
   },
   "author": "AuralisMusic",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "mongoose": "8.9.6",
     "multer": "1.4.5-lts.1",
     "nodemailer": "6.10.0",
-    "sha256": "0.2.0"
+    "sha256": "0.2.0",
+    "uuid": "11.0.5"
   }
 }

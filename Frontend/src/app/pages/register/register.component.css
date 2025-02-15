@@ -1,50 +1,68 @@
-/* Reset and global styles */
+/* Reset y estilos globales */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-main {
-  background-color: #000000;
-  width: 100%;
-}
-
 body, html {
   height: 100%;
   font-family: Arial, sans-serif;
   background-color: #000000;
+
   
   color: #000000;
+
+  color: #fff;
+
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Main container */
+/* Contenedor principal */
 #register {
   display: flex;
+  flex-wrap: wrap; /* Evita que los elementos se superpongan en pantallas pequeñas */
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh; /* Se adapta según el contenido */
   background-color: #000000;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Image section */
-.image-section {
-  width: 50%;
+.container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: url('/assets/dj-image.jpg') no-repeat center center/cover;
-  min-height: 100%;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem; 
+}
+.form-container {
+  min-width: 350px; /* Ajusta el mínimo para evitar que se haga muy pequeño */
+  max-width: 500px; /* Ajusta según el diseño */
+  flex: 1;
 }
 
-/* Form section */
+.image-section {
+  width: 45%; 
+  height: 90vh; 
+  margin: 30px 0 30px 70px; 
+  background: url('../../../assets/image\ 61.png') no-repeat center center/cover;
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+
+}
+
+
+/* Sección del formulario */
 .form-section {
-  width: 50%;
+  flex: 1.2; /* El formulario ocupará más espacio que la imagen */
+  min-width: 350px; /* Evita que se haga demasiado pequeño */
+  max-width: 450px; /* Mantiene una buena proporción */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -53,15 +71,11 @@ body, html {
   text-align: left;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.7);
-  height: 100%; /* Hace que el formulario ocupe todo el espacio vertical disponible */
-  max-width: 400px; /* Limita el tamaño máximo del formulario */
+  width: auto; /* Permite que se ajuste automáticamente */
 }
+
 
 /* Ajustes de texto */
-.section-text-combo {
-  color: azure;
-}
-
 h2 {
   font-size: 28px;
   margin-bottom: 20px;
@@ -75,33 +89,91 @@ form {
   max-width: 300px;
 }
 
+label {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #B2A179;
+}
+
 input {
   padding: 12px;
-  margin-top: 8px;
+  margin-bottom: 15px;
   border: none;
-  border-radius: 5px;
+  border-bottom: 2px solid rgb(66, 65, 65); 
   font-size: 14px;
-  background-color: #222;
-  color: #cecbcb;
+  background-color: transparent; 
+  color: #fff; 
+  width: 100%;
+  outline: none; 
+  transition: border-color 0.3s; 
+}
+input:focus {
+  border-bottom: 2px solid #B2A179; 
+}
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
 }
 
+.input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%;
+  padding-right: 2.5rem; /* Espacio para el emoji */
+}
+
+.input-container .password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 32%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  user-select: none; /* Evita selección de texto al hacer clic */
+}
+.image-section2 {
+  width: 44%;
+  height: 100px; /* Asegurar que la imagen tenga espacio */
+  min-height: 70px; /* Ajusta según necesidad */
+  margin: 30px 0 30px 70px;
+  background: url('../../../assets/logo.png') no-repeat center center;
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10; /* Asegurar que esté encima */
+}
+
+
 .btn {
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding: 8px; 
+  padding-left: 8px;
+  padding-right: 7px;
   background-color: #B2A179;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 30px; 
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px; 
   transition: background-color 0.3s;
+ 
 }
 
 .btn:hover {
   background-color: #A09068;
 }
 
+/* Estilos para enlaces */
 a {
   margin-top: 15px;
   color: #B2A179;
@@ -113,22 +185,40 @@ a {
 p {
   color: #B2A179;
 }
-
-/* Responsive Styles */
 @media (max-width: 768px) {
-  #login {
-    flex-direction: column;
-    height: auto;
+  #register {
+      flex-direction: column;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
   }
-  
+
   .image-section {
-    width: 100%;
-    height: 200px;
+      display: none; /* Oculta la imagen grande */
   }
-  
-  .form-section {
+
+  .image-section2 {
     width: 100%;
-    padding: 30px;
-    height: auto; /* El formulario ajusta su tamaño en pantallas pequeñas */
+    max-width: 300px; /* Ajusta el ancho */
+    height: 150px; /* Ajusta la altura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; /* Centra el contenedor */
+    padding-top: 20px; /* Baja un poco el logo */
+    background: url("../../../assets/logo.png") no-repeat center center;
+    background-size: contain;
+}
+
+
+  .form-section {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
   }
 }

@@ -1,20 +1,22 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PlaylistService } from '../../services/playlist.service';
 import { catchError, of } from 'rxjs';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-playlist',
-  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './playlist.component.html',
-  styleUrls: ['./playlist.component.css'],
-  imports: [CommonModule, FormsModule]
+  styleUrl: './playlist.component.css',
+  standalone: true
 })
-export class PlaylistComponent implements OnInit {
-  playlists: any[] = [];
-  newSong = { title: '', artist: '', url: '' };
-  selectedPlaylist = '';
+
+ export class PlaylistComponent implements OnInit {
+    playlists: any[] = [];
+    newSong = { title: '', artist: '', url: '' };
+    selectedPlaylist = '';
+    searchTerm: string = ''; // Agregamos esta lí
 
   private playlistService = inject(PlaylistService);
 
@@ -47,3 +49,5 @@ export class PlaylistComponent implements OnInit {
     }
   }
 }
+
+
