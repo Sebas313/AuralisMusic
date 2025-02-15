@@ -10,7 +10,10 @@ body, html {
   font-family: Arial, sans-serif;
   background-color: #000000;
 
+
+
   
+
   color: #000000;
 
   color: #fff;
@@ -37,6 +40,10 @@ body, html {
 .container {
   display: flex;
   justify-content: center;
+
+  background: url('') no-repeat center center/cover;
+  min-height: 100%;
+
   align-items: center;
   gap: 2rem;
   padding: 2rem; 
@@ -45,6 +52,7 @@ body, html {
   min-width: 350px; /* Ajusta el mínimo para evitar que se haga muy pequeño */
   max-width: 500px; /* Ajusta según el diseño */
   flex: 1;
+
 }
 
 .image-section {

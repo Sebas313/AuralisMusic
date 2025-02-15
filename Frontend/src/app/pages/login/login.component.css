@@ -69,8 +69,15 @@ body, html {
   position: relative;
   z-index: 10;
   display: flex;
+
+  align-items: center;
+  justify-content: center;
+  background: url('') no-repeat center center/cover;
+  min-height: 100%;
+
   justify-content: center; /* Centra contenido horizontalmente */
   align-items: center; /* Centra contenido verticalmente */
+
 }
 
 
