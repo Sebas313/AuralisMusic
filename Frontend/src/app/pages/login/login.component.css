@@ -1,4 +1,4 @@
-/* Reset and global styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -37,7 +37,7 @@ body, html {
   align-items: center;
   position: absolute;
   top: 50%;
-  left: 65%; /* Ajusta la posición más a la derecha */
+  left: 65%; 
   transform: translate(-50%, -50%);
   min-width: 350px;
   max-width: 450px;
@@ -46,13 +46,13 @@ body, html {
   background-color: rgba(0, 0, 0, 0.7);
   width: auto;
 }
-/* Image section */
+
 .image-section {
   width: 40%; 
   height: 90vh;
   padding-left: 90px; 
   margin: 80px 30px 80px 100px; 
-  background: url('../../../assets/image\ 59.png') no-repeat center center/cover;
+
   border-radius: 20px; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
 
@@ -61,8 +61,7 @@ body, html {
   width: 44%;
   height: 100px;
   min-height: 70px;
-  margin: 30px auto; /* Centra horizontalmente */
-  background: url('../../../assets/logo.png') no-repeat center center;
+  margin: 30px auto; 
   background-size: cover;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -72,11 +71,11 @@ body, html {
 
   align-items: center;
   justify-content: center;
-  background: url('') no-repeat center center/cover;
+ 
   min-height: 100%;
 
-  justify-content: center; /* Centra contenido horizontalmente */
-  align-items: center; /* Centra contenido verticalmente */
+  justify-content: center; 
+  align-items: center; 
 
 }
 
@@ -98,7 +97,7 @@ body, html {
 
 .input-container input {
   width: 100%;
-  padding-right: 2.5rem; /* Espacio para el emoji */
+  padding-right: 2.5rem; 
 }
 
 .input-container .password-toggle {
@@ -118,7 +117,7 @@ h2 {
   margin-bottom: 20px;
 }
 
-/* Ajustes de texto */
+
 h2 {
   font-size: 28px;
   margin-bottom: 20px;
@@ -132,7 +131,6 @@ form {
   max-width: 300px;
 }
 
-/* Estilos mejorados para labels e inputs */
 label {
   font-size: 14px;
   font-weight: bold;
@@ -145,13 +143,13 @@ input {
   padding: 12px;
   margin-bottom: 15px;
   border: none;
-  border-bottom: 2px solid rgb(66, 65, 65); /* Línea blanca abajo */
+  border-bottom: 2px solid rgb(66, 65, 65); 
   font-size: 14px;
-  background-color: transparent; /* Quita el fondo oscuro */
-  color: #fff; /* Texto blanco */
+  background-color: transparent;
+  color: #fff; 
   width: 100%;
-  outline: none; /* Quita el borde azul al hacer clic */
-  transition: border-color 0.3s; /* Efecto suave */
+  outline: none; 
+  transition: border-color 0.3s; 
 }
 input:focus {
   border-bottom: 2px solid #B2A179; 
@@ -197,19 +195,19 @@ p{
   }
 
   .image-section {
-      display: none; /* Oculta la imagen grande */
+      display: none; 
   }
 
   .image-section2 {
     width: 100%;
-    max-width: 300px; /* Ajusta el ancho */
-    height: 150px; /* Ajusta la altura */
+    max-width: 300px; 
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto; /* Centra el contenedor */
-    padding-top: 20px; /* Baja un poco el logo */
-    background: url("../../../assets/logo.png") no-repeat center center;
+    margin: 0 auto; 
+    padding-top: 20px; 
+    
     background-size: contain;
 } 
 
