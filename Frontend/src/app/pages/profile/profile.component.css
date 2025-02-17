@@ -1,0 +1,106 @@
+
+.profile-container {
+    width: 80%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #000000; 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #fff; 
+  }
+  
+ 
+  .profile-photo-container {
+    position: relative;
+    margin-bottom: 25px;
+  }
+  
+  .profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #f39c12; 
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+ 
+  .user-info {
+    margin-bottom: 20px;
+  }
+  
+  .user-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f39c12;
+    margin: 0;
+  }
+  
+
+  .become-singer {
+    margin-bottom: 30px;
+  }
+  
+  .singer-question {
+    font-size: 1.2rem;
+    color: #aaa; 
+    margin-bottom: 15px;
+  }
+  
+  .become-singer-btn {
+    background-color: #f39c12;
+    color: black;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .become-singer-btn:hover {
+    background-color: #e67e22; 
+    transition: background-color 0.3s ease;
+  }
+  
+
+  .user-playlists {
+    margin-top: 30px;
+  }
+  
+  .playlist-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #fff; 
+  }
+  
+  .playlist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .playlist-item {
+    background-color: #333; 
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #fff; 
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .playlist-item:hover {
+    background-color: #444; 
+  }
+  
+
+  .no-playlists {
+    font-size: 1.1rem;
+    color: #aaa; 
+  }
+  

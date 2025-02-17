@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class PlaylistService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/Api';
+  private apiUrl = 'http://localhost:3000/Api/Playlist';
 
   getPlaylists(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
@@ -15,5 +15,10 @@ export class PlaylistService {
 
   addSongToPlaylist(playlistName: string, song: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${playlistName}/canciones`, song);
+
+  }
+
+  createPlaylist(playlist: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, playlist);
   }
 }

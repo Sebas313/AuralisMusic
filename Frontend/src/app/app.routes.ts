@@ -3,13 +3,16 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
 import { Playlst } from './pages/playlist/playlst.component';
+import { AuthGuard } from './guards/auth.guard'; 
+import { ProfileComponent } from './pages/profile/profile.component';
+import { UploadSongComponent } from './pages/upload-song/upload-song.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
+  { path: 'playlist', component: Playlst, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
+  { path: 'upload-song', component: UploadSongComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent }, 
-  { path: 'playlist', component: Playlst },
-
-  { path: '', redirectTo: '/home', pathMatch: 'full' },  // Redirect to home
+  { path: '', redirectTo: '/home', pathMatch: 'full' }, 
   { path: '**', redirectTo: '/home' },              
 ];

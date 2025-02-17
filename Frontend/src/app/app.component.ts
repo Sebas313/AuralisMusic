@@ -1,12 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] // Corrección: "styleUrl" → "styleUrls"
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Frontend';
+
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.router.navigate(['/register']); // Redirige a "register" si no está autenticado
+    }
+  }
 }

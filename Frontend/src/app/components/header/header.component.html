@@ -12,6 +12,7 @@
     <div class="dropdown">
       <button class="btn" (click)="toggleMenu()">MI CUENTA</button>
       <div class="dropdown-menu" [class.show]="menuOpen">
+        <a href="/profile" class="dropdown-item">Mi perfil</a>
         <a href="/playlist" class="dropdown-item">Mi playlist</a>
         <a (click)="logout()" class="dropdown-item">Cerrar sesión</a>
       </div>
