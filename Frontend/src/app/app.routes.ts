@@ -12,6 +12,7 @@ export const routes: Routes = [
   { path: 'playlist', component: Playlst, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   { path: 'upload-song', component: UploadSongComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent }, 
   { path: 'register', component: RegisterComponent }, 
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 
