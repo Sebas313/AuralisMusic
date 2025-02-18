@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule } from '@angular/common';
-
+import { AuthService } from '../../services/auth.service';
 @Component({
   standalone: true,
   selector: 'app-profile',
@@ -17,28 +17,47 @@ export class ProfileComponent implements OnInit {
 
   constructor(private userService: UserService) {}
 
-  ngOnInit(): void {
-    this.fetchUserProfile();
-  }
-
-  fetchUserProfile() {
-    const userId = localStorage.getItem('userId');
-    console.log('userId:', userId);  // Asegúrate de que el userId esté disponible
-    if (userId) {
-      this.userService.fetchUserProfile(userId).subscribe({
-        next: (response) => {
-          console.log('Response:', response);  // Verifica lo que devuelve el backend
-          this.user = response.user;
-          this.playlists = response.playlists;
-        },
-        error: (err) => {
-          console.error('Error al obtener el perfil:', err);
-        }
-      });
-    } else {
-      console.error('No se encontró el ID del usuario');
+  ngOnInit() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      this.user = JSON.parse(storedUser);
+      console.log('Usuario cargado en ngOnInit:', this.user); // ✅ Debe mostrar _id
     }
   }
+  
+  esCantante(): boolean {
+    return this.user?.rol === "cantante";
+  }
+  
+  
+  fetchUserProfile() {
+    const storedUser = localStorage.getItem('user');
+    
+    if (!storedUser) {
+      console.error('❌ No hay usuario en localStorage');
+      return;
+    }
+  
+    const user = JSON.parse(storedUser);
+    if (!user._id) {
+      console.error('❌ No se encontró _id en el usuario almacenado');
+      return;
+    }
+  
+    this.userService.fetchUserProfile(user._id).subscribe({
+      next: (response) => {
+        console.log('✅ Perfil obtenido:', response);
+        this.user = response.user;
+        this.playlists = response.playlists;
+        localStorage.setItem('user', JSON.stringify(this.user)); // 🔹 Guardar el usuario actualizado
+      },
+      error: (err) => {
+        console.error('❌ Error al obtener el perfil:', err);
+      }
+    });
+  }
+  
+  
   
   
 
@@ -80,6 +99,26 @@ export class ProfileComponent implements OnInit {
   }
 
   sendRequest() {
-    alert('Solicitud para ser cantante enviada con éxito.');
+    console.log('Usuario actual:', this.user); // Depuración
+  
+    if (!this.user || !this.user._id) {
+      alert('Error: No se encontró el usuario.');
+      return;
+    }
+  
+    this.userService.updateUserRole(this.user._id, 'cantante').subscribe({
+      next: (response) => {
+        this.user.rol = 'cantante'; // 🔹 Actualiza el rol en el frontend
+        localStorage.setItem('user', JSON.stringify(this.user)); // 🔹 Guardar en localStorage
+        alert('¡Felicidades! Ahora eres cantante.');
+      },
+      error: (err) => {
+        console.error('Error al actualizar el rol:', err);
+        alert('Hubo un error al enviar la solicitud.');
+      }
+    });
   }
+  
+  
+  
 }

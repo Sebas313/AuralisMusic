@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SongService } from '../../services/song.service'; // Asegúrate de importar correctamente el servicio
+import { Howl, Howler } from 'howler';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,6 +23,7 @@ export class SidebarComponent implements OnInit {
   playlist: any[] = [];
   songs: any[] = [];
   filteredSongs: any[] = [];
+  sound: Howl | null = null;
 
   constructor(private songService: SongService) {}
 
@@ -44,22 +46,20 @@ export class SidebarComponent implements OnInit {
   toggleSidebar() {
     this.isExpanded = !this.isExpanded;
   }
+
   filterSongs(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const searchTerm = inputElement.value.trim().toLowerCase();
-  
+
     if (!searchTerm) {
-      this.filteredSongs = this.songs; // Si el input está vacío, muestra todas las canciones
+      this.filteredSongs = this.songs; 
       return;
     }
-  
+
     this.filteredSongs = this.songs.filter(song => 
       song.cancion?.toLowerCase().includes(searchTerm)
     );
   }
-  
-  
-  
 
   toggleSearch() {
     this.isSearchVisible = !this.isSearchVisible;
@@ -76,6 +76,20 @@ export class SidebarComponent implements OnInit {
   }
 
   playSong(song: any) {
+    if (this.sound) {
+      this.sound.stop();
+    }
+
+    this.sound = new Howl({
+      src: [song.audioUrl],
+      html5: true,
+      onend: () => {
+        this.isPlaying = false;
+      }
+    });
+
+    this.sound.play();
+    this.isPlaying = true;
     this.songSelected.emit(song);
   }
 
