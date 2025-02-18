@@ -8,6 +8,8 @@ import cantantesrutas from "./src/rutas/cantantesrutas.js";
 import playlistrutas from "./src/rutas/playlistrutas.js"
 
 
+
+
 console.log('MongoDB URI:', process.env.MONGODB_URI); 
 import path from "path"; 
 import upload from "./src/config/multer.js";
