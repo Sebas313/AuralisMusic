@@ -13,6 +13,7 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   { path: 'upload-song', component: UploadSongComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent }, 
+  { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 
   { path: '**', redirectTo: '/home' },              
 ];

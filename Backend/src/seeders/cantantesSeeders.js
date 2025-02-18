@@ -1,22 +1,22 @@
 import "dotenv/config";
 import mongoose from "mongoose";
-import Cantante from "../Modelos/cantanteModelos.js"; // Asegúrate de que este modelo existe
+import Cantante from "../Modelos/cantanteModelos.js"; 
 import connectDB from "../config/database.js";
 
 (async function cantantesSeeder() {
   try {
-    await connectDB(); // Conectar a la base de datos
+    await connectDB(); 
 
-    // Eliminar todos los cantantes previos (opcional)
+    
     await Cantante.deleteMany();
     console.log("[Seeder] Cantantes eliminados correctamente.");
 
-    // Insertar nuevos cantantes con álbumes
+
     const cantantes = [
         {
           cantante: "Billie Barragan",
           genero: "Pop Alternativo",
-          canciones: "Bad Guy", // 👈 Ahora es un string, no un array
+          canciones: "Bad Guy", // 
           avatar: "https://example.com/billie.jpg",
         },
         {
@@ -67,7 +67,7 @@ import connectDB from "../config/database.js";
     await Cantante.insertMany(cantantes);
     console.log("[Seeder] Cantantes insertados correctamente.");
 
-    mongoose.connection.close(); // Cerrar conexión
+    mongoose.connection.close(); 
   } catch (error) {
     console.error("[Seeder] Error:", error);
     mongoose.connection.close();
