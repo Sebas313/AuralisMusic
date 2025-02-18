@@ -68,7 +68,79 @@ export const Crear = async (req, res) => {
   }
 };
 
-// Exportación corregida
+
+
+export const ObtenerTodas = async (req, res) => {
+  try {
+    const canciones = await Canciones.find().populate("cantante");
+    res.status(200).json(canciones);
+  } catch (error) {
+    console.error("Error al obtener canciones:", error.message);
+    res.status(500).json({ message: "Error al obtener canciones", error: error.message });
+  }
+};
+
+export const ObtenerPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const cancion = await Canciones.findById(id).populate("cantante");
+
+    if (!cancion) {
+      return res.status(404).json({ message: "Canción no encontrada" });
+    }
+
+    res.status(200).json(cancion);
+  } catch (error) {
+    console.error("Error al obtener la canción:", error.message);
+    res.status(500).json({ message: "Error al obtener la canción", error: error.message });
+  }
+};
+
+
+export const Actualizar = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { cancion, album, genero } = req.body;
+
+    const cancionActualizada = await Canciones.findByIdAndUpdate(
+      id,
+      { cancion, album, genero },
+      { new: true }
+    );
+
+    if (!cancionActualizada) {
+      return res.status(404).json({ message: "Canción no encontrada" });
+    }
+
+    res.status(200).json({ message: "Canción actualizada con éxito", cancion: cancionActualizada });
+  } catch (error) {
+    console.error("Error al actualizar la canción:", error.message);
+    res.status(500).json({ message: "Error al actualizar la canción", error: error.message });
+  }
+};
+
+
+export const Eliminar = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const cancionEliminada = await Canciones.findByIdAndDelete(id);
+
+    if (!cancionEliminada) {
+      return res.status(404).json({ message: "Canción no encontrada" });
+    }
+
+    res.status(200).json({ message: "Canción eliminada con éxito" });
+  } catch (error) {
+    console.error("Error al eliminar la canción:", error.message);
+    res.status(500).json({ message: "Error al eliminar la canción", error: error.message });
+  }
+};
+
 export default {
-  Crear
+  Crear,
+  ObtenerTodas,
+  ObtenerPorId,
+  Actualizar,
+  Eliminar
 };
