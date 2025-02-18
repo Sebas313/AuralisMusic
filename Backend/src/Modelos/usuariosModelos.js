@@ -9,8 +9,12 @@ const usuarioSchema = new mongoose.Schema({
         type: String,
         default: null  
       },
-    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }]
-
+    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }],
+    rol:{
+      type:String,
+      enum:["administrador","usuario","cantante"],
+      default:"usuario",
+    }
 });
 
 const Usuario = mongoose.model("Usuario", usuarioSchema)

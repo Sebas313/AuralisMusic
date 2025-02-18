@@ -8,7 +8,7 @@ export const Registro = async (req, res) => {
   try {
     console.log("Datos recibidos en el registro:", req.body); // 👈 Agregado para depuración
 
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, rol } = req.body;
 
     if (!nombre || !email || !password) {
       return res.status(400).json({ message: "Todos los campos son obligatorios." });
@@ -26,6 +26,7 @@ export const Registro = async (req, res) => {
       nombre,
       email,
       password: hashedPassword,
+      rol: rol || "usuario",
     });
 
     await NuevoUsuario.save();
@@ -36,6 +37,7 @@ export const Registro = async (req, res) => {
         id: NuevoUsuario._id,
         nombre: NuevoUsuario.nombre,
         email: NuevoUsuario.email,
+        rol: NuevoUsuario.rol,
       },
     });
   } catch (error) {
@@ -88,20 +90,6 @@ export const login = async (req, res) => {
   } catch (error) {
     console.error("Error en login:", error);
     res.status(500).json({ message: "Error interno del servidor, no se pudo enviar el token." });
-  }
-};
-
-export const tokenValido = (req, res, next) => {
-  const token = req.header('Authorization')?.split(' ')[1];
-  
-  if (!token) return res.status(401).json({ message: 'No se proporcionó token, autorización denegada.' });
-
-  try {
-    const verificado = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = verificado;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token no válido.' });
   }
 };
 
@@ -189,7 +177,6 @@ export const updateProfilePhoto = async (req, res) => {
 export default {
   Registro,
   login,
-  tokenValido,
   obtenerUsuarios,
   obtenerUsuario,
   eliminarUsuario,
