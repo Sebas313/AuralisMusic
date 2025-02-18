@@ -10,12 +10,19 @@
   <div class="user-info">
     <h2 class="user-name">{{ user.nombre }} </h2>
   </div>
+<!-- Solo se muestra si NO es cantante -->
+<div *ngIf="!esCantante()" class="become-singer">
+  <p class="singer-question">¿Quieres ser cantante?</p>
+  <button (click)="sendRequest()" class="become-singer-btn">Enviar solicitud</button>
+</div>
 
-  <div class="become-singer">
-    <p class="singer-question">¿Quieres ser cantante?</p>
-    <button (click)="sendRequest()" class="become-singer-btn">Enviar solicitud</button>
-  </div>
+<!-- Solo se muestra si ES cantante -->
+<div *ngIf="esCantante()" class="upload-song">
+  <p class="upload-song-question">¿Quieres subir una canción?</p>
+  <a href="/subir-cancion" class="upload-song-btn">Ir a subir canción</a>
+</div>
 
+  
   <div class="user-playlists">
     <h3 class="playlist-title">Tus Playlists</h3>
     <ul class="playlist-list">

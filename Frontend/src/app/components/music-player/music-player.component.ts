@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Howl } from 'howler';
 
 @Component({
   selector: 'app-music-player',
@@ -11,18 +12,17 @@ import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@
 export class MusicPlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() currentSong: any;
   @Input() isPlaying: boolean = false;
-  @Input() playlist: any[] = [];  // Ahora recibe la playlist
+  @Input() playlist: any[] = [];
 
   currentTime: string = '00:00';
   totalTime: string = '00:00';
-  audio!: HTMLAudioElement;
   currentSongIndex: number = 0;
+  sound!: Howl;
 
   ngOnInit() {
-    this.audio = new Audio();
-    this.audio.addEventListener('timeupdate', () => this.updateTime());
-    this.audio.addEventListener('ended', () => this.nextSong());
-    this.audio.volume = 0.5;
+    if (this.currentSong) {
+      this.playCurrentSong();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -33,25 +33,18 @@ export class MusicPlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.removeEventListener('timeupdate', () => this.updateTime());
-      this.audio.removeEventListener('ended', () => this.nextSong());
+    if (this.sound) {
+      this.sound.stop();
     }
   }
 
   togglePlay() {
     if (this.isPlaying) {
-      this.audio.pause();
+      this.sound.pause();
     } else {
-      this.audio.play();
+      this.sound.play();
     }
     this.isPlaying = !this.isPlaying;
-  }
-
-  updateTime() {
-    const currentSeconds = this.audio.currentTime;
-    this.currentTime = this.formatTime(currentSeconds);
   }
 
   nextSong() {
@@ -71,14 +64,19 @@ export class MusicPlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   playCurrentSong() {
-    if (this.audio) {
-      this.audio.pause();
+    if (this.sound) {
+      this.sound.stop();
     }
-    this.audio = new Audio(this.currentSong.audioUrl);
-    this.audio.play();
+    
+    this.sound = new Howl({
+      src: [this.currentSong.audioUrl],
+      html5: true,
+      volume: 0.5,
+      onend: () => this.nextSong()
+    });
+    
+    this.sound.play();
     this.isPlaying = true;
-    this.audio.addEventListener('timeupdate', () => this.updateTime());
-    this.audio.addEventListener('ended', () => this.nextSong());
   }
 
   formatTime(seconds: number): string {
