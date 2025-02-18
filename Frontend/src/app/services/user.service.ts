@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/user.model'; 
 import { tap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,19 @@ export class UserService {
 
   isLogged(): boolean {
     return this.authService.isLogged();
+  }
+
+  fetchUserProfile(userId: string) {
+    return this.http.get<any>(`/usuario/${userId}`).pipe(
+      map(response => {
+        console.log('Response:', response);  // Verifica la estructura aquí
+        return response; // Retorna la respuesta completa o solo las propiedades necesarias
+      })
+    );
+  }
+  uploadProfilePhoto(formData: FormData): Observable<any> {
+    const userId = localStorage.getItem('userId');
+    return this.http.put<any>(`${this.apiUrl}/usuario${userId}/avatar`, formData);
   }
 
   private handleError<T>(defaultMessage: string) {

@@ -1,0 +1,27 @@
+<app-header></app-header>
+<div class="profile-container">
+  <div class="profile-photo-container">
+    <img *ngIf="user.avatar" [src]="user.avatar" alt="Foto de perfil" class="profile-photo" />
+    <input *ngIf="!user.avatar" type="file" (change)="onFileSelected($event)" class="profile-photo-upload" />
+    <button *ngIf="user.avatar" (click)="editProfilePhoto()" class="edit-photo-btn">Editar foto</button>
+    <button *ngIf="!user.avatar" (click)="uploadProfilePhoto()" class="upload-photo-btn">Subir foto</button>
+  </div>
+
+  <div class="user-info">
+    <h2 class="user-name">{{ user.nombre }} </h2>
+  </div>
+
+  <div class="become-singer">
+    <p class="singer-question">¿Quieres ser cantante?</p>
+    <button (click)="sendRequest()" class="become-singer-btn">Enviar solicitud</button>
+  </div>
+
+  <div class="user-playlists">
+    <h3 class="playlist-title">Tus Playlists</h3>
+    <ul class="playlist-list">
+      <li *ngFor="let playlist of playlists" class="playlist-item">
+        {{ playlist.name }}
+      </li>
+    </ul>
+  </div>
+</div>

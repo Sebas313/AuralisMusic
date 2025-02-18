@@ -4,9 +4,12 @@ const usuarioSchema = new mongoose.Schema({
 
     nombre : String,
     email : String,
-    password: String
-
-
+    password: String,
+    avatar: {
+        type: String,
+        default: null  
+      },
+    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }]
 
 });
 
