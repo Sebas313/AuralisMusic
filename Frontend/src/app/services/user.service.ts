@@ -2,9 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/user.model'; 
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +24,7 @@ export class UserService {
       catchError(this.handleError<RegisterResponse>('Error al registrar el usuario'))
     );
   }
-  
+
   verifyEmail(token: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/verificar-email?token=${token}`, {
       headers: new HttpHeaders()
@@ -46,47 +45,42 @@ export class UserService {
   }
   
 
-  
-
-  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap((response: LoginResponse) => {
-        if (response?.token) {
-          this.authService.setToken(response.token);
-        }
-      }),
-      catchError(this.handleError<LoginResponse>('Error al iniciar sesión'))
-    );
-  }
-
-  logout(): void {
-    this.authService.removeToken();
-  }
 
 
-  isLogged(): boolean {
-    return this.authService.isLogged();
-  }
 
-  fetchUserProfile(userId: string) {
-    return this.http.get<any>(`/usuario/${userId}`).pipe(
+  fetchUserProfile(userId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/usuario/${userId}`).pipe(
       map(response => {
-        console.log('Response:', response);  // Verifica la estructura aquí
-        return response; // Retorna la respuesta completa o solo las propiedades necesarias
-      })
+        console.log('Response:', response);
+        return response;
+      }),
+      catchError(this.handleError<any>('Error al obtener el perfil'))
     );
   }
+
   uploadProfilePhoto(formData: FormData): Observable<any> {
     const userId = localStorage.getItem('userId');
-    return this.http.put<any>(`${this.apiUrl}/usuario${userId}/avatar`, formData);
+    return this.http.put<any>(`${this.apiUrl}/usuario/${userId}/avatar`, formData).pipe(
+      catchError(this.handleError<any>('Error al subir la foto de perfil'))
+    );
+  }
+
+  updateUserRole(userId: string, role: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/usuario/${userId}/rol`, { role }).pipe(
+      tap(response => console.log('Rol actualizado:', response)),
+      catchError(this.handleError<any>('Error al actualizar el rol'))
+    );
   }
 
   private handleError<T>(defaultMessage: string) {
     return (error: any): Observable<T> => {
-      console.error("Error completo:", error);
+      console.error("Error completo:", error); // Ver todo el error
+      console.log("Error status:", error.status); // Ver código de estado HTTP
+      console.log("Error body:", error.error); // Ver mensaje del backend
+      
       const errorMessage = error.error ? JSON.stringify(error.error) : defaultMessage;
       return throwError(() => new Error(errorMessage));
     };
   }
-  
+ 
 }

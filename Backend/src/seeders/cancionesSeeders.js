@@ -1,80 +1,71 @@
-import "dotenv/config";
 import mongoose from "mongoose";
-import Cancion from "../Modelos/cancionesModelos.js"; // Asegúrate de que este modelo existe
-import connectDB from "../config/database.js";
+import dotenv from "dotenv";
+import Canciones from "../Modelos/cancionesModelos.js";
+import Cantante from "../Modelos/cantanteModelos.js";
 
-(async function cancionesSeeder() {
+dotenv.config();
+
+// Verificar que la URI está definida
+if (!process.env.MONGODB_URI) {
+  console.error("❌ No se encontró la URI de conexión a MongoDB. Revisa tu archivo .env");
+  process.exit(1);
+}
+
+const canciones = [
+  {
+    artista: "Billie Eilish",
+    cancion: "Bad Guy",
+    album: "When We All Fall Asleep, Where Do We Go?",
+    genero: "Pop Alternativo",
+    imagen: "https://example.com/bad-guy.jpg",
+    fileUrl: "https://example.com/bad-guy.mp3",
+  },
+  {
+    artista: "The Weeknd",
+    cancion: "Save Your Tears",
+    album: "After Hours",
+    genero: "R&B",
+    imagen: "https://example.com/save-your-tears.jpg",
+    fileUrl: "https://example.com/save-your-tears.mp3",
+  },
+];
+
+const cancionesSeeder = async () => {
   try {
-    await connectDB(); // Conectar a la base de datos
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-    
-    // Insertar nuevas canciones
-    const canciones = [
-      {
-        artista: "Billie Eilish",
-        cancion: "Bad Guy",
-        album: "When We All Fall Asleep, Where Do We Go?",
-        genero: "Pop Alternativo",
-        imagen: "https://example.com/bad-guy.jpg",
-      },
-      {
-        artista: "The Weeknd",
-        cancion: "Save Your Tears",
-        album: "After Hours",
-        genero: "R&B",
-        imagen: "https://example.com/save-your-tears.jpg",
-      },
-      {
-        artista: "Bad Bunny",
-        cancion: "Me Porto Bonito",
-        album: "Un Verano Sin Ti",
-        genero: "Reggaeton",
-        imagen: "https://example.com/me-porto-bonito.jpg",
-      },
-      {
-        artista: "Metallica",
-        cancion: "Master of Puppets",
-        album: "Master of Puppets",
-        genero: "Metal",
-        imagen: "https://example.com/master-of-puppets.jpg",
-      },
-      {
-        artista: "Adele",
-        cancion: "Easy on Me",
-        album: "30",
-        genero: "Soul",
-        imagen: "https://example.com/easy-on-me.jpg",
-      },
-      {
-        artista: "Eminem",
-        cancion: "Without Me",
-        album: "The Eminem Show",
-        genero: "Rap",
-        imagen: "https://example.com/without-me.jpg",
-      },
-      {
-        artista: "Coldplay",
-        cancion: "Fix You",
-        album: "X&Y",
-        genero: "Rock Alternativo",
-        imagen: "https://example.com/fix-you.jpg",
-      },
-      {
-        artista: "Shakira",
-        cancion: "Waka Waka",
-        album: "Sale el Sol",
-        genero: "Latino",
-        imagen: "https://example.com/waka-waka.jpg",
-      },
-    ];
+    console.log("✅ Conectado a la base de datos");
 
-    await Cancion.insertMany(canciones);
-    console.log("[Seeder] Canciones insertadas correctamente.");
+    for (const cancion of canciones) {
+      const cantante = await Cantante.findOne({ cantante: cancion.artista });
 
-    mongoose.connection.close(); // Cerrar conexión
+      if (!cantante) {
+        console.warn(`⚠️ No se encontró el cantante: ${cancion.artista}`);
+        continue;
+      }
+
+      const nuevaCancion = new Canciones({
+        cantante: cantante._id,
+        cancion: cancion.cancion,
+        album: cancion.album,
+        genero: cancion.genero,
+        imagen: cancion.imagen,
+        fileUrl: cancion.fileUrl,
+      });
+
+      await nuevaCancion.save();
+      console.log(`🎵 Canción guardada: ${cancion.cancion}`);
+    }
+
+    console.log("✅ Seeding completado");
   } catch (error) {
-    console.error("[Seeder] Error:", error);
+    console.error("❌ Error en el seeding:", error);
+  } finally {
     mongoose.connection.close();
-    process.exit(1);
   }
-})();
+};
+
+cancionesSeeder();

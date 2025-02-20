@@ -1,0 +1,29 @@
+<app-header></app-header>
+<div class="flex justify-center items-center min-h-screen bg-black">
+    <form [formGroup]="cancionForm" (ngSubmit)="subirCancion()" class="bg-gray-800 p-6 rounded-lg shadow-md text-white">
+      <label for="cantante">Cantante</label>
+      <input id="cantante" type="text" formControlName="cantante" class="border p-2 rounded w-full" />
+  
+      <label for="cancion">Canción</label>
+      <input id="cancion" type="text" formControlName="cancion" class="border p-2 rounded w-full" />
+  
+      <label for="album">Álbum</label>
+      <input id="album" type="text" formControlName="album" class="border p-2 rounded w-full" />
+  
+      <label for="genero">Género</label>
+      <input id="genero" type="text" formControlName="genero" class="border p-2 rounded w-full" />
+  
+      <label for="song">Archivo de canción</label>
+      <input id="song" type="file" (change)="seleccionarArchivo($event, 'song')" class="border p-2 rounded w-full bg-white text-black" />
+  
+      <label for="image">Imagen del álbum</label>
+      <input id="image" type="file" (change)="seleccionarArchivo($event, 'image')" class="border p-2 rounded w-full bg-white text-black" />
+  
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Subir Canción
+      </button>
+  
+      <p *ngIf="mensaje" class="text-center mt-4">{{ mensaje }}</p>
+    </form>
+  </div>
+  

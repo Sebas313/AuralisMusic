@@ -1,22 +1,17 @@
-
 <main>
   <section id="login">
-    <!-- Sección de imagen -->
     <div class="image-section"></div>
 
-    <!-- Sección del formulario -->
     <div class="form-section">
       <div class="image-section2"></div>
       <h2>Iniciar sesión</h2>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <!-- Campo de correo -->
-        <label for="password" class="form-label">Email</label>
+        <label for="email" class="form-label">Email</label>
         <div class="input-container">
           <input type="email" id="email" formControlName="email" placeholder="" />
         </div>
 
-        <!-- Campo de contraseña con icono -->
         <div class="mb-3">
           <label for="password" class="form-label">Contraseña</label>
           <div class="input-container">
@@ -28,27 +23,26 @@
               [type]="passwordVisible ? 'text' : 'password'" 
               placeholder=""
             />
-            <span 
-              (click)="togglePasswordVisibility()" 
-              class="password-toggle"
-            >
+            <span (click)="togglePasswordVisibility()" class="password-toggle">
               {{ passwordVisible ? '🔓' : '🔒 ' }}
             </span>
           </div>
         </div>
 
-        <!-- Mensaje de error -->
         <div *ngIf="errorMessage" class="alert alert-danger">
           {{ errorMessage }}
         </div>
 
-        <!-- Botón de login -->
         <button type="submit" class="btn">Iniciar sesión</button>
       </form>
 
-      <!-- Enlace para registrarse -->
       <div class="register-link">
-        <p>¿No tienes una cuenta? <a [routerLink]="['/register']">Regístrate aquí</a></p>
+        <p *ngIf="failedAttempts <= 2">¿No tienes una cuenta? 
+          <a [routerLink]="['/register']">Regístrate aquí</a>
+        </p>
+        <p *ngIf="failedAttempts > 2">¿Olvidaste tu contraseña? 
+          <a [routerLink]="['/recover-password']">Recupérala aquí</a>
+        </p>
       </div>
     </div>
   </section>

@@ -16,7 +16,7 @@ router.post("/canciones", upload.fields([
 ]), cancionesController.Crear);  
 
 
-/* 
+ 
 router.get("/canciones", cancionesController.ObtenerTodas);
 
 router.get("/canciones/:id", cancionesController.ObtenerPorId);
@@ -27,7 +27,7 @@ router.put("/canciones/:id",verificarRoles(["cantante"]), cancionesController.Ac
 router.delete("/canciones/:id",verificarRoles(["cantante"]), cancionesController.Eliminar);
 
 
-router.delete("/canciones/:id", cancionesController.Eliminar); */
+router.delete("/canciones/:id", cancionesController.Eliminar); 
  
  
 export default router;

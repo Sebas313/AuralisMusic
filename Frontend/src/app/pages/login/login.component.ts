@@ -18,10 +18,10 @@ export class LoginComponent {
   passwordVisible: boolean = false;
   loginForm: FormGroup;
   errorMessage: string = '';
+  failedAttempts: number = 0; // Contador de intentos fallidos
   private loginSubscription: Subscription | undefined;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-    // Si el usuario ya tiene sesión, redirigir a home
     if (localStorage.getItem('token')) {
       this.router.navigate(['/']);
     }
@@ -45,11 +45,14 @@ export class LoginComponent {
           if (response.token) {
             localStorage.setItem('token', response.token);
             this.loginForm.reset();
-            this.router.navigate(['/']); // Redirigir a home después de iniciar sesión
+            this.failedAttempts = 0; // Reiniciar intentos en caso de éxito
+            this.router.navigate(['/']);
           }
         },
         error: (error) => {
           console.error('Error al iniciar sesión:', error);
+          this.failedAttempts++; // Incrementa los intentos fallidos
+
           this.errorMessage =
             error.status === 401
               ? 'Credenciales incorrectas. Por favor, inténtalo de nuevo.'

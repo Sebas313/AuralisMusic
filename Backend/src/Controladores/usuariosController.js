@@ -79,10 +79,12 @@ export const login = async (req, res) => {
 
     console.log("Token generado correctamente:", token);
 
+    // 🔥 Aquí agregamos `_id` a la respuesta
     res.status(200).json({
       message: "Inicio de sesión exitoso.",
       token,
       user: {
+        _id: usuario._id,  // 👈 Agregamos el ID del usuario
         nombre: usuario.nombre,
         email: usuario.email,
       },
@@ -92,6 +94,7 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor, no se pudo enviar el token." });
   }
 };
+
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -174,6 +177,37 @@ export const updateProfilePhoto = async (req, res) => {
   }
 };
 
+export const updateUserRole = async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  console.log("ID recibido:", id); // Depuración
+  console.log("Rol recibido:", role); // Depuración
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "ID no válido" });
+    }
+
+    const user = await Usuario.findById(id);
+    console.log("Usuario encontrado:", user); // Depuración
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    user.rol = role;
+    await user.save();
+
+    res.json({ message: "Rol actualizado con éxito", user });
+  } catch (error) {
+    console.error("Error al actualizar el rol:", error);
+    res.status(500).json({ error: "Error al actualizar el rol" });
+  }
+};
+
+
+
 export default {
   Registro,
   login,
@@ -181,5 +215,6 @@ export default {
   obtenerUsuario,
   eliminarUsuario,
   actualizarUsuario,
-  updateProfilePhoto
+  updateProfilePhoto,
+  updateUserRole
 };

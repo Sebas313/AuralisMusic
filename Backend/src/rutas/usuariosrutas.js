@@ -12,11 +12,14 @@ router.post("/Registro",sendVerificationEmailMiddleware,usuariosController.Regis
 
 
 
+
 router.post("/Login",tokenValido,usuariosController.login)
+=======
+router.post("/Login",usuariosController.login)
 
 router.get("/Usuario/:id",usuariosController.obtenerUsuario)
 router.get("/Usuario",usuariosController.obtenerUsuarios)
-
+router.patch('/usuario/:id/rol', usuariosController.updateUserRole);
 router.put("/Usuario/:id",usuariosController.actualizarUsuario)
 router.put('/usuario/:id/avatar', upload.single('avatar'), usuariosController.updateProfilePhoto);
 router.delete("/Usuario/:id",usuariosController.eliminarUsuario)
