@@ -10,6 +10,8 @@ router.post("/Registro",sendVerificationEmailMiddleware,usuariosController.Regis
     res.status(200).json({message:"correo enviado"})
 })
 
+
+
 router.post("/Login",tokenValido,usuariosController.login)
 
 router.get("/Usuario/:id",usuariosController.obtenerUsuario)
