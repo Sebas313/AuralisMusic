@@ -48,7 +48,7 @@ export class AuthService {
   
 
 
-  register(email: string, password: string): Observable<any> {
+ /*  register(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<any>(`${this.apiUrl}/registro`, { email, password }, { headers }).pipe(
       tap((response: any) => {
@@ -57,11 +57,21 @@ export class AuthService {
         }
       })
     );
+
+  } */
+  /* verifyCode(email: string, code: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/verificar-codigo`, { email, code });
+  } */
+  
+  login(email: string, password: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
   }
 
   verifyCode(email: string, code: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/verificar-codigo`, { email, code });
   }
+
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(

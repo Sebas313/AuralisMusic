@@ -25,6 +25,27 @@ export class UserService {
     );
   }
 
+  verifyEmail(token: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/verificar-email?token=${token}`, {
+      headers: new HttpHeaders()
+        .set('Content-Type', 'application/json')
+    }).pipe(
+      tap(response => {
+        console.log('📥 Respuesta del backend (verificación de email):', response);
+        if (response?.success && response?.token && response?.user) {
+          console.log('🔑 Token válido. Redirigiendo al home...');
+          localStorage.setItem('authToken', response.token); // Guarda el token
+          // Redirige al home
+          window.location.href = '/home';
+        } else {
+          console.log('⚠️ Token inválido o expirado');
+        }
+      })
+    );
+  }
+  
+
+
 
 
   fetchUserProfile(userId: string): Observable<any> {
