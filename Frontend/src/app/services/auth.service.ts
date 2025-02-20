@@ -32,7 +32,7 @@ export class AuthService {
     return localStorage.getItem('userId');
   }
 
-  register(email: string, password: string): Observable<any> {
+ /*  register(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
   
     return this.http.post<any>(`${this.apiUrl}/registro`, { email, password }, { headers }).pipe(
@@ -43,10 +43,10 @@ export class AuthService {
         }
       })
     );
-  }
-  verifyCode(email: string, code: string): Observable<any> {
+  } */
+  /* verifyCode(email: string, code: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/verificar-codigo`, { email, code });
-  }
+  } */
   
   login(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });

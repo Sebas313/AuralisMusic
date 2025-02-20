@@ -6,13 +6,12 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],  
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
 })
 export class RegisterComponent {
   registerForm: FormGroup;
@@ -20,14 +19,11 @@ export class RegisterComponent {
   successMessage: string | null = null;
   passwordVisible: boolean = false;
   loading: boolean = false;
-  showVerificationModal = false;  
-  verificationCode = '';  
-  email = '';
 
   constructor(
-    private fb: FormBuilder, 
-    private userService: UserService, 
-    private authService: AuthService,  // ✅ Inyectar AuthService aquí
+    private fb: FormBuilder,
+    private userService: UserService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
@@ -40,69 +36,38 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.invalid) {
       this.errorMessage = '⚠️ Por favor, completa todos los campos correctamente.';
-      
       setTimeout(() => this.errorMessage = null, 3000);
       return;
     }
-  
+
     this.loading = true;
     this.errorMessage = null;
     this.successMessage = null;
-  
+
     const usuario = {
       nombre: this.registerForm.value?.nombre || '',
       email: this.registerForm.value?.email || '',
       password: this.registerForm.value?.password || ''
     };
-  
+
+    // ✅ Llama al microservicio de registro
     this.userService.register(usuario).subscribe({
       next: (response) => {
-        this.successMessage = '✅ ¡Registro exitoso!';
-        this.errorMessage = null;
+        this.successMessage = '✅ ¡Registro exitoso! Verifica tu email.';
         this.loading = false;
-  
-     
-        this.email = usuario.email;
-        this.showVerificationModal = true;
+
+        // 🔔 NOTA: Aquí asumo que el backend envía un email con el link de verificación.
       },
       error: (error) => {
         console.error("Error al registrar el usuario:", error);
-  
-       
         this.errorMessage = error.error?.message ? `⚠️ ${error.error.message}` : '❌ Error al registrar el usuario.';
-  
         this.loading = false;
-  
-        
         setTimeout(() => this.errorMessage = null, 3000);
       },
     });
   }
-  
-  closeAlert() {
-    this.errorMessage = null;
-    this.successMessage = null;
-  }
-  
-
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
-  }
-
-  verifyCode() {
-    this.authService.verifyCode(this.email, this.verificationCode).subscribe(response => {  
-      if (response.success) {
-        alert('Código verificado. Ahora puedes iniciar sesión.');
-        this.showVerificationModal = false; 
-        this.router.navigate(['/login']); 
-      } else {
-        alert('Código incorrecto. Intenta de nuevo.');
-      }
-    });
-  }
-
-  closeModal() {
-    this.showVerificationModal = false;
   }
 }

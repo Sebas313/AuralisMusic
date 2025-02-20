@@ -6,6 +6,7 @@ import { Playlst } from './pages/playlist/playlst.component';
 import { AuthGuard } from './guards/auth.guard'; 
 import { ProfileComponent } from './pages/profile/profile.component';
 import { UploadSongComponent } from './pages/upload-song/upload-song.component';
+import { VerificarEmailComponent } from './verificar-email/verificar-email.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
@@ -16,4 +17,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 
   { path: '**', redirectTo: '/home' },              
+  {path: 'verificar-email', component:VerificarEmailComponent}
 ];
