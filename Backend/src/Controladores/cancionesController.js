@@ -3,68 +3,79 @@ import Cantante from "../Modelos/cantanteModelos.js";
 import Canciones from "../Modelos/cancionesModelos.js";
 import path from "path";
 
-// Función para buscar un cantante o crearlo si no existe
-const buscarOCrearCantante = async (nombre) => {
+
+const buscarOCrearCantante = async (cantanteNombre) => {
   try {
+    if (!cantanteNombre || typeof cantanteNombre !== "string") {
+      throw new Error("El nombre del cantante es requerido y debe ser una cadena de texto.");
+    }
+
+    // Buscar si el cantante ya existe (sin importar mayúsculas o minúsculas)
     let cantanteEncontrado = await Cantante.findOne({ 
-      nombre: { $regex: `^${nombre.trim()}$`, $options: "i" } // Búsqueda insensible a mayúsculas y espacios
+      cantante: new RegExp(`^${cantanteNombre.trim()}$`, "i") 
     });
 
+    // Si no existe, crearlo
     if (!cantanteEncontrado) {
-      cantanteEncontrado = new Cantante({ nombre });
+      cantanteEncontrado = new Cantante({ cantante: cantanteNombre.trim() });
       await cantanteEncontrado.save();
-      console.log(`Cantante ${nombre} creado en la base de datos.`);
+      console.log(`🎵 Cantante ${cantanteNombre} creado en la base de datos.`);
     } else {
-      console.log(`Cantante ${nombre} encontrado.`);
+      console.log(`✅ Cantante ${cantanteNombre} encontrado.`);
     }
 
     return cantanteEncontrado;
   } catch (error) {
-    console.error("Error en la búsqueda del cantante:", error);
+    console.error("❌ Error en la búsqueda del cantante:", error.message);
     throw error;
   }
 };
-
 export const Crear = async (req, res) => {
   try {
-    // Desestructuramos la información recibida
-    const { cantante, cancion, album, genero } = req.body;
+    console.log("📥 Datos recibidos en req.body:", req.body);
+    console.log("📥 Archivos recibidos en req.files:", req.files);
 
-    // Verificar si se han subido los archivos requeridos
-    if (!req.files || !req.files["song"] || req.files["song"].length === 0) {
-      return res.status(400).json({ message: "El archivo de la canción es obligatorio." });
+    if (!req.files || !req.files.song || !req.files.image) {
+      return res.status(400).json({ message: "❌ Debes subir una imagen y un archivo de audio." });
     }
 
-    // Buscar o crear el cantante
-    const cantanteEncontrado = await buscarOCrearCantante(cantante);
+    const { titulo, album, genero, cantante } = req.body;
+    const songPath = req.files.song[0].filename;
+    const imagePath = req.files.image[0].filename;
 
-    // Obtener la URL del archivo de la canción
-    const fileUrl = `http://localhost:3000/uploads/${req.files["song"][0].filename}`;
+    console.log("🔍 Buscando cantante en la base de datos...");
 
-    // Manejar la imagen si se ha subido
-    let imageUrl = "";
-    if (req.files["image"] && req.files["image"].length > 0) {
-      imageUrl = `http://localhost:3000/uploads/${req.files["image"][0].filename}`;
+    // Usamos una búsqueda insensible a mayúsculas y espacios extra
+    const cantanteEncontrado = await Cantante.findOne({
+      cantante: { $regex: `^${cantante.trim()}$`, $options: "i" }
+    });
+    
+
+    console.log("🎤 Resultado de la búsqueda en la base de datos:", cantanteEncontrado);
+
+    // ⚠️ Si no encuentra el cantante, imprimimos todos los cantantes
+    if (!cantanteEncontrado) {
+      const todosLosCantantes = await Cantante.find();
+      console.log("📜 Cantantes en la base de datos:", todosLosCantantes);
+      return res.status(400).json({ message: "❌ El cantante no existe en la base de datos." });
     }
 
-    // Crear una nueva canción con la información proporcionada
-    const NuevaCancion = new Canciones({
-      cantante: cantanteEncontrado._id,
-      cancion,
+    // 🎵 Crear la canción con el ObjectId del cantante
+    const nuevaCancion = new Canciones({
+      titulo,
       album,
       genero,
-      imagen: imageUrl,
-      fileUrl,
+      cantante: cantanteEncontrado._id, // ✅ Guardamos el ID correcto
+      imagen: imagePath,
+      fileUrl: `/uploads/${songPath}`,
     });
 
-    console.log("Canción a guardar:", NuevaCancion);
+    await nuevaCancion.save();
 
-    // Guardar la canción en la base de datos
-    await NuevaCancion.save();
-    res.status(201).json({ message: "Canción guardada con éxito", cancion: NuevaCancion });
+    res.status(201).json({ message: "✅ Canción guardada con éxito", cancion: nuevaCancion });
   } catch (error) {
-    console.error("Error al guardar la canción:", error.message);
-    res.status(500).json({ message: "Error al guardar la canción.", error: error.message });
+    console.error("❌ Error al guardar la canción:", error.message);
+    res.status(500).json({ message: "Error interno del servidor." });
   }
 };
 
@@ -138,6 +149,7 @@ export const Eliminar = async (req, res) => {
 };
 
 export default {
+  buscarOCrearCantante,
   Crear,
   ObtenerTodas,
   ObtenerPorId,

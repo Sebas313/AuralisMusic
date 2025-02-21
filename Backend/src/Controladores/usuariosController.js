@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import upload from '../config/multer.js'; 
+import Cantante from "../Modelos/cantanteModelos.js"; 
 
 export const Registro = async (req, res) => {
   try {
@@ -45,7 +46,6 @@ export const Registro = async (req, res) => {
     res.status(500).json({ message: "Error al registrar el usuario.", error: error.message });
   }
 };
-
 export const verifyEmail = async (req, res) => {
   try {
     const { token } = req.params; // ✅ Obtener token de los parámetros
@@ -93,8 +93,6 @@ export const verifyEmail = async (req, res) => {
     res.status(400).json({ msg: "Token inválido o expirado" });
   }
 };
-
-
 export const login = async (req, res) => {
   try {
     console.log("📥 Datos recibidos en login:", req.body);
@@ -162,13 +160,6 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor, no se pudo procesar la solicitud." });
   }
 };
-
-
-
-
-
-
-
 export const obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.find();
@@ -177,7 +168,6 @@ export const obtenerUsuarios = async (req, res) => {
     res.status(500).json({ message: "Error al obtener los usuarios" });
   }
 };
-
 export const obtenerUsuario = async (req, res) => {
   try {
     const { id } = req.params;
@@ -199,8 +189,6 @@ export const obtenerUsuario = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
-
-
 export const actualizarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
@@ -215,7 +203,6 @@ export const actualizarUsuario = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
-
 export const eliminarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
@@ -249,13 +236,12 @@ export const updateProfilePhoto = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar la foto de perfil' });
   }
 };
-
 export const updateUserRole = async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
 
-  console.log("ID recibido:", id); // Depuración
-  console.log("Rol recibido:", role); // Depuración
+  console.log("ID recibido:", id);
+  console.log("Rol recibido:", role);
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -263,7 +249,7 @@ export const updateUserRole = async (req, res) => {
     }
 
     const user = await Usuario.findById(id);
-    console.log("Usuario encontrado:", user); // Depuración
+    console.log("Usuario encontrado:", user);
 
     if (!user) {
       return res.status(404).json({ error: "Usuario no encontrado" });
@@ -271,6 +257,22 @@ export const updateUserRole = async (req, res) => {
 
     user.rol = role;
     await user.save();
+
+    // Si el usuario se convierte en "cantante", crearlo si no existe
+    if (role === "cantante") {
+      let cantanteExistente = await Cantante.findOne({ cantante: user.nombre });
+
+      if (!cantanteExistente) {
+        const nuevoCantante = new Cantante({
+          cantante: user.nombre, // Usa el nombre del usuario como nombre de cantante
+          canciones: [], // Inicialmente sin canciones
+          avatar: user.avatar || null, // Usa el avatar del usuario si tiene
+        });
+
+        await nuevoCantante.save();
+        console.log("Nuevo cantante creado:", nuevoCantante);
+      }
+    }
 
     res.json({ message: "Rol actualizado con éxito", user });
   } catch (error) {
