@@ -32,7 +32,7 @@ export class SidebarComponent implements OnInit {
   }
 
   fetchSongs() {
-    this.songService.getSongs().subscribe(
+    this.songService.getCanciones().subscribe(
       (data) => {
         this.songs = data;
         this.filteredSongs = [...this.songs]; // Inicializar la lista filtrada

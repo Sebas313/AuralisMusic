@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { PlaylistService } from '../../services/playlist.service';
 import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
-
 @Component({
   selector: 'app-playlist',
   imports: [CommonModule, FormsModule],
@@ -11,11 +10,12 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./playlist.component.css'], // Corregido "styleUrls" en plural
   standalone: true
 })
-export class PlaylistComponent implements OnInit {
-  playlists: any[] = [];
-  newSong = { title: '', artist: '', url: '' };
-  selectedPlaylist = '';
-  searchTerm: string = ''; // Se mantiene la variable de búsqueda
+
+ export class PlaylistComponent implements OnInit {
+    playlists: any[] = [];
+    newSong = { title: '', artist: '', url: '' };
+    selectedPlaylist = '';
+    searchTerm: string = ''; // Agregamos esta lí
 
   private playlistService = inject(PlaylistService);
 
@@ -30,7 +30,7 @@ export class PlaylistComponent implements OnInit {
         return of([]); // Devuelve un array vacío si hay error
       })
     ).subscribe((data) => {
-      this.playlists = data;
+      this.playlist = data;
     });
   }
 
@@ -51,6 +51,16 @@ export class PlaylistComponent implements OnInit {
         this.loadPlaylists(); // Actualizamos la lista de playlists
         this.newSong = { title: '', artist: '', url: '' };
       });
+    
+    
+    
+    
     }
+
+  } removeFromPlaylist(cancion: Cancion) {
+    this.playlist = this.playlist.filter(item => item.id !== cancion.id);
+    console.log('Canción eliminada:', cancion);
   }
 }
+
+

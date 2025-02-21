@@ -31,7 +31,7 @@ export class RandomSongListComponent implements OnInit {
   }
 
   fetchSongs() {
-    this.songService.getSongs().subscribe({
+    this.songService.getCanciones().subscribe({
       next: (data) => {
         this.songs = data;
       },

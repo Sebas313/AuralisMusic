@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SongService } from '../../services/song.service'; 
-import { FormsModule } from '@angular/forms';  
+import { SongService } from '../../services/song.service';   
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { RouterModule } from '@angular/router';
+
 @Component({
   standalone: true,
   selector: 'app-upload-song',
   templateUrl: './upload-song.component.html',
   styleUrls: ['./upload-song.component.css'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
 })
 export class UploadSongComponent {
   song = {
@@ -27,7 +29,7 @@ export class UploadSongComponent {
       formData.append('title', this.song.title);
       formData.append('file', this.song.file, this.song.file.name);
 
-      this.songService.uploadSong(formData).subscribe({
+      this.songService.uploadCancion(formData).subscribe({
         next: (response) => {
           alert('Canción subida con éxito');
         },
