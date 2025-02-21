@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 export interface Cancion {
+  audioUrl: any;
   id: number;
   cancion: string;
   cantante: string;
