@@ -1,13 +1,13 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken'; // 👉 Importa JWT
-import { v4 as uuidv4 } from 'uuid'; 
+import jwt from 'jsonwebtoken'; // Importar JWT
+import { v4 as uuidv4 } from 'uuid'; // UUID para identificar cada token
 
-dotenv.config(); 
+dotenv.config();
 
 const app = express();
-app.use(express.json()); 
+app.use(express.json());
 
 // Configurar el transporter de nodemailer
 const transporter = nodemailer.createTransport({
@@ -19,40 +19,43 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
-  }
+  },
 });
 
 // Middleware para enviar correo de verificación
 const sendVerificationEmailMiddleware = async (req, res, next) => {
-  const { email } = req.body; 
+  const { email } = req.body;
 
-  // 👉 Generar token JWT válido por 24 horas
+  // Generar token JWT válido por 24 horas
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
+  // Configuración del correo
   const mailOptions = {
     from: process.env.MAIL_USER,
     to: email,
-    subject: 'Verificación de cuenta', 
+    subject: 'Verificación de cuenta',
     html: `
-    <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd;">
-      <h2 style="color: #B2A179;">¡Bienvenido!</h2>
-      <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
-      
-      <a href="http://localhost:4200/Api/verificar-email?token=${encodeURIComponent(token)}" 
-         style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
-        Verificar mi cuenta
-      </a>
-  
-      <p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
-      <p style="color: #007BFF; word-wrap: break-word;">http://localhost:4200/verificar?token=${encodeURIComponent(token)}</p>
-  
-      <p style="color: #666; font-size: 14px;">Este enlace es válido por <strong>24 horas</strong>.</p>
-    </div>
-  `,
-  
+      <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd;">
+        <h2 style="color: #B2A179;">¡Bienvenido!</h2>
+        <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
+        
+      <a href="http://localhost:3000/Api/verificar/${encodeURIComponent(token)}"
+   style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
+  Verificar mi cuenta
+</a>
+
+<p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
+<p style="color: #007BFF; word-wrap: break-word;">
+  http://localhost:3000/Api/verificar/${encodeURIComponent(token)}
+</p>
+
+        <p style="color: #666; font-size: 14px;">Este enlace es válido por <strong>24 horas</strong>.</p>
+      </div>
+    `,
   };
 
-  try {   
+  try {
+    // Enviar correo
     await transporter.sendMail(mailOptions);
     console.log('Correo de verificación enviado a:', email);
     next();
@@ -68,20 +71,41 @@ app.post('/Registro', sendVerificationEmailMiddleware, (req, res) => {
 });
 
 // ✅ Ruta para verificar el token cuando el usuario hace clic en el enlace
-app.get('/verificar', (req, res) => {
+app.get('/verificar', async (req, res) => {
   const { token } = req.query;
 
   try {
+    // Verificar el token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // 👉 Aquí puedes realizar la lógica para marcar al usuario como "verificado" en la base de datos si es necesario
+    // Buscar al usuario por email y actualizar "isVerified"
+    const user = await Usuario.findOneAndUpdate(
+      { email: decoded.email },
+      { isVerified: true },
+      { new: true }
+    );
 
-    // 👉 Redirige al frontend con el token en la URL
-    res.redirect(`http://localhost:4200/home?auth=${token}`);
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuario no encontrado.' });
+    }
+
+    console.log("✅ Usuario verificado:", user.email);
+
+    // 🔥 Generar un nuevo token de sesión para el usuario
+    const newToken = jwt.sign(
+      { email: user.email, rol: user.rol },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' } // Token válido por 2 horas
+    );
+
+    // Enviar el nuevo token al frontend
+    res.json({ success: true, token: newToken });
+
   } catch (error) {
-    console.error('Token inválido o expirado:', error);
-    res.status(400).send('El enlace de verificación no es válido o ha expirado.');
+    console.error('❌ Token inválido o expirado:', error);
+    res.status(400).json({ msg: 'El enlace de verificación no es válido o ha expirado.' });
   }
 });
+
 
 export default sendVerificationEmailMiddleware;
