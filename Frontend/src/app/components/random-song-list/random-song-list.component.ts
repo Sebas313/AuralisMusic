@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { SongService } from '../../services/song.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { Howl } from 'howler';
@@ -25,7 +25,8 @@ export class RandomSongListComponent implements OnInit {
     private songService: SongService,
     private playlistService: PlaylistService
   ) {}
-
+  
+  
   ngOnInit() {
     this.fetchSongs();
   }
@@ -42,12 +43,13 @@ export class RandomSongListComponent implements OnInit {
   }
 
   addToPlaylist(song: any) {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
+    const user = JSON.parse(localStorage.getItem('user') || 'null'); // Asegura que se obtenga como objeto
+  
+ if (!user || !user._id) {
       alert('Por favor, inicie sesión para agregar canciones a una playlist.');
       return;
-    }
-
+    } 
+  
     this.playlistService.getPlaylists().subscribe({
       next: (playlists) => {
         if (playlists.length > 0) {
@@ -55,38 +57,43 @@ export class RandomSongListComponent implements OnInit {
           const selectedPlaylist = playlists.find(
             (playlist) => playlist.name === playlistName
           );
+  
           if (selectedPlaylist) {
-            this.playlistService.addSongToPlaylist(selectedPlaylist.name, song).subscribe({
-              next: () => alert('Canción agregada con éxito a la playlist'),
-              error: (err) => console.error('Error al agregar canción:', err)
+            this.playlistService.addSongToPlaylist(selectedPlaylist.id, song).subscribe({
+              next: () => alert('🎵 Canción agregada con éxito a la playlist'),
+              error: (err) => console.error('❌ Error al agregar canción:', err)
             });
           } else {
-            alert('No encontré esa playlist.');
+            alert('⚠️ No encontré esa playlist.');
           }
         } else {
           const createNewPlaylist = confirm('No tienes playlists. ¿Quieres crear una nueva?');
           if (createNewPlaylist) {
             const newPlaylistName = prompt('Escribe el nombre de la nueva playlist');
             if (newPlaylistName) {
-              this.playlistService.createPlaylist({ name: newPlaylistName }).subscribe({
-                next: (newPlaylist) => {
-                  alert('Playlist creada con éxito');
-                  this.playlistService.addSongToPlaylist(newPlaylist.name, song).subscribe({
-                    next: () => alert('Canción agregada con éxito a la nueva playlist'),
-                    error: (err) => console.error('Error al agregar canción:', err)
-                  });
+              const newPlaylist = {
+                nombre: newPlaylistName,
+                creadoPor: user._id, // Asocia la playlist al usuario
+                canciones: [song._id]
+              };
+              console.log('👤 Usuario ID:', user?._id);
+              console.log('📂 Enviando Playlist:', newPlaylist);
+              this.playlistService.createPlaylist(newPlaylist).subscribe({
+                next: (createdPlaylist) => {
+                  alert('✅ Playlist creada con éxito y canción añadida');
                 },
-                error: (err) => console.error('Error al crear la playlist:', err)
+                error: (err) => console.error('❌ Error al crear la playlist:', err)
               });
             } else {
-              alert('Debes proporcionar un nombre para la playlist.');
+              alert('⚠️ Debes proporcionar un nombre para la playlist.');
             }
           }
         }
       },
-      error: (err) => console.error('Error al obtener playlists:', err)
+      error: (err) => console.error('❌ Error al obtener playlists:', err)
     });
   }
+  
 
   playSong(song: any) {
     if (this.sound) {
