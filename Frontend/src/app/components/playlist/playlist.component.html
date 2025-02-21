@@ -3,18 +3,43 @@
   <div class="search-bar">
       <input type="text" placeholder="Buscar" [(ngModel)]="searchTerm">
       <button class="filter-btn">⚙️</button>
-  </div>
-
-  <!-- Listas de reproducción -->
-  <h2 class="title">LISTAS DE REPRODUCCIÓN</h2>
-  <ul class="playlist-list">
-      <li *ngFor="let playlist of filteredPlaylists" class="playlist-item">
-          <img [src]="playlist.image" [alt]="playlist.name" class="playlist-img">
-          <div class="playlist-info">
-              <h3 class="playlist-name">{{ playlist.name }}</h3>
-              <p class="song-count">{{ playlist.songs?.length || 0 }} canciones</p>
-          </div>
-          <span class="arrow">›</span>
+    </div>
+  
+    <!-- Listas de reproducción -->
+    <h2 class="title">LISTAS DE REPRODUCCIÓN</h2>
+    <ul class="playlist-list">
+      <li *ngFor="let playlist of playlist" class="playlist-item">
+        <img [src]="playlist.image" [alt]="playlist.name" class="playlist-img">
+        <div class="playlist-info">
+          <h3 class="playlist-name">{{ playlist.name }}</h3>
+          <p class="song-count">{{ playlist.songs.length }} canciones</p>
+        </div>
+        <span class="arrow">›</span>
       </li>
-  </ul>
-</main>
+    </ul>
+
+
+    <div class="playlist">
+      <h3>Tu Playlist 🎵</h3>
+      <ul>
+        <li *ngFor="let song of playlist">
+          <img [src]="song.image" alt="Cover" class="song-image" />
+          <div class="song-info">
+            <h4>{{ song.cancion }}</h4>
+            <p>{{ song.cantante }}</p>
+          </div>
+          <button title="Eliminar" (click)="removeFromPlaylist(song)">❌</button>
+        </li>
+      </ul>
+    </div>
+    
+
+
+
+
+
+  </main>
+
+
+
+  

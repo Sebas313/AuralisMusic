@@ -5,13 +5,12 @@ import mongoose from "mongoose";
 
 export const crear = async (req, res) => {
   try {
-    const { creadoPor, canciones, nombre, descripcion } = req.body;
+    const { creadoPor, canciones, nombre,  } = req.body;
 
     console.log("Datos recibidos:", {
       creadoPor,
       canciones,
       nombre,
-      descripcion,
     });
 
     // Asegurarse de que 'canciones' sea siempre un array
@@ -20,13 +19,13 @@ export const crear = async (req, res) => {
 
     // Buscar las canciones en la base de datos usando el campo 'cancion'
     const cancionesEncontradas = await Canciones.find({
-      cancion: { $in: cancionesArray },
+      _id: { $in: cancionesArray },
     });
+    
     console.log("Canciones encontradas:", cancionesEncontradas);
 
-    const usuarioEncontrado = await Usuario.findOne({
-      nombre: new RegExp(`^${creadoPor}$`, "i"),
-    });
+    const usuarioEncontrado = await Usuario.findById(creadoPor);
+
     console.log("Usuario encontrado:", usuarioEncontrado);
 
     if (!usuarioEncontrado) {
@@ -59,7 +58,6 @@ export const crear = async (req, res) => {
       canciones: cancionesEncontradas.map((c) => c._id), // Guardar los _id de las canciones encontradas
       creadoPor: usuarioEncontrado._id,
       nombre,
-      descripcion,
     });
 
     console.log("Nueva playlist a guardar:", nuevaPlaylist);
