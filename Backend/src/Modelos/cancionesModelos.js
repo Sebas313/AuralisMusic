@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const usuarioSchema = new mongoose.Schema({
+const cancionesSchema = new mongoose.Schema({
     cantante: {type:mongoose.Schema.Types.ObjectId, ref:"Cantante", requiered:true},
     cancion: String,
     album: String,
@@ -10,7 +10,7 @@ const usuarioSchema = new mongoose.Schema({
   });
 
 
-const Canciones = mongoose.model("Canciones", usuarioSchema)
+const Canciones = mongoose.model("Canciones", cancionesSchema)
 
 export default Canciones;
 

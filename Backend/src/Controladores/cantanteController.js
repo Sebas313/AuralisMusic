@@ -3,10 +3,9 @@ import mongoose from "mongoose";
 
 export const crearCantante = async (req,res)=>{
   try{
-    const{nombre, genero, canciones, avatar} = req.body;
+    const{nombre, canciones, avatar} = req.body;
     const nuevoCantante = new Cantante({
       nombre,
-      genero,
       canciones,
       avatar,
     })
@@ -43,13 +42,13 @@ export const obtenerCantante = async (req, res) => {
 export const actualizarCantante = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, genero, canciones } = req.body;
+    const { nombre, canciones } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });
     }
     const cantante = await Cantante.findByIdAndUpdate(
       id,
-      { nombre, genero, canciones },
+      { nombre, canciones },
       { new: true }
     );
     if (!cantante)
