@@ -1,22 +1,28 @@
 import Cantante from "../Modelos/cantanteModelos.js";
 import mongoose from "mongoose";
 
-export const crearCantante = async (req,res)=>{
-  try{
-    const{nombre, canciones, avatar} = req.body;
+export const crearCantante = async (req, res) => {
+  try {
+    const { cantante, canciones, avatar } = req.body; // 🛠️ Cambié "nombre" a "cantante"
+
+    if (!cantante) {
+      return res.status(400).json({ message: "El nombre del cantante es requerido" });
+    }
+
     const nuevoCantante = new Cantante({
-      nombre,
-      canciones,
-      avatar,
-    })
+      cantante,
+      canciones: canciones || [], // Si no se envían canciones, inicializar con un array vacío
+      avatar: avatar || null,
+    });
 
     await nuevoCantante.save();
-    res.status(201).json("cantante guardado");
-  }catch(error){
+    res.status(201).json({ message: "Cantante guardado con éxito", cantante: nuevoCantante });
+  } catch (error) {
     console.error("Error al guardar el cantante", error.message);
-    res.status(500).json({ message: "Error al guardar el cantante"})
+    res.status(500).json({ message: "Error al guardar el cantante" });
   }
-}
+};
+
 export const listarCantantes = async (req, res) => {
   try {
     const cantantes = await Cantante.find();
@@ -25,58 +31,77 @@ export const listarCantantes = async (req, res) => {
     res.status(500).json({ message: "Error al obtener los cantantes" });
   }
 };
+
 export const obtenerCantante = async (req, res) => {
   try {
     const { id } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });
     }
-    const cantante = await res
-      .status(404)
-      .json({ message: "Cantante no encontrado" });
+
+    const cantante = await Cantante.findById(id);
+
+    if (!cantante) {
+      return res.status(404).json({ message: "Cantante no encontrado" });
+    }
+
     res.status(200).json(cantante);
   } catch (error) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 export const actualizarCantante = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, canciones } = req.body;
+    const { cantante, canciones } = req.body;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });
     }
-    const cantante = await Cantante.findByIdAndUpdate(
+
+    const cantanteActualizado = await Cantante.findByIdAndUpdate(
       id,
-      { nombre, canciones },
+      { cantante, canciones },
       { new: true }
     );
-    if (!cantante)
+
+    if (!cantanteActualizado) {
       return res.status(404).json({ message: "Cantante no encontrado" });
+    }
+
+    res.status(200).json({ message: "Cantante actualizado con éxito", cantante: cantanteActualizado });
   } catch (error) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 export const eliminarCantante = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("ID recibido", id);
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });
     }
-    const cantante = await Cantante.findByIdAndDelete(id);
-    if (!cantante)
+
+    const cantanteEliminado = await Cantante.findByIdAndDelete(id);
+
+    if (!cantanteEliminado) {
       return res.status(404).json({ message: "Cantante no encontrado" });
-    res.status(200).json({ message: "Cantante elimindao" });
+    }
+
+    res.status(200).json({ message: "Cantante eliminado con éxito" });
   } catch (error) {
-    res.status(500).json({ message: "Error interno del servidor " });
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 };
 
 export default {
   crearCantante,
-    listarCantantes,
-    obtenerCantante,
-    actualizarCantante,
-    eliminarCantante
-}
+  listarCantantes,
+  obtenerCantante,
+  actualizarCantante,
+  eliminarCantante,
+};

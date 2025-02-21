@@ -1,3 +1,7 @@
+<div *ngIf="isPlaying">
+  <p>Reproduciendo: {{ currentSong?.cancion }} - {{ currentSong?.cantante }}</p>
+</div>
+
 <ul class="song-list">
   <li *ngFor="let song of songs">
     <img [src]="song.image" alt="Cover" class="song-image" />
@@ -7,6 +11,7 @@
     </div>
     <div class="song-actions">
       <button title="Reproducir" (click)="playSong(song)">▶️</button>
+      <button title="Pausar" (click)="pauseSong()">❌</button>
       <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
     </div>
   </li>

@@ -34,13 +34,24 @@ export class RandomSongListComponent implements OnInit {
   fetchSongs() {
     this.songService.getCanciones().subscribe({
       next: (data) => {
-        this.songs = data;
+        // Comprobamos si cada canción tiene la URL del audio
+        this.songs = data.map(song => {
+          if (!song.audioUrl) {
+            console.error('Canción sin URL de audio:', song);
+            return null;  // Si no tiene audioUrl, no la incluimos
+          }
+          return {
+            ...song,
+            audioUrl: song.audioUrl // Aseguramos que cada canción tenga la URL de audio
+          };
+        }).filter(song => song !== null); // Filtramos las canciones que no tienen audioUrl
       },
       error: (err) => {
         console.error('Error al obtener canciones:', err);
       }
     });
   }
+  
 
   addToPlaylist(song: any) {
     const user = JSON.parse(localStorage.getItem('user') || 'null'); // Asegura que se obtenga como objeto
@@ -97,18 +108,39 @@ export class RandomSongListComponent implements OnInit {
 
   playSong(song: any) {
     if (this.sound) {
-      this.sound.stop();
+      this.sound.stop(); // Detenemos cualquier canción que esté sonando
     }
-
+  
+    // Verificamos que la URL esté presente y válida
+    if (!song.audioUrl) {
+      console.error('La canción no tiene URL de audio');
+      return;
+    }
+  
+    // Creamos una nueva instancia de Howl para reproducir la canción
     this.sound = new Howl({
-      src: [song.audioUrl],
-      html5: true,
-      onend: () => console.log('Canción terminada')
+      src: [song.audioUrl],  // Usamos la URL de la canción
+      html5: true, // Usamos HTML5 para una mejor compatibilidad con los archivos grandes
+      onloaderror: (id, error) => {
+        console.error('Error al cargar la canción:', error);
+      },
+      onend: () => {
+        console.log('Canción terminada');
+        this.isPlaying = false;  // Establecemos que no está reproduciéndose
+      }
     });
-
+  
+    // Reproducimos la canción
     this.sound.play();
     this.currentSong = song;
     this.isPlaying = true;
-    this.songSelected.emit(song);
+    this.songSelected.emit(song);  // Emitimos el evento de canción seleccionada (si es necesario)
+  }
+
+  pauseSong() {
+    if (this.sound) {
+      this.sound.pause();  // Pausamos la canción
+      this.isPlaying = false;
+    }
   }
 }
