@@ -4,16 +4,20 @@ import { Observable, throwError } from 'rxjs';
 import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/user.model'; 
 import { tap, catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   public apiUrl = 'http://localhost:3000/Api';
+  constructor(
+    private http: HttpClient, 
+    private authService: AuthService, 
+    private router: Router
+  ) {}
+  
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
-
-  register(registerData: { nombre: string; email: string; password: string }): Observable<RegisterResponse> {
+  register(registerData: RegisterData): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/Registro`, registerData).pipe(
       tap((response: RegisterResponse) => {
         if (response?.user?._id && response.token) {
@@ -24,25 +28,48 @@ export class UserService {
       catchError(this.handleError<RegisterResponse>('Error al registrar el usuario'))
     );
   }
-
   verifyEmail(token: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/verificar-email?token=${token}`, {
-      headers: new HttpHeaders()
-        .set('Content-Type', 'application/json')
+    return this.http.get<any>(`${this.apiUrl}/verificar/${token}`, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
     }).pipe(
       tap(response => {
         console.log('📥 Respuesta del backend (verificación de email):', response);
+  
         if (response?.success && response?.token && response?.user) {
-          console.log('🔑 Token válido. Redirigiendo al home...');
-          localStorage.setItem('authToken', response.token); // Guarda el token
-          // Redirige al home
-          window.location.href = '/home';
+          console.log('🔑 Token válido. Guardando datos del usuario...');
+  
+          // ✅ Guarda el token y el rol en localStorage
+          localStorage.setItem('authToken', response.token);
+          localStorage.setItem('user', JSON.stringify({
+            _id: response.user._id,
+            nombre: response.user.nombre,
+            email: response.user.email,
+            rol: response.user.rol || 'usuario' // 👀 Guarda el rol del usuario
+          }));
+  
+          console.log('✅ Usuario guardado en localStorage:', JSON.parse(localStorage.getItem('user')!));
+          console.log('🎭 Rol del usuario:', response.user.rol);
+  
+          // ✅ Redirige al home solo si tiene el rol adecuado
+          if (response.user.rol === 'admin' || response.user.rol === 'usuario') {
+            this.router.navigate(['/home']);
+          } else {
+            console.warn('🚫 Acceso denegado: Rol no autorizado');
+            this.router.navigate(['/login']); // O a una página de acceso denegado
+          }
         } else {
           console.log('⚠️ Token inválido o expirado');
+          this.router.navigate(['/register']); // Redirige si la verificación falla
         }
+      }),
+      catchError(error => {
+        console.error('❌ Error en la verificación del email:', error);
+        return throwError(() => new Error('Error al verificar el email.'));
       })
     );
   }
+  
+  
   
 
 

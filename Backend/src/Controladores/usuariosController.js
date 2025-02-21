@@ -46,54 +46,127 @@ export const Registro = async (req, res) => {
   }
 };
 
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params; // ✅ Obtener token de los parámetros
+
+    if (!token) {
+      return res.status(400).json({ msg: "Token no proporcionado" });
+    }
+
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const email = decoded.email;
+
+    // Verificar si el usuario existe
+    const user = await Usuario.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ msg: "La cuenta ya está verificada" });
+    }
+
+    // Actualizar usuario como verificado
+    user.isVerified = true;
+    user.verificationToken = null;
+    await user.save();
+
+    // 🔥 Si la solicitud viene de Angular (acepta JSON), responder con JSON
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      return res.json({
+        success: true,
+        msg: "Cuenta verificada correctamente",
+        user: {
+          email: user.email,
+          isVerified: user.isVerified
+        }
+      });
+    }
+
+    // 🔄 Si la solicitud viene del navegador (correo electrónico), redirigir al frontend
+    res.redirect("http://localhost:4200/login?verified=true");
+
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ msg: "Token inválido o expirado" });
+  }
+};
+
 
 export const login = async (req, res) => {
   try {
-    console.log("Datos recibidos en login:", req.body);
+    console.log("📥 Datos recibidos en login:", req.body);
 
     const { email, password } = req.body;
 
+    // 🔍 Validar que se envíen email y contraseña
     if (!email || !password) {
       return res.status(400).json({ message: "Email y contraseña son requeridos." });
     }
 
+    // 🔎 Buscar usuario en la base de datos
     const usuario = await Usuario.findOne({ email });
 
-    console.log("Usuario encontrado en BD:", usuario);
-
     if (!usuario) {
+      console.log("❌ Usuario no encontrado.");
       return res.status(401).json({ message: "Credenciales incorrectas." });
     }
 
-    console.log("Password almacenada en BD:", usuario.password);
+    console.log("✅ Usuario encontrado en BD:", usuario);
 
+    // 🔐 Verificar si el usuario ya confirmó su correo
+    if (!usuario.isVerified) {
+      console.log("⚠ Usuario no verificado:", usuario.email);
+      return res.status(403).json({ message: "Debes verificar tu correo antes de iniciar sesión." });
+    }
+
+    console.log("🔑 Contraseña ingresada:", password);
+    console.log("🔑 Contraseña almacenada en BD:", usuario.password);
+
+    // 🔑 Verificar si la contraseña es correcta
     const isMatch = await bcrypt.compare(password, usuario.password);
 
-    console.log("¿Contraseña válida?:", isMatch);
+    console.log("✅ ¿Contraseña válida?:", isMatch);
 
     if (!isMatch) {
+      console.log("❌ Contraseña incorrecta.");
       return res.status(401).json({ message: "Credenciales incorrectas." });
     }
 
-    const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    // 📌 Verificar si el usuario tiene un rol asignado
+    const rol = usuario.rol || "usuario"; // Si no tiene rol, asignamos 'usuario' por defecto
+    console.log("👤 Rol del usuario:", rol);
 
-    console.log("Token generado correctamente:", token);
+    // 🛡 Generar token con el ID y el rol del usuario
+    const token = jwt.sign({ id: usuario._id, rol: rol }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    // 🔥 Aquí agregamos `_id` a la respuesta
+    console.log("🔑 Token generado correctamente:", token);
+
+    // ✅ Respuesta con datos del usuario
     res.status(200).json({
       message: "Inicio de sesión exitoso.",
       token,
       user: {
-        _id: usuario._id,  // 👈 Agregamos el ID del usuario
+        _id: usuario._id, 
         nombre: usuario.nombre,
         email: usuario.email,
+        rol: rol,
+        isVerified: usuario.isVerified,
       },
     });
+
   } catch (error) {
-    console.error("Error en login:", error);
-    res.status(500).json({ message: "Error interno del servidor, no se pudo enviar el token." });
+    console.error("❌ Error en login:", error);
+    res.status(500).json({ message: "Error interno del servidor, no se pudo procesar la solicitud." });
   }
 };
+
+
+
+
+
 
 
 export const obtenerUsuarios = async (req, res) => {

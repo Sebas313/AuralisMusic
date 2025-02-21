@@ -39,24 +39,25 @@ export class RegisterComponent {
       setTimeout(() => this.errorMessage = null, 3000);
       return;
     }
-
+  
     this.loading = true;
     this.errorMessage = null;
     this.successMessage = null;
-
+  
     const usuario = {
       nombre: this.registerForm.value?.nombre || '',
       email: this.registerForm.value?.email || '',
       password: this.registerForm.value?.password || ''
     };
-
-    // ✅ Llama al microservicio de registro
+  
+    // Llama al microservicio de registro
     this.userService.register(usuario).subscribe({
       next: (response) => {
         this.successMessage = '✅ ¡Registro exitoso! Verifica tu email.';
         this.loading = false;
-
-        // 🔔 NOTA: Aquí asumo que el backend envía un email con el link de verificación.
+  
+        // Redirige a la página de verificación de email
+        this.router.navigate(['/verificar-email']); 
       },
       error: (error) => {
         console.error("Error al registrar el usuario:", error);
@@ -66,6 +67,7 @@ export class RegisterComponent {
       },
     });
   }
+  
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;

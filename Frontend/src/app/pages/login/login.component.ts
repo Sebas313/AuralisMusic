@@ -1,30 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 @Component({
-  standalone: true,
   selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule], // Importa estos módulos
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
 })
-export class LoginComponent {
-  passwordVisible: boolean = false;
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
-  errorMessage: string = '';
-  failedAttempts: number = 0; // Contador de intentos fallidos
+  mensaje: string = ''; // Mensajes de verificación o error
+  passwordVisible: boolean = false; // Alternar visibilidad de contraseña
+  errorMessage: string | null = null; // Mensajes de error del servidor
   private loginSubscription: Subscription | undefined;
+  failedAttempts: number = 0; // Contador de intentos fallidos
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-    if (localStorage.getItem('token')) {
-      this.router.navigate(['/']);
-    }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
+    // Detectar si el usuario acaba de verificar su correo
+    this.route.queryParams.subscribe(params => {
+      if (params['verified']) {
+        this.mensaje = "✅ Cuenta verificada. Ahora puedes iniciar sesión.";
+      }
+    });
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -35,35 +46,60 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-
+  
       if (this.loginSubscription) {
         this.loginSubscription.unsubscribe();
       }
-
+  
       this.loginSubscription = this.authService.login(email, password).subscribe({
-        next: (response) => {
-          if (response.token) {
-            localStorage.setItem('token', response.token);
-            this.loginForm.reset();
-            this.failedAttempts = 0; // Reiniciar intentos en caso de éxito
-            this.router.navigate(['/']);
+        next: (res) => {
+          console.log("📥 Respuesta del backend:", res);
+  
+          if (res.token && res.user) {
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            localStorage.setItem('userRol', res.user.rol); // ✅ Guarda el rol correctamente
+  
+            console.log("🔐 Token guardado en localStorage:", res.token);
+            console.log("👤 Usuario guardado en localStorage:", res.user);
+            console.log("🎭 Rol guardado en localStorage:", res.user.rol);
+  
+            this.mensaje = "✅ Inicio de sesión exitoso. Redirigiendo...";
+            console.log('➡️ Redirigiendo a Home...');
+  
+            this.router.navigate(['/home']).then((navigated) => {
+              if (navigated) {
+                console.log('✅ Redirección exitosa');
+              } else {
+                console.error('❌ Redirección fallida');
+              }
+            });
+  
+          } else {
+            this.errorMessage = "⚠️ Respuesta inesperada del servidor.";
           }
         },
-        error: (error) => {
-          console.error('Error al iniciar sesión:', error);
-          this.failedAttempts++; // Incrementa los intentos fallidos
-
-          this.errorMessage =
-            error.status === 401
-              ? 'Credenciales incorrectas. Por favor, inténtalo de nuevo.'
-              : error.status === 500
-              ? 'Error del servidor. Por favor, intenta más tarde.'
-              : 'Ocurrió un error inesperado. Por favor, intenta más tarde.';
-        },
+        error: (err) => {
+          console.error("❌ Error en login:", err);
+          this.errorMessage = err.error?.message || 'Ocurrió un error, intenta más tarde.';
+          this.failedAttempts++;
+  
+          if (this.failedAttempts > 2) {
+            this.mensaje = '¿Olvidaste tu contraseña?';
+          } else {
+            this.mensaje = '⚠️ Credenciales incorrectas.';
+          }
+        }
       });
+    } else {
+      this.errorMessage = '⚠️ Por favor, completa todos los campos correctamente.';
     }
   }
+  
+  
+  
 
+  // Método para alternar la visibilidad de la contraseña
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
   }
