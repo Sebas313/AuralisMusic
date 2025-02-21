@@ -20,6 +20,7 @@ export class SongService {
 
 
 
+ 
 
 
 // BehaviorSubject para que los cambios se reflejen en tiempo real
@@ -49,6 +50,8 @@ playlist$ = this.playlistSubject.asObservable();
     this.playlistSubject.next(this.playlist); // Actualiza el observable
     console.log('Canción eliminada:', cancion);
   }
+
+  
 
 }
 

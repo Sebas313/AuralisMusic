@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { PlaylistService } from '../../services/playlist.service';
 import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Cancion } from '../../services/song.service';
 @Component({
   selector: 'app-playlist',
   imports: [CommonModule, FormsModule],
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 
  export class PlaylistComponent implements OnInit {
-    playlists: any[] = [];
+    playlist: any[] = [];
     newSong = { title: '', artist: '', url: '' };
     selectedPlaylist = '';
     searchTerm: string = ''; // Agregamos esta lí
@@ -35,7 +36,7 @@ import { CommonModule } from '@angular/common';
   }
 
   get filteredPlaylists() {
-    return this.playlists.filter(playlist =>
+    return this.playlist.filter(playlist =>
       playlist.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
