@@ -1,8 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+
 import { Router } from '@angular/router';
+import { throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root',
@@ -41,61 +43,69 @@ export class AuthService {
     return localStorage.getItem('userId');
   }
   logout(): void {
-    this.removeToken(); // 🔹 Usa la función removeToken() que ya limpia todo
-    this.authStatus.next(false); // 🚀 Notifica a la UI que cerró sesión
-    this.router.navigate(['/login']); // 🔄 Redirige al login
+    this.removeToken(); 
+    this.authStatus.next(false); 
+    this.router.navigate(['/login']); 
   }
   
-
-
- /*  register(email: string, password: string): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.post<any>(`${this.apiUrl}/registro`, { email, password }, { headers }).pipe(
-      tap((response: any) => {
-        if (response.success) {
-          this.router.navigate(['/verificar-codigo'], { queryParams: { email } });
-        }
-      })
-    );
-
-  } */
-  /* verifyCode(email: string, code: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/verificar-codigo`, { email, code });
-  } */
-  
-  login(email: string, password: string): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-  }
-
-  verifyCode(email: string, code: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/verificar-codigo`, { email, code });
-  }
-
-
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
-        console.log('📥 Respuesta completa del servidor:', response);
-
-        if (response.token) {
-          this.setToken(response.token);
-
-          if (response.user) {
-            console.log('👤 Datos del usuario:', response.user);
-
-            localStorage.setItem('user', JSON.stringify({
-              _id: response.user._id || 'SIN_ID',
-              nombre: response.user.nombre,
-              email: response.user.email
-            }));
-
-            console.log('✅ Usuario guardado en localStorage:', JSON.parse(localStorage.getItem('user')!));
-          } else {
-            console.error('⚠️ Error: No se encontró la propiedad "user" en la respuesta.');
-          }
+        console.log('📥 Respuesta del servidor:', response);
+  
+        if (!response?.token || !response?.user) {
+          console.error('⚠️ Error: No se recibió token o usuario en la respuesta.');
+          throw new Error('No se pudo autenticar el usuario.');
         }
+  
+        if (!response.user.isVerified) {
+          console.warn('⚠️ El correo aún no ha sido verificado.');
+          this.router.navigate(['/verificar-email'], { queryParams: { email: response.user.email } });
+          throw new Error('El correo aún no ha sido verificado.');
+        }
+  
+        console.log('✅ Usuario verificado, iniciando sesión.');
+  
+      
+        this.setToken(response.token);
+  
+    
+        const userData = {
+          _id: response.user._id || 'SIN_ID',
+          nombre: response.user.nombre || 'Desconocido',
+          email: response.user.email || 'Sin correo',
+          rol: response.user.rol?.trim().toLowerCase() || 'usuario' 
+        };
+  
+        localStorage.setItem('user', JSON.stringify(userData));
+  
+        console.log('✅ Usuario guardado en localStorage:', userData);
+  
+     
+        this.router.navigate(['/home']);
+      }),
+      catchError(error => {
+        console.error('❌ Error en login:', error);
+  
+        let errorMessage = 'Error al iniciar sesión.';
+        if (error?.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+  
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
+  
+
+  
+  
+
+ 
+  
+ 
+
+    
 }
