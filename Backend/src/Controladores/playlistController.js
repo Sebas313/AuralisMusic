@@ -4,79 +4,81 @@ import Usuario from "../Modelos/usuariosModelos.js";
 import mongoose from "mongoose";
 
 export const crear = async (req, res) => {
-  try {
-    const { creadoPor, canciones, nombre,  } = req.body;
-
-    console.log("Datos recibidos:", {
-      creadoPor,
-      canciones,
-      nombre,
-    });
-
-    // Asegurarse de que 'canciones' sea siempre un array
-    const cancionesArray = Array.isArray(canciones) ? canciones : [canciones];
-    console.log("Canciones procesadas:", cancionesArray);
-
-    // Buscar las canciones en la base de datos usando el campo 'cancion'
-    const cancionesEncontradas = await Canciones.find({
-      _id: { $in: cancionesArray },
-    });
-    
-    console.log("Canciones encontradas:", cancionesEncontradas);
-
-    const usuarioEncontrado = await Usuario.findById(creadoPor);
-
-    console.log("Usuario encontrado:", usuarioEncontrado);
-
-    if (!usuarioEncontrado) {
-      return res
-        .status(400)
-        .json({ message: `No se encontró el usuario: ${creadoPor}` });
-    }
-    if (cancionesEncontradas.length === 0) {
-      return res
-        .status(400)
-        .json({
-          message: `No se encontraron las canciones: ${cancionesArray.join(
-            ", "
-          )}`,
-        });
-    }
-    // const playlistExistente = await playList.findOne({ creadoPor: usuarioEncontrado._id, nombre });
-
-    // if (playlistExistente) {
-    //     const cancionesEnPlaylist = playlistExistente.canciones.map(c => c.toString());
-    //     const cancionesRepetidas = cancionesEncontradas.filter(c => cancionesEnPlaylist.includes(c._id.toString()));
-
-    //     if (cancionesRepetidas.length > 0) {
-    //         return res.status(400).json({ message: `Las siguientes canciones ya están en la playlist: ${cancionesRepetidas.map(c => c.cancion).join(", ")}` });
-    //     }
-    // }
-
-    // Crear la nueva playlist
-    const nuevaPlaylist = new playList({
-      canciones: cancionesEncontradas.map((c) => c._id), // Guardar los _id de las canciones encontradas
-      creadoPor: usuarioEncontrado._id,
-      nombre,
-    });
-
-    console.log("Nueva playlist a guardar:", nuevaPlaylist);
-
-    // Guardar la playlist en la base de datos
-    await nuevaPlaylist.save();
-    res
-      .status(201)
-      .json({
+    try {
+      let { creadoPor, canciones, nombre } = req.body;
+  
+      console.log("Datos recibidos:", { creadoPor, canciones, nombre });
+  
+      // Asegurarse de que 'canciones' sea siempre un array
+      const cancionesArray = Array.isArray(canciones) ? canciones : [canciones];
+      console.log("Canciones procesadas:", cancionesArray);
+  
+      // Separar ObjectId válidos y nombres
+      const objectIds = [];
+      const nombresCanciones = [];
+  
+      cancionesArray.forEach((cancion) => {
+        if (mongoose.Types.ObjectId.isValid(cancion)) {
+          objectIds.push(cancion); // Es un ObjectId válido
+        } else {
+          nombresCanciones.push(cancion); // Es un nombre
+        }
+      });
+  
+      console.log("IDs detectados:", objectIds);
+      console.log("Nombres detectados:", nombresCanciones);
+  
+      // Buscar las canciones por `_id` o `nombre`
+      const cancionesEncontradas = await Canciones.find({
+        $or: [{ _id: { $in: objectIds } }, { nombre: { $in: nombresCanciones } }],
+      });
+  
+      console.log("Canciones encontradas:", cancionesEncontradas);
+  
+      // Validar existencia del usuario
+      const usuarioEncontrado = await Usuario.findOne({nombre: creadoPor});
+      console.log("Usuario encontrado:", usuarioEncontrado);
+  
+      if (!usuarioEncontrado) {
+        return res
+          .status(400)
+          .json({ message: `No se encontró el usuario: ${creadoPor}` });
+      }
+  
+      if (cancionesEncontradas.length === 0) {
+        const nuevasCanciones = await Canciones.insertMany(
+          cancionesArray.map(cancion => ({ cancion })) // Crear objetos con el formato adecuado
+        );
+      
+        console.log("🎶 Nuevas canciones creadas:", nuevasCanciones);
+      
+        cancionesEncontradas.push(...nuevasCanciones); // Agregar las nuevas canciones al array
+      }
+  
+      // Crear la nueva playlist
+      const nuevaPlaylist = new playList({
+        canciones: cancionesEncontradas.map((c) => c._id), // Guardar los `_id` encontrados
+        creadoPor: usuarioEncontrado._id,
+        nombre,
+      });
+  
+      console.log("Nueva playlist a guardar:", nuevaPlaylist);
+  
+      // Guardar la playlist en la base de datos
+      await nuevaPlaylist.save();
+      res.status(201).json({
         message: "Playlist guardada con éxito",
         playlist: nuevaPlaylist,
       });
-  } catch (error) {
-    console.error("Error al guardar la playlist:", error.message);
-    res
-      .status(500)
-      .json({ message: "Error al guardar la playlist", error: error.message });
-  }
-};
+    } catch (error) {
+      console.error("Error al guardar la playlist:", error.message);
+      res.status(500).json({
+        message: "Error al guardar la playlist",
+        error: error.message,
+      });
+    }
+  };
+  
 
 export const listar = async (req, res) => {
   try {
@@ -159,9 +161,9 @@ export const Actualizar = async (req, res) => {
       return res.status(404).json({ message: "Playlist no encontrada" });
     }
 
-    const cancionesRepetidas = playlistExistente.canciones
-      .map((c) => c.toString())
-      .filter((c) => cancionesIds.includes(c));
+    const cancionesRepetidas = cancionesIds.filter((cancionId) =>
+        playlistExistente.canciones.some((c) => c.toString() === cancionId.toString())
+      );
     if (cancionesRepetidas.length > 0) {
       return res
         .status(400)
