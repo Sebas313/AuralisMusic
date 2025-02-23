@@ -1,53 +1,52 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { CommonModule } from '@angular/common';
-
 import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
-import { SongService } from '../../services/song.service';
 import { RandomSongListComponent } from '../../components/random-song-list/random-song-list.component';
+import { SongService } from '../../services/song.service';
+import { Cancion } from '../../models/cancion.model';
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent, SidebarComponent, CommonModule, MusicPlayerComponent,  RandomSongListComponent ],
+  standalone: true,
+  imports: [HeaderComponent, SidebarComponent, CommonModule, MusicPlayerComponent, RandomSongListComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  currentSong: any = null; 
-  isPlaying: boolean = false; 
-  showMusicPlayer: boolean = false; 
-  playlist: any[] = []; 
-  songs = [];
+  currentSong: Cancion | null = null;
+  isPlaying: boolean = false;
+  showMusicPlayer: boolean = false;
+  playlist: Cancion[] = [];
 
+  constructor(private songService: SongService) {}
 
- 
-  addToPlaylist(song: any) {
-    if (!this.playlist.includes(song)) {
+  
+  addToPlaylist(song: Cancion) {
+    const exists = this.playlist.some(s => s.fileUrl === song.fileUrl);
+    if (!exists) {
       this.playlist.push(song);
     }
   }
 
-  playSong(song: any) {
+  playSong(song: Cancion) {
     this.currentSong = song;
     this.isPlaying = true;
-    this.showMusicPlayer = true; 
+    this.showMusicPlayer = true;
+    this.songService.setCurrentSong(song);
+    this.songService.setIsPlaying(true);
+    this.addToPlaylist(song);
   }
 
- 
+  
   pauseSong() {
     this.isPlaying = false;
-    this.showMusicPlayer = false;  
+    this.songService.setIsPlaying(false);
   }
 
   
-  onSongSelected(song: any) {
-    this.currentSong = song;
-    this.isPlaying = true;
-    this.showMusicPlayer = true; 
-  
-    if (!this.playlist.some(s => s.audioUrl === song.audioUrl)) {
-      this.playlist.push(song);
-    }
+  onSongSelected(song: Cancion) {
+    this.playSong(song);
   }
-}  
+}

@@ -3,9 +3,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(to right, #000000, #000000);
   color: white;
+  padding-bottom: 80px; /* Para evitar que el player se monte sobre contenido */
 }
 
 /* Contenedor de la barra lateral */
@@ -13,10 +14,8 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  position: relative; 
-
+  position: relative;
 }
-
 
 /* Contenedor del contenido principal */
 .content {
@@ -29,19 +28,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px; /* Espaciado entre elementos */
 }
-
-
 
 /* Contenedor de la lista de canciones */
 .song-list-container {
-  background-color: #000;
+  background-color: #111; /* Un negro más claro para diferenciar */
   padding: 50px;
   border-radius: 10px;
   margin-top: 30px;
   width: 90%;
   max-width: 800px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 138, 0, 0.2);
   text-align: center;
 }
 
@@ -63,13 +61,14 @@ app-random-song-list {
   align-items: center;
   width: 100%;
   margin-top: 40px;
+  gap: 15px; /* Agregamos espacio entre las canciones */
 }
 
-/* Media Queries para pantallas pequeñas */
+/* 🎵 Media Queries para pantallas pequeñas */
 @media (max-width: 768px) {
   .home-container {
       flex-direction: column;
-      height: auto;
+      min-height: auto;
   }
 
   .sidebar-container {
@@ -79,6 +78,7 @@ app-random-song-list {
 
   .content {
       padding: 20px;
+      gap: 15px;
   }
 
   .song-list-container {

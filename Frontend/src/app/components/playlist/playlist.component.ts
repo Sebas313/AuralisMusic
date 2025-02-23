@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { PlaylistService } from '../../services/playlist.service';
 import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Cancion } from '../../services/song.service';
+import { Cancion } from '../../models/cancion.model';
 @Component({
   selector: 'app-playlist',
   imports: [CommonModule, FormsModule],
@@ -59,7 +59,7 @@ import { Cancion } from '../../services/song.service';
     }
 
   } removeFromPlaylist(cancion: Cancion) {
-    this.playlist = this.playlist.filter(item => item.id !== cancion.id);
+    this.playlist = this.playlist.filter(item => item._id !== cancion._id);
     console.log('Canción eliminada:', cancion);
   }
 }

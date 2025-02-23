@@ -1,91 +1,143 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Howl } from 'howler';
+import { Subscription } from 'rxjs';
+import { SongService } from '../../services/song.service';
+import { Cancion } from '../../models/cancion.model';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-music-player',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './music-player.component.html',
-  styleUrls: ['./music-player.component.css']
+  styleUrls: ['./music-player.component.css'],
+  imports: [CommonModule, HttpClientModule]
 })
-export class MusicPlayerComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() currentSong: any;
-  @Input() isPlaying: boolean = false;
-  @Input() playlist: any[] = [];
+export class MusicPlayerComponent implements OnInit, OnDestroy {
+  @Input() currentSong: Cancion | null = null; // ✅ Ahora puede recibir el valor de HomeComponent
+  @Input() isPlaying: boolean = false; // ✅ Ahora puede recibir el valor de HomeComponent
+  @Input() playlist: Cancion[] = []; // ✅ Ahora puede recibir el valor de HomeComponent
 
-  currentTime: string = '00:00';
-  totalTime: string = '00:00';
-  currentSongIndex: number = 0;
-  sound!: Howl;
+  sound: Howl | null = null;
+  songSubscription!: Subscription;
+  playSubscription!: Subscription;
+  duration: number = 0;
+  currentTime: number = 0;
+  interval: any;
+
+  constructor(private songService: SongService) {}
 
   ngOnInit() {
-    if (this.currentSong) {
-      this.playCurrentSong();
-    }
-  }
+    this.songSubscription = this.songService.currentSong$.subscribe(song => {
+      if (song && song !== this.currentSong) {
+        this.currentSong = song;
+        this.playCurrentSong();
+      }
+    });
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['currentSong'] && this.currentSong) {
-      this.currentSongIndex = this.playlist.findIndex(song => song === this.currentSong);
-      this.playCurrentSong();
-    }
+    this.playSubscription = this.songService.isPlaying$.subscribe(isPlaying => {
+      this.isPlaying = isPlaying;
+      if (this.sound) {
+        this.isPlaying ? this.sound.play() : this.sound.pause();
+      }
+    });
   }
 
   ngOnDestroy() {
-    if (this.sound) {
-      this.sound.stop();
-    }
-  }
-
-  togglePlay() {
-    if (this.isPlaying) {
-      this.sound.pause();
-    } else {
-      this.sound.play();
-    }
-    this.isPlaying = !this.isPlaying;
-  }
-
-  nextSong() {
-    if (this.playlist.length > 0) {
-      this.currentSongIndex = (this.currentSongIndex + 1) % this.playlist.length;
-      this.currentSong = this.playlist[this.currentSongIndex];
-      this.playCurrentSong();
-    }
-  }
-
-  prevSong() {
-    if (this.playlist.length > 0) {
-      this.currentSongIndex = (this.currentSongIndex - 1 + this.playlist.length) % this.playlist.length;
-      this.currentSong = this.playlist[this.currentSongIndex];
-      this.playCurrentSong();
-    }
+    this.songSubscription.unsubscribe();
+    this.playSubscription.unsubscribe();
+    this.destroySound();
+    clearInterval(this.interval);
   }
 
   playCurrentSong() {
-    if (this.sound) {
-      this.sound.stop();
+    this.destroySound();
+    if (!this.currentSong || !this.currentSong.fileUrl) {
+      console.error('No se puede reproducir la canción. Falta el archivo de audio.');
+      return;
     }
-    
+
     this.sound = new Howl({
-      src: [this.currentSong.audioUrl],
+      src: [this.currentSong.fileUrl],
       html5: true,
       volume: 0.5,
-      onend: () => this.nextSong()
+      onplay: () => {
+        this.duration = this.sound?.duration() || 0;
+        this.trackProgress();
+      },
+      onend: () => {
+        this.songService.setIsPlaying(false);
+        clearInterval(this.interval);
+      }
     });
-    
+
     this.sound.play();
-    this.isPlaying = true;
+    this.songService.setIsPlaying(true);
+  }
+
+  togglePlay() {
+    if (this.sound) {
+      if (this.isPlaying) {
+        this.sound.pause();
+        clearInterval(this.interval);
+      } else {
+        this.sound.play();
+        this.trackProgress();
+      }
+      this.songService.setIsPlaying(!this.isPlaying);
+    }
+  }
+
+  private trackProgress() {
+    clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      if (this.sound) {
+        this.currentTime = this.sound.seek();
+      }
+    }, 1000);
   }
 
   formatTime(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${this.padZero(minutes)}:${this.padZero(remainingSeconds)}`;
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   }
 
-  padZero(number: number): string {
-    return number < 10 ? `0${number}` : `${number}`;
+  prevSong() {
+    this.songService.prevSong();
+  }
+
+  nextSong() {
+    this.songService.nextSong();
+  }
+
+  playRandom() {
+    this.songService.getCanciones().subscribe({
+      next: (canciones) => {
+        if (canciones.length === 0) {
+          console.error('No hay canciones disponibles.');
+          return;
+        }
+  
+        const randomSong = canciones[Math.floor(Math.random() * canciones.length)];
+        console.log('Canción aleatoria seleccionada:', randomSong);
+  
+        this.songService.setCurrentSong(randomSong); // Asegura que la canción seleccionada se actualiza
+      },
+      error: (err) => console.error('Error al obtener canciones:', err)
+    });
+  }
+  
+
+  private destroySound() {
+    if (this.sound) {
+      this.sound.stop();
+      this.sound.unload();
+      this.sound = null;
+    }
+    clearInterval(this.interval);
+    this.currentTime = 0;
+    this.duration = 0;
   }
 }
+

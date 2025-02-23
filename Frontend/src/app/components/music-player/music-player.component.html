@@ -1,16 +1,16 @@
 <div class="player" *ngIf="currentSong">
-    <div class="player-container">
-      <img class="song-image" [src]="currentSong.image" alt="Song cover" />
-      <div class="song-info">
-        <h4>{{ currentSong.cancion }}</h4>
-        <p>{{ currentSong.cantante }}</p>
-        <div class="song-time">{{ currentTime }} / {{ totalTime }}</div>
-      </div>
-    </div>
-    <div class="controls">
-      <button (click)="prevSong()">⏮️</button>
-      <button (click)="togglePlay()">{{ isPlaying ? '⏸️' : '▶️' }}</button>
-      <button (click)="nextSong()">⏭️</button>
+  <div class="player-container">
+    <img class="song-image" [src]="currentSong?.imagen" alt="Portada de la canción" />
+    <div class="song-info">
+      <h4>{{ currentSong?.album }}</h4> <!-- El título del álbum -->
+      <p>{{ currentSong?.cantante?.nombre }}</p> <!-- Nombre del cantante -->
+      <div class="song-time">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</div>
     </div>
   </div>
-  
+  <div class="controls">
+    <button (click)="playRandom()">🔀</button> <!-- Nuevo botón para aleatorio -->
+    <button (click)="prevSong()">⏮️</button>
+    <button (click)="togglePlay()">{{ isPlaying ? '⏸️' : '▶️' }}</button>
+    <button (click)="nextSong()">⏭️</button>
+  </div>
+</div>

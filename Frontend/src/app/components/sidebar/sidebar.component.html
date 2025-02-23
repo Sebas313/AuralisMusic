@@ -1,31 +1,33 @@
-  <div class="sidebar" [class.expanded]="isExpanded">
-    <!-- Barra de búsqueda -->
-    <div class="search-bar">
-      <input 
-        type="text" 
-        [(ngModel)]="searchQuery" 
-        placeholder="Buscar canción..."
-        [readonly]="!isSearchVisible"
-        (click)="toggleSearch()"
-        (input)="filterSongs($event)"
-      />
-    </div>
+<div class="now-playing">
+  <p *ngIf="currentSong">🎵 Reproduciendo: {{ currentSong?.cancion }}</p>
+  <div #waveform class="waveform-container"></div>
+</div>
 
-    <!-- Lista de canciones (máximo 6 elementos) -->
-    <ul class="song-list" *ngIf="isSearchVisible && filteredSongs.length > 0">
-      <li *ngFor="let song of filteredSongs | slice:0:6">
-        <img [src]="song.image" alt="Cover" class="song-image" />
-        <div class="song-info">
-          <h4>{{ song.cancion }}</h4>
-          <p>{{ song.cantante }}</p>
-        </div>
-        <div class="song-actions">
-          <button title="Reproducir" (click)="playSong(song)">▶️</button>
-          <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
-        </div>
-      </li>
-    </ul>
+<div class="sidebar" [class.expanded]="isExpanded">
+  <!-- Barra de búsqueda -->
+  <div class="search-bar">
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery" 
+      placeholder="Buscar canción..."
+      [readonly]="!isSearchVisible"
+      (click)="toggleSearch()"
+      (input)="filterSongs($event)"
+    />
   </div>
 
-
-    
+  <!-- Lista de canciones -->
+  <ul class="song-list" *ngIf="isSearchVisible && filteredSongs.length > 0">
+    <li *ngFor="let song of filteredSongs | slice:0:6" class="song-item">
+      <img [src]="'http://localhost:3000/public/uploads/' + song.imagen" alt="Cover" class="song-image" />
+      <div class="song-info">
+        <h4>{{ song.cancion }}</h4>
+        <p>{{ song.cantante }}</p>
+      </div>
+      <div class="song-actions">
+        <button title="Reproducir" (click)="playSong(song)">▶️</button>
+        <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
+      </div>
+    </li>
+  </ul>
+</div>
