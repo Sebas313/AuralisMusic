@@ -29,7 +29,7 @@ export class UploadSongComponent {
       formData.append('title', this.song.title);
       formData.append('file', this.song.file, this.song.file.name);
 
-      this.songService.uploadCancion(formData).subscribe({
+      this.songService.subirCancion(formData).subscribe({
         next: (response) => {
           alert('Canción subida con éxito');
         },

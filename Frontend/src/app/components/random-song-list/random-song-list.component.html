@@ -1,18 +1,33 @@
-<div *ngIf="isPlaying">
-  <p>Reproduciendo: {{ currentSong?.cancion }} - {{ currentSong?.cantante }}</p>
+<div *ngIf="isPlaying && currentSong" class="now-playing">
+  <p>🎵 Reproduciendo: {{ currentSong?.album || 'Desconocido' }} - {{ currentSong?.cantante?.nombre || 'Artista desconocido' }}</p>
+  <div #waveform class="waveform-container"></div>
+
 </div>
 
 <ul class="song-list">
-  <li *ngFor="let song of songs">
-    <img [src]="song.image" alt="Cover" class="song-image" />
+  <li *ngFor="let song of songs" class="song-item">
+    <img 
+      *ngIf="song.imagen" 
+      [src]="'http://localhost:3000/public/uploads/' + song.imagen" 
+      alt="{{ song.album || 'Sin título' }} Cover" 
+      class="song-image" 
+    />
+    
     <div class="song-info">
-      <h4>{{ song.cancion }}</h4>
-      <p>{{ song.cantante }}</p>
+      <h4>{{ song.album || 'Álbum desconocido' }}</h4>
+      <p>{{ song.cantante?.nombre || 'Artista desconocido' }}</p>
     </div>
+    
     <div class="song-actions">
       <button title="Reproducir" (click)="playSong(song)">▶️</button>
-      <button title="Pausar" (click)="pauseSong()">❌</button>
-      <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
+      <button title="Pausar" (click)="pauseSong()" [disabled]="!isPlaying">⏸️</button>
+      <button title="Añadir a playlist" (click)="addToPlaylist(song)">➕</button>
     </div>
   </li>
+  <app-music-player 
+  *ngIf="showMusicPlayer" 
+  [currentSong]="currentSong" 
+  [isPlaying]="isPlaying"
+  [playlist]="playlist">
+  </app-music-player>
 </ul>

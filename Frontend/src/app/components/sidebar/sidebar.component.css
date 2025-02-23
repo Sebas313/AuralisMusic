@@ -1,35 +1,31 @@
+/* Sidebar centrada */
 .sidebar {
-  width: 800px;
+  width: 300px; /* Ancho fijo */
   padding: 10px;
   margin: 10px;
   border-radius: 10px;
   transition: width 0.3s ease-in-out;
-  overflow: visible; /* Asegura que el input no se oculte */
-  position: fixed; /* Hace que la sidebar se mantenga fija sin afectar otros elementos */
-  top: 0;
+  overflow: visible;
+  position: fixed; /* Fija la sidebar en el centro */
+  top: 20px; /* Espacio desde arriba */
   left: 50%;
   transform: translateX(-50%);
-
   color: white;
-  z-index: 100; /* Se asegura de que esté por encima del contenido */
+  z-index: 100; /* Asegura que esté sobre otros elementos */
 }
 
-.sidebar.expanded {
-  width: 300px;
-}
-
+/* Barra de búsqueda */
 .search-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background: #000000;
   padding: 15px;
   border-radius: 5px;
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 250px;
-  z-index: 150; /* Asegura que esté por encima de la lista */
+  position: relative; /* Importante para la lista */
+  width: 100%;
+  max-width: 250px;
+  z-index: 150;
 }
 
 .search-bar input {
@@ -47,33 +43,45 @@
   color: white;
 }
 
+/* Lista de canciones debajo del buscador */
 .song-list {
   list-style: none;
   padding: 0;
-  margin-top: 60px; /* Evita que el input se solape con la lista */
-  position: absolute; /* Permite que la lista se superponga sin mover otros elementos */
+  margin-top: 5px; /* Espacio entre la barra de búsqueda y la lista */
+  position: absolute; /* Se posiciona en relación con la search-bar */
+  top: 100%; /* Aparece justo debajo de la barra */
+  left: 0;
   width: 100%;
+  max-width: 250px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  max-height: 300px; /* Para evitar que crezca demasiado */
+  overflow-y: auto; /* Agrega scroll si hay muchas canciones */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
   z-index: 50;
-  background: rgba(0, 0, 0, 0.9); /* Fondo semi-transparente para destacar */
 }
 
 .song-list li {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  background: #111;
   padding: 10px;
-  border-radius: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.song-list li:last-child {
+  border-bottom: none;
 }
 
 .song-image {
   width: 50px;
   height: 50px;
   margin-right: 10px;
+  border-radius: 5px;
 }
 
 .song-info {
   flex: 1;
+  color: white;
 }
 
 .song-actions button {

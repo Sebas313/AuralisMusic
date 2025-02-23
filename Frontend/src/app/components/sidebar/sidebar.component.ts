@@ -1,19 +1,20 @@
-import { Component, EventEmitter, Output, HostListener, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { SongService } from '../../services/song.service'; // Asegúrate de importar correctamente el servicio
-import { Howl, Howler } from 'howler';
+import WaveSurfer from 'wavesurfer.js';
+import { SongService } from '../../services/song.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule], // Agregar HttpClientModule
+  imports: [CommonModule, FormsModule, HttpClientModule], 
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   @Output() songSelected = new EventEmitter<any>();
+  @ViewChild('waveform', { static: false }) waveformRef!: ElementRef;
 
   isExpanded = false;
   isSearchVisible = false;
@@ -23,7 +24,7 @@ export class SidebarComponent implements OnInit {
   playlist: any[] = [];
   songs: any[] = [];
   filteredSongs: any[] = [];
-  sound: Howl | null = null;
+  wavesurfer: WaveSurfer | null = null;
 
   constructor(private songService: SongService) {}
 
@@ -31,11 +32,17 @@ export class SidebarComponent implements OnInit {
     this.fetchSongs();
   }
 
+  ngOnDestroy() {
+    if (this.wavesurfer) {
+      this.wavesurfer.destroy();
+    }
+  }
+
   fetchSongs() {
     this.songService.getCanciones().subscribe(
       (data) => {
         this.songs = data;
-        this.filteredSongs = [...this.songs]; // Inicializar la lista filtrada
+        this.filteredSongs = [...this.songs];
       },
       (error) => {
         console.error('Error al obtener las canciones:', error);
@@ -50,15 +57,7 @@ export class SidebarComponent implements OnInit {
   filterSongs(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const searchTerm = inputElement.value.trim().toLowerCase();
-
-    if (!searchTerm) {
-      this.filteredSongs = this.songs; 
-      return;
-    }
-
-    this.filteredSongs = this.songs.filter(song => 
-      song.cancion?.toLowerCase().includes(searchTerm)
-    );
+    this.filteredSongs = searchTerm ? this.songs.filter(song => song.cancion?.toLowerCase().includes(searchTerm)) : [...this.songs];
   }
 
   toggleSearch() {
@@ -76,21 +75,44 @@ export class SidebarComponent implements OnInit {
   }
 
   playSong(song: any) {
-    if (this.sound) {
-      this.sound.stop();
+    if (!song.fileUrl) {
+      console.error('La canción no tiene URL de audio');
+      return;
     }
 
-    this.sound = new Howl({
-      src: [song.audioUrl],
-      html5: true,
-      onend: () => {
-        this.isPlaying = false;
-      }
-    });
+    this.isPlaying = false; // 🔹 Asegura que el cuadro nunca aparezca
 
-    this.sound.play();
-    this.isPlaying = true;
-    this.songSelected.emit(song);
+    setTimeout(() => {
+      if (!this.waveformRef || !this.waveformRef.nativeElement) {
+        console.error('El elemento waveformRef aún no está disponible.');
+        return;
+      }
+
+      if (this.wavesurfer) {
+        this.wavesurfer.destroy();
+      }
+
+      this.wavesurfer = WaveSurfer.create({
+        container: this.waveformRef.nativeElement,
+        waveColor: 'lightblue',
+        progressColor: 'blue',
+        barWidth: 2,
+        height: 60
+      });
+
+      const audioUrl = song.fileUrl.startsWith('http') ? song.fileUrl : `http://localhost:3000/public/${song.fileUrl.replace(/^\/+/, '')}`;
+
+      this.wavesurfer.load(audioUrl);
+      this.wavesurfer.play();
+
+      this.songSelected.emit(song);
+
+      this.wavesurfer.on('finish', () => {
+        this.isPlaying = false;
+      });''
+    }, 100);
+    console.log('waveformRef:', this.waveformRef?.nativeElement);
+
   }
 
   @HostListener('document:click', ['$event'])
