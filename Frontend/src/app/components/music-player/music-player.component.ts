@@ -14,13 +14,14 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [CommonModule, HttpClientModule]
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
-  @Input() currentSong: Cancion | null = null; // ✅ Ahora puede recibir el valor de HomeComponent
-  @Input() isPlaying: boolean = false; // ✅ Ahora puede recibir el valor de HomeComponent
-  @Input() playlist: Cancion[] = []; // ✅ Ahora puede recibir el valor de HomeComponent
+  @Input() currentSong: Cancion | null = null;
+  @Input() isPlaying: boolean = false;
+  @Input() playlist: Cancion[] = [];
 
   sound: Howl | null = null;
   songSubscription!: Subscription;
   playSubscription!: Subscription;
+  songsSubscription!: Subscription;
   duration: number = 0;
   currentTime: number = 0;
   interval: any;
@@ -46,6 +47,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.songSubscription.unsubscribe();
     this.playSubscription.unsubscribe();
+    this.songsSubscription?.unsubscribe();
     this.destroySound();
     clearInterval(this.interval);
   }
@@ -112,22 +114,21 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   }
 
   playRandom() {
-    this.songService.getCanciones().subscribe({
+    this.songsSubscription = this.songService.getCanciones().subscribe({
       next: (canciones) => {
-        if (canciones.length === 0) {
+        if (!canciones.length) {
           console.error('No hay canciones disponibles.');
           return;
         }
-  
+
         const randomSong = canciones[Math.floor(Math.random() * canciones.length)];
-        console.log('Canción aleatoria seleccionada:', randomSong);
-  
-        this.songService.setCurrentSong(randomSong); // Asegura que la canción seleccionada se actualiza
+        console.log('🎵 Canción aleatoria seleccionada:', randomSong);
+
+        this.songService.setCurrentSong(randomSong);
       },
       error: (err) => console.error('Error al obtener canciones:', err)
     });
   }
-  
 
   private destroySound() {
     if (this.sound) {
@@ -140,4 +141,3 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     this.duration = 0;
   }
 }
-

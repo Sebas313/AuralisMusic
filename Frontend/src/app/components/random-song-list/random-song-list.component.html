@@ -1,7 +1,6 @@
-<div *ngIf="isPlaying && currentSong" class="now-playing">
+<div *ngIf="currentSong" class="now-playing">
   <p>🎵 Reproduciendo: {{ currentSong?.album || 'Desconocido' }} - {{ currentSong?.cantante?.nombre || 'Artista desconocido' }}</p>
-  <div #waveform class="waveform-container"></div>
-
+  <div #waveform class="waveform"></div>
 </div>
 
 <ul class="song-list">
@@ -24,10 +23,5 @@
       <button title="Añadir a playlist" (click)="addToPlaylist(song)">➕</button>
     </div>
   </li>
-  <app-music-player 
-  *ngIf="showMusicPlayer" 
-  [currentSong]="currentSong" 
-  [isPlaying]="isPlaying"
-  [playlist]="playlist">
-  </app-music-player>
 </ul>
+
