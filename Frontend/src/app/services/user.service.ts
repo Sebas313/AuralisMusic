@@ -5,11 +5,13 @@ import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/u
 import { tap, catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { API_URL } from '../../config'; // 👈 Importa la URL desde config.ts
+
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  public apiUrl = 'http://localhost:3000/Api';
+  public apiUrl = `${API_URL}/Api`;
   constructor(
     private http: HttpClient, 
     private authService: AuthService, 
