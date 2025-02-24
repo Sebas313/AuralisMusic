@@ -25,7 +25,7 @@ export class VerificarEmailComponent implements OnInit {
             console.log('📥 Respuesta del backend:', response);
             if (response?.success && response?.token) {
               localStorage.setItem('authToken', response.token);
-              this.router.navigate(['/home']); // ✅ Redirige al login
+              this.router.navigate(['/login']); // ✅ Redirige al login
             } else {
               console.log('⚠️ Token inválido o expirado');
               this.router.navigate(['/register']); // 🚨 Redirige si el token no sirve
