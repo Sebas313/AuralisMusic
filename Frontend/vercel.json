@@ -2,13 +2,6 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "builds": [
-    {
-      "src": "angular.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/frontend/browser"
-      }
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/frontend/browser"
 }
