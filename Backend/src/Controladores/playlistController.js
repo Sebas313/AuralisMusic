@@ -36,7 +36,7 @@ export const crear = async (req, res) => {
       console.log("Canciones encontradas:", cancionesEncontradas);
   
       // Validar existencia del usuario
-      const usuarioEncontrado = await Usuario.findOne({nombre: creadoPor});
+      const usuarioEncontrado = await Usuario.findOne({ _id: creadoPor });
       console.log("Usuario encontrado:", usuarioEncontrado);
   
       if (!usuarioEncontrado) {
