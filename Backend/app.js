@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import { connectDB } from "./src/config/database.js"; 
+import { connectDB } from "./src/config/database.js";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
@@ -27,7 +27,20 @@ connectDB()
   });
 
 const app = express();
-app.use(cors({ origin: "*", credentials: true }));
+
+// 📌 Configuración de CORS para local y producción
+const allowedOrigins = [
+  "http://localhost:4200", // Angular local
+  "http://localhost:3000", // Backend local
+  "https://auralismusic-production.up.railway.app", // Producción
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 // 📂 Middleware para JSON y formularios
 app.use(express.json());
@@ -53,6 +66,11 @@ app.use("/Api", cantantesrutas);
 app.use("/Api", cancionesrutas);
 app.use("/Api", playlistrutas);
 app.use("/Api", uploadRoutes);
+
+// 🌐 Ruta por defecto para verificar estado del servidor
+app.get("/", (req, res) => {
+  res.json({ message: "🚀 API funcionando correctamente" });
+});
 
 // 🚀 Iniciar el servidor
 const PORT = process.env.PORT || 3000;
