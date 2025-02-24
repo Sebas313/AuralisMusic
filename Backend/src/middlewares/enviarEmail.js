@@ -29,32 +29,35 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
   // Generar token JWT válido por 24 horas
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-  
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
-  // Configuración del correo
-  const mailOptions = {
-    from: process.env.MAIL_USER,
-    to: email,
-    subject: 'Verificación de cuenta',
-    html: `
-      <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd;">
-        <h2 style="color: #B2A179;">¡Bienvenido!</h2>
-        <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
-        
-        <a href="${backendUrl}/Api/verificar/${encodeURIComponent(token)}"
-          style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
-          Verificar mi cuenta
-        </a>
-  
-        <p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
-        <p style="color: #007BFF; word-wrap: break-word;">
-          ${backendUrl}/Api/verificar/${encodeURIComponent(token)}
-        </p>
-  
-        <p style="color: #666; font-size: 14px;">Este enlace es válido por <strong>24 horas</strong>.</p>
-      </div>
-    `,
-  };
+
+  const backendUrl = process.env.NODE_ENV === "production"
+  ? process.env.BACKEND_URL_PROD
+  : process.env.BACKEND_URL_LOCAL;
+
+// Configuración del correo
+const mailOptions = {
+  from: process.env.MAIL_USER, // Usar la dirección de correo desde la variable de entorno
+  to: email,
+  subject: 'Verificación de cuenta',
+  html: `
+    <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd;">
+      <h2 style="color: #B2A179;">¡Bienvenido!</h2>
+      <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
+      
+      <a href="${backendUrl}/Api/verificar/${encodeURIComponent(token)}"
+        style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
+        Verificar mi cuenta
+      </a>
+
+      <p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
+      <p style="color: #007BFF; word-wrap: break-word;">
+        ${backendUrl}/Api/verificar/${encodeURIComponent(token)}
+      </p>
+
+      <p style="color: #666; font-size: 14px;">Este enlace es válido por <strong>24 horas</strong>.</p>
+    </div>
+  `,
+};
   
 
   try {
