@@ -1,15 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { catchError } from 'rxjs/operators';
+import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
-
+  private apiUrl = `${API_URL}/Api/Playlist`;
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/Api/Playlist';
   url: any;
 
   getPlaylists(): Observable<any[]> {

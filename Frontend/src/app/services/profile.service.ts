@@ -2,14 +2,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_URL } from '../../config'; // 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
-
-  private apiUrl = 'http://localhost:3000/Api/Usuario/'; 
-
+  private apiUrl = `${API_URL}/Api/Usuario/`;
   constructor(private http: HttpClient) { }
 
   // Obtener el perfil del usuario

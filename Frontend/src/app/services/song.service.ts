@@ -3,12 +3,13 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Cancion } from '../models/cancion.model';
+import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
 
 @Injectable({
   providedIn: 'root',
 })
 export class SongService {
-  private apiUrl = 'http://localhost:3000/Api/Canciones';
+  private apiUrl = `${API_URL}/Api/Canciones`
   private playlist: Cancion[] = [];
 
   private playlistSubject = new BehaviorSubject<Cancion[]>(this.playlist);

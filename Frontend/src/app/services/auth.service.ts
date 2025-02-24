@@ -1,16 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators'
+import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/Api'; // URL de tu API
+  private apiUrl = `${API_URL}/Api`;
   private authStatus = new BehaviorSubject<boolean>(this.isLogged()); // Estado inicial basado en localStorage
   isLogged$ = this.authStatus.asObservable(); // Observable para actualizar la UI en tiempo real
 
