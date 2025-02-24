@@ -36,10 +36,10 @@ export class UserService {
     }).pipe(
       tap(response => {
         console.log('📥 Respuesta del backend (verificación de email):', response);
-
+  
         if (response?.success && response?.token && response?.user) {
           console.log('🔑 Token válido. Guardando datos del usuario...');
-
+  
           // Guarda el token y el rol en localStorage
           localStorage.setItem('authToken', response.token);
           localStorage.setItem('user', JSON.stringify({
@@ -48,15 +48,19 @@ export class UserService {
             email: response.user.email,
             rol: response.user.rol || 'usuario', // Guarda el rol del usuario
           }));
-
+  
           console.log('✅ Usuario guardado en localStorage:', JSON.parse(localStorage.getItem('user')!));
-
-          // Redirige según el rol
+  
+          // Redirige según el entorno
           const redirectUrl = environment.production
             ? `${environment.frontendUrl}/login?verified=true`
             : '/login?verified=true'; // URL para desarrollo
-          this.router.navigate([redirectUrl]);
-
+  
+          console.log("Redirigiendo a:", redirectUrl);  // Agrega un log para ver si la redirección se está llamando
+          setTimeout(() => {  // Agrega un pequeño retardo para asegurar que se complete la operación
+            this.router.navigate([redirectUrl]);
+          }, 500);
+  
         } else {
           console.log('⚠️ Token inválido o expirado');
           this.router.navigate(['/register']);
@@ -68,7 +72,7 @@ export class UserService {
       })
     );
   }
-
+  
 
   fetchUserProfile(userId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/usuario/${userId}`).pipe(
