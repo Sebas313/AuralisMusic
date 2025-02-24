@@ -33,25 +33,32 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
-              "outputHashing": "all"
+              
+  "fileReplacements": [
+    {
+      "replace": "src/environments/environment.ts",
+      "with": "src/environments/environment.prod.ts"
+    }
+  ],
+  "budgets": [
+    {
+      "type": "initial",
+      "maximumWarning": "500kB",
+      "maximumError": "1MB"
+    },
+    {
+      "type": "anyComponentStyle",
+      "maximumWarning": "4kB",
+      "maximumError": "8kB"
+    }
+  ],
+  "outputHashing": "all",
+  "define": {
+    "process.env.VITE_API_URL": "\"https://tu-api-en-produccion.com\"",
+    "process.env.FRONTEND_URL": "\"https://auralis-music.vercel.app\""
+  
+}
+
             },
             "development": {
               "optimization": false,
