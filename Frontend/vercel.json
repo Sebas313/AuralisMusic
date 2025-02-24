@@ -4,6 +4,6 @@
   ],
   "build": {
     "command": "npx ng build --configuration=production",
-    "outputDirectory": "dist/Frontend/browser"
+    "outputDirectory": "dist/frontend/browser"
   }
 }
