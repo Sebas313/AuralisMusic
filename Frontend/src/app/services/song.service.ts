@@ -4,12 +4,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Cancion } from '../models/cancion.model';
 import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
+import { environment } from '../../environments/environment'; // 👈 Importa desde environments
 
 @Injectable({
   providedIn: 'root',
 })
 export class SongService {
-  private apiUrl = `${API_URL}/Api/Canciones`
+  private apiUrl = `${environment.apiUrl}/Api/Canciones`; // 👈 Usa environment.apiUrl
+
   private playlist: Cancion[] = [];
 
   private playlistSubject = new BehaviorSubject<Cancion[]>(this.playlist);
