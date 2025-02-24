@@ -2,8 +2,5 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "build": {
-    "command": "npx ng build --configuration=production",
-    "outputDirectory": "dist/frontend/browser"
-  }
+  "outputDirectory": "dist/frontend/browser"
 }
