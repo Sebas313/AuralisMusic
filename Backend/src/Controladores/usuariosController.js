@@ -86,7 +86,7 @@ export const verifyEmail = async (req, res) => {
     }
 
     // 🔄 Si la solicitud viene del navegador (correo electrónico), redirigir al frontend
-    res.redirect("http://localhost:4200/login?verified=true");
+    res.redirect("https://auralis-music.vercel.app/login");
 
   } catch (error) {
     console.error(error);
