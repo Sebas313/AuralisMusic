@@ -27,24 +27,7 @@ connectDB()
   });
 
 const app = express();
-
-// 🌍 Configuración de CORS
-const allowedOrigins = ["https://auralis-music.vercel.app", "http://localhost:4200"];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("❌ No permitido por CORS"));
-    }
-  },
-  methods: "GET,PUT,POST,DELETE,OPTIONS,HEAD",
-  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-  credentials: true, // Permitir cookies y headers con credenciales
-};
-
-app.use(cors(corsOptions));
+app.use(cors({ origin: "*", credentials: true }));
 
 // 📂 Middleware para JSON y formularios
 app.use(express.json());
