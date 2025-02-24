@@ -1,5 +1,14 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-    "outputDirectory": "dist/frontend/browser"
-  }
-  
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "builds": [
+    {
+      "src": "angular.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/frontend/browser"
+      }
+    }
+  ]
+}
