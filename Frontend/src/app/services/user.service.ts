@@ -7,16 +7,19 @@ import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { API_URL } from '../../config'; // 👈 Importa la URL desde config.ts
 import { environment } from '../../environments/environment'
+
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   public apiUrl = `${environment.apiUrl}/Api`;
   constructor(
+   
     private http: HttpClient, 
     private authService: AuthService, 
     private router: Router
-  ) {}
+  ) { console.log('🔍 API URL:', environment.apiUrl);
+    console.log('🔍 FRONTEND URL:', environment.frontendUrl);}
   
 
   register(registerData: RegisterData): Observable<RegisterResponse> {
