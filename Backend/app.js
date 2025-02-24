@@ -45,9 +45,6 @@ if (!fs.existsSync(uploadsPath)) {
 // 📂 Servir archivos estáticos
 app.use("/public/uploads", express.static(uploadsPath));
 
-/**
- * 📌 Rutas de la API
- */
 app.use("/Api", usuariosrutas);
 app.use("/Api", cantantesrutas);
 app.use("/Api", cancionesrutas);
