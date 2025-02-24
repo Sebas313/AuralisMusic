@@ -18,21 +18,29 @@ import uploadRoutes from "./src/rutas/uploads.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// 🔗 Conectar base de datos con mejor manejo de errores
-connectDB()
-  .then(() => console.log("✅ Conexión a la base de datos establecida"))
-  .catch((err) => {
-    console.error("❌ Error en la conexión de la base de datos:", err);
-    process.exit(1); // Sale del proceso si la conexión falla
-  });
-
 const app = express();
+
+// 🛢️ Conectar a la base de datos
+async function startServer() {
+  try {
+    await connectDB();
+    console.log("✅ Base de datos conectada con éxito");
+
+    // 🚀 Iniciar servidor después de la conexión
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor corriendo en: http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Error al conectar la base de datos:", error);
+    process.exit(1);
+  }
+}
 
 // 📌 Configuración de CORS para local y producción
 const allowedOrigins = [
-  "http://localhost:4200", // Angular local
-  "http://localhost:3000", // Backend local
-  "https://auralismusic-production.up.railway.app", // Producción
+  process.env.BACKEND_URL_LOCAL || "http://localhost:3000",
+  process.env.BACKEND_URL_PROD || "https://auralismusic-production.up.railway.app",
 ];
 
 app.use(
@@ -46,17 +54,20 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 📂 Definir la carpeta de uploads
+// 📂 ⚠️ Manejo de `uploads` en Railway
 const uploadsPath = path.join(__dirname, "public/uploads");
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true });
-  console.log("📁 Carpeta 'uploads' creada en:", uploadsPath);
-} else {
-  console.log("📁 Carpeta 'uploads' ya existe en:", uploadsPath);
-}
 
-// 📂 Servir archivos estáticos
-app.use("/public/uploads", express.static(uploadsPath));
+if (process.env.NODE_ENV !== "production") {
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+    console.log("📁 Carpeta 'uploads' creada:", uploadsPath);
+  } else {
+    console.log("📁 Carpeta 'uploads' ya existe:", uploadsPath);
+  }
+  app.use("/public/uploads", express.static(uploadsPath));
+} else {
+  console.log("⚠️ Railway no almacena archivos localmente. Usa un servicio como Cloudinary.");
+}
 
 /**
  * 📌 Rutas de la API
