@@ -54,7 +54,7 @@ export class UserService {
   
           // ✅ Redirige al home solo si tiene el rol adecuado
           if (response.user.rol === 'admin' || response.user.rol === 'usuario') {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/login']);
           } else {
             console.warn('🚫 Acceso denegado: Rol no autorizado');
             this.router.navigate(['/login']); // O a una página de acceso denegado
