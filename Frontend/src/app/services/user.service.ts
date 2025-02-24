@@ -36,32 +36,30 @@ export class UserService {
     }).pipe(
       tap(response => {
         console.log('📥 Respuesta del backend (verificación de email):', response);
-  
+
         if (response?.success && response?.token && response?.user) {
           console.log('🔑 Token válido. Guardando datos del usuario...');
-  
-          // ✅ Guarda el token y el rol en localStorage
+
+          // Guarda el token y el rol en localStorage
           localStorage.setItem('authToken', response.token);
           localStorage.setItem('user', JSON.stringify({
             _id: response.user._id,
             nombre: response.user.nombre,
             email: response.user.email,
-            rol: response.user.rol || 'usuario' // 👀 Guarda el rol del usuario
+            rol: response.user.rol || 'usuario', // Guarda el rol del usuario
           }));
-  
+
           console.log('✅ Usuario guardado en localStorage:', JSON.parse(localStorage.getItem('user')!));
-          console.log('🎭 Rol del usuario:', response.user.rol);
-  
-          // ✅ Redirige al home solo si tiene el rol adecuado
-          if (response.user.rol === 'admin' || response.user.rol === 'usuario') {
-            this.router.navigate(['/login']);
-          } else {
-            console.warn('🚫 Acceso denegado: Rol no autorizado');
-            this.router.navigate(['/login']); // O a una página de acceso denegado
-          }
+
+          // Redirige según el rol
+          const redirectUrl = environment.production
+            ? `${environment.frontendUrl}/login?verified=true`
+            : '/login?verified=true'; // URL para desarrollo
+          this.router.navigate([redirectUrl]);
+
         } else {
           console.log('⚠️ Token inválido o expirado');
-          this.router.navigate(['/register']); // Redirige si la verificación falla
+          this.router.navigate(['/register']);
         }
       }),
       catchError(error => {
@@ -70,11 +68,6 @@ export class UserService {
       })
     );
   }
-  
-  
-  
-
-
 
 
   fetchUserProfile(userId: string): Observable<any> {
