@@ -29,6 +29,8 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
   // Generar token JWT válido por 24 horas
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
+  
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   // Configuración del correo
   const mailOptions = {
     from: process.env.MAIL_USER,
@@ -39,20 +41,21 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
         <h2 style="color: #B2A179;">¡Bienvenido!</h2>
         <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
         
-      <a href="http://localhost:3000/Api/verificar/${encodeURIComponent(token)}"
-   style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
-  Verificar mi cuenta
-</a>
-
-<p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
-<p style="color: #007BFF; word-wrap: break-word;">
-  http://localhost:3000/Api/verificar/${encodeURIComponent(token)}
-</p>
-
+        <a href="${backendUrl}/Api/verificar/${encodeURIComponent(token)}"
+          style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
+          Verificar mi cuenta
+        </a>
+  
+        <p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
+        <p style="color: #007BFF; word-wrap: break-word;">
+          ${backendUrl}/Api/verificar/${encodeURIComponent(token)}
+        </p>
+  
         <p style="color: #666; font-size: 14px;">Este enlace es válido por <strong>24 horas</strong>.</p>
       </div>
     `,
   };
+  
 
   try {
     // Enviar correo
