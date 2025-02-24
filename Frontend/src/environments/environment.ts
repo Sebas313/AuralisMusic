@@ -1,5 +1,4 @@
 export const environment = {
-    production: false,
-    apiUrl: 'https://auralismusic-production.up.railway.app'
-  };
-  
+  production: false,
+  apiUrl: 'http://localhost:3000' // O la URL local de tu backend
+};
