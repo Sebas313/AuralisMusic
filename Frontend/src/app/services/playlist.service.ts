@@ -3,12 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
+import { environment } from '../../environments/environment'; // ✅ Importa desde environment.ts
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
-  private apiUrl = `${API_URL}/Api/Playlist`;
+  private apiUrl = `${environment.apiUrl}/Api/Playlist`; 
   private http = inject(HttpClient);
   url: any;
 
