@@ -29,7 +29,7 @@ router.delete("/canciones/:id", verificarRoles(["cantante"]), cancionesControlle
 
 router.put("/canciones/:id",verificarRoles(["cantante"]), cancionesController.Actualizar);
 
-router.delete("/canciones/:id",verificarRoles(["cantante"]), cancionesController.Eliminar);
+
  
 export default router;
 

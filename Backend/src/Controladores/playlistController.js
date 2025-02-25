@@ -1,7 +1,8 @@
-import playList from "../Modelos/playlistModelos.js";
+import PlayList from "../Modelos/playlistModelos.js";
 import Canciones from "../Modelos/cancionesModelos.js";
 import Usuario from "../Modelos/usuariosModelos.js";
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+const { ObjectId } = mongoose.Types;
 
 export const crear = async (req, res) => {
     try {
@@ -56,7 +57,7 @@ export const crear = async (req, res) => {
       }
   
       // Crear la nueva playlist
-      const nuevaPlaylist = new playList({
+      const nuevaPlaylist = new PlayList({
         canciones: cancionesEncontradas.map((c) => c._id), // Guardar los `_id` encontrados
         creadoPor: usuarioEncontrado._id,
         nombre,
@@ -82,8 +83,8 @@ export const crear = async (req, res) => {
 
 export const listar = async (req, res) => {
   try {
-    const Playlist = await playList.find();
-    res.status(200).json(Playlist);
+    const playlist = await PlayList.find();
+    res.status(200).json(playlist);
   } catch (error) {
     console.error("Error al obtener las canciones", error.message);
     res
@@ -93,23 +94,24 @@ export const listar = async (req, res) => {
 };
 
 export const ObtenerPorId = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Type.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "ID no valido" });
-  }
+  // const { id } = req.params;
+  // if (!mongoose.Type.ObjectId.isValid(id)) {
+  //   return res.status(400).json({ message: "ID no valido" });
+  // }
+  const id = new mongoose.Types.ObjectId(req.params.id);
   try {
-    const Playlist = await playList.findById(id);
+    const playlist = await PlayList.findById(id);
 
-    if (!Playlist) {
+    if (!playlist) {
       return res.status(400).json({ message: "playlist no encontrado" });
     }
 
-    res.status(200).json(playList);
+    res.status(200).json(playlist);
   } catch (error) {
     console.error("Error al obtener la cancion", error.message);
     res
       .status(500)
-      .json({ message: "Error al obtener la playlisy", error: error.message });
+      .json({ message: "Error al obtener la playlist", error: error.message });
   }
 };
 
@@ -156,7 +158,7 @@ export const Actualizar = async (req, res) => {
 
     console.log("🎵 Canciones encontradas:", cancionesIds);
 
-    const playlistExistente = await playList.findOne({ _id: id, creadoPor });
+    const playlistExistente = await PlayList.findOne({ _id: id, creadoPor });
     if (!playlistExistente) {
       return res.status(404).json({ message: "Playlist no encontrada" });
     }
@@ -174,7 +176,7 @@ export const Actualizar = async (req, res) => {
         });
     }
 
-    const playlistActualizada = await playList.findByIdAndUpdate(
+    const playlistActualizada = await PlayList.findByIdAndUpdate(
       id,
       {
         canciones: [...playlistExistente.canciones, ...cancionesIds],
@@ -201,7 +203,7 @@ export const Eliminar = async (req, res) => {
     return res.status(400).json({ message: " ID no valido" });
   }
   try {
-    const playlistEliminada = await playList.findByIdAndDelete(id);
+    const playlistEliminada = await PlayList.findByIdAndDelete(id);
 
     if (!playlistEliminada) {
       return res.status(404).json({ message: "playlsit no encontrada" });

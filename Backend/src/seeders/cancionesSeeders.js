@@ -6,7 +6,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
 dotenv.config();
 
 // Verificar que la URI está definida
-if (!process.env.MONGODB_URI) {
+if (!process.env.MONGODB_URI_LOCAL) {
   console.error("❌ No se encontró la URI de conexión a MongoDB. Revisa tu archivo .env");
   process.exit(1);
 }
@@ -32,7 +32,7 @@ const canciones = [
 
 const cancionesSeeder = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(process.env.MONGODB_URI_LOCAL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
