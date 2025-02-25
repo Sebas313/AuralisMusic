@@ -56,9 +56,9 @@ export class UserService {
   
           // Redirige según el entorno
           const redirectUrl = environment.production
-            ? `${environment.frontendUrl}/login?verified=true`
-            : '/login?verified=true'; // URL para desarrollo
-  
+            ? `${environment.frontendUrl}/login`
+            : '/login'; // URL para desarrollo
+          console.log(environment.frontendUrl)
           console.log("Redirigiendo a:", redirectUrl);  // Agrega un log para ver si la redirección se está llamando
           setTimeout(() => {  // Agrega un pequeño retardo para asegurar que se complete la operación
             this.router.navigate([redirectUrl]);

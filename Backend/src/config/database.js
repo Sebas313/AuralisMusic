@@ -23,3 +23,4 @@ export async function connectDB() {
         process.exit(1); // Cierra el proceso solo si es un error grave
     }
 }
+export default connectDB

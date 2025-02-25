@@ -15,8 +15,8 @@ export const crearCantante = async (req, res) => {
       avatar: avatar || null,
     });
 
-    await nuevoCantante.save();
-    res.status(201).json({ message: "Cantante guardado con éxito", cantante: nuevoCantante });
+    const cantanteGuardado = await nuevoCantante.save();
+    res.status(201).json({ message: "Cantante guardado con éxito", cantante: cantanteGuardado });
   } catch (error) {
     console.error("Error al guardar el cantante", error.message);
     res.status(500).json({ message: "Error al guardar el cantante" });
