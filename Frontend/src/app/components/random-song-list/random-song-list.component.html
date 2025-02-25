@@ -7,14 +7,16 @@
   <li *ngFor="let song of songs" class="song-item">
     <img 
       *ngIf="song.imagen" 
-      [src]="'http://localhost:3000/public/uploads/' + song.imagen" 
+      [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
       alt="{{ song.album || 'Sin título' }} Cover" 
       class="song-image" 
     />
     
     <div class="song-info">
       <h4>{{ song.album || 'Álbum desconocido' }}</h4>
-      <p>{{ song.cantante?.nombre || 'Artista desconocido' }}</p>
+      <p>{{ song.cantante?.cantante || 'Artista desconocido' }}</p>
+
+
     </div>
     
     <div class="song-actions">
@@ -24,4 +26,3 @@
     </div>
   </li>
 </ul>
-

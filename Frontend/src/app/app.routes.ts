@@ -6,7 +6,6 @@ import { Playlst } from './pages/playlist/playlst.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CantanteGuard } from './guards/cantante.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { UploadSongComponent } from './pages/upload-song/upload-song.component';
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 import { SubirCancionComponent } from './pages/subir-cancion/subir-cancion.component';
 import { VerificarComponent } from './pages/verificar/verificar.component';
@@ -15,7 +14,6 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
   { path: 'playlist', component: Playlst, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
-  { path: 'upload-song', component: UploadSongComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent}, 
   { path: 'register', component: RegisterComponent }, 
   { path: 'subir', component: SubirCancionComponent, canActivate: [CantanteGuard] },           

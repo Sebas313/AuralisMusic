@@ -1,43 +1,44 @@
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
-// Definir la carpeta de almacenamiento de archivos
-const uploadDir = path.resolve("public/uploads");
-
-// Verificar si la carpeta de uploads existe, si no, crearla
-if (!fs.existsSync(uploadDir)) {
-    console.log("Creando carpeta de uploads en:", uploadDir);
-    fs.mkdirSync(uploadDir, { recursive: true });
-} else {
-    console.log("Carpeta de uploads ya existe:", uploadDir);
-}
-
-// Configuración del almacenamiento con multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueSuffix);
-    }
+// 📌 Configurar Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
+// 📌 Filtro de archivos permitidos
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("audio/")) {
-        cb(null, true);
-    } else {
-        cb(new Error("❌ Solo se permiten imágenes y archivos de audio."), false);
-    }
+  if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("audio/")) {
+    cb(null, true); // ✅ Permitir imágenes y audios
+  } else {
+    cb(new Error("❌ Formato de archivo no permitido"), false);
+  }
 };
 
+// 📌 Configurar almacenamiento en Cloudinary
+const storageCloudinary = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    let folder = "uploads"; // Carpeta por defecto
+    let resource_type = "auto"; // Permite imágenes y audios
 
-// Configurar multer para múltiples archivos
-const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter
+    if (file.mimetype.startsWith("audio/")) {
+      folder = "audios"; // Guardar audios en una carpeta separada
+    }
+
+    return {
+      folder,
+      allowed_formats: ["jpg", "png", "jpeg", "gif", "webp", "mp3", "wav", "aac"],
+      resource_type,
+    };
+  },
 });
 
-export default upload;
+// 📌 Configurar Multer para Cloudinary
+const uploadCloudinary = multer({ storage: storageCloudinary, fileFilter });
+
+// 📌 Exportar el middleware para su uso en otros archivos
+export default uploadCloudinary;

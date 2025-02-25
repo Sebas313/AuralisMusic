@@ -30,11 +30,13 @@ export class RandomSongListComponent implements OnInit {
   fetchSongs() {
     this.songService.getCanciones().subscribe({
       next: (data) => {
+        console.log("📥 Canciones recibidas:", data);
         this.songs = data.filter(song => song.fileUrl);
       },
       error: (err) => console.error('❌ Error al obtener canciones:', err)
     });
   }
+  
 
   playSong(song: any) {
     if (!song.fileUrl) {
@@ -42,7 +44,7 @@ export class RandomSongListComponent implements OnInit {
       return;
     }
 
-    const audioUrl = song.fileUrl.startsWith('http') ? song.fileUrl : `http://localhost:3000/public/${song.fileUrl.replace(/^\/+/, '')}`;
+    const audioUrl = song.fileUrl; // ✅ Usa la URL de Cloudinary directamente
 
     // Si hay una canción reproduciéndose, la detenemos antes de cambiar
     if (this.currentSong && this.isPlaying) {

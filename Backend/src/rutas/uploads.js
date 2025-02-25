@@ -1,28 +1,24 @@
 import express from "express";
-import upload from "../config/multer.js";
+import multer from "multer";
+import upload from "../config/multer.js"; // Se importa la configuración de Multer
 import { uploadSingleImage, uploadMultipleImages, uploadAudioFile } from "../Controladores/uploadsController.js";
 
 const router = express.Router();
 
-// Subida de imagen de perfil
-router.post("/single", upload.single("imagePerfil"), uploadSingleImage);
+// 📸 Subida de imagen de perfil (campo: "imagePerfil")
+router.post("/single", upload.single("imageCover"), uploadSingleImage);
 
-// Subida de múltiples imágenes
+// 📸 Subida de múltiples imágenes (campo: "photos", máximo 3)
 router.post("/multi", upload.array("photos", 3), uploadMultipleImages);
 
-// Subida de canciones
-router.post("/canciones", (req, res, next) => {
-    upload.single("audioFile")(req, res, (err) => {
-        if (err) {
-            return res.status(400).json({ message: `❌ Error al subir archivo: ${err.message}` });
-        }
-        if (!req.file) {
-            return res.status(400).json({ message: "❌ No se ha recibido ningún archivo." });
-        }
-
-        const audioUrl = `${req.protocol}://${req.get("host")}/public/uploads/${req.file.filename}`;
-        res.status(201).json({ message: "✅ Canción subida con éxito", audioUrl });
-    });
-});
+// 🎵 Subida de canciones con imagen de portada (campo: "song" y "image")
+router.post(
+  "/canciones",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "song", maxCount: 1 },
+  ]),
+  uploadAudioFile
+);
 
 export default router;
