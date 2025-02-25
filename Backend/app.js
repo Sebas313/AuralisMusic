@@ -5,9 +5,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { v2 as cloudinary } from "cloudinary";
-import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+import upload from "./src/config/multer.js"; // 📌 Importar configuración de Multer
 
 // 📌 Importar rutas
 import usuariosrutas from "./src/rutas/usuariosrutas.js";
@@ -15,35 +13,6 @@ import cancionesrutas from "./src/rutas/cancionesrutas.js";
 import cantantesrutas from "./src/rutas/cantantesrutas.js";
 import playlistrutas from "./src/rutas/playlistrutas.js";
 import uploadRoutes from "./src/rutas/uploads.js";
-
-// 📌 Configuración de Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// 📌 Configurar almacenamiento en Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    let folder = "uploads";
-    let resource_type = "image"; // Por defecto es imagen
-
-    if (file.mimetype.startsWith("audio/")) {
-      folder = "audios";
-      resource_type = "auto";
-    }
-
-    return {
-      folder,
-      allowed_formats: ["jpg", "png", "jpeg", "gif", "webp", "mp3", "wav", "aac"],
-      resource_type,
-    };
-  },
-});
-
-const upload = multer({ storage });
 
 // 📌 Configuración de __dirname
 const __filename = fileURLToPath(import.meta.url);

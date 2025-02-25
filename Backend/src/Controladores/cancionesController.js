@@ -32,33 +32,18 @@ const buscarOCrearCantante = async (cantanteNombre) => {
 };
 export const Crear = async (req, res) => {
   try {
-    console.log("📥 Datos recibidos en req.body:", req.body);
-    console.log("📥 Archivos recibidos en req.files:", req.files);
-
-    if (!req.files || !req.files.song || !req.files.image) {
+    if (!req.files || !req.files.song || !req.files.imageCover) {
       return res.status(400).json({ message: "❌ Debes subir una imagen y un archivo de audio." });
     }
 
-    const { titulo, album, genero, cantante } = req.body;
-    const songPath = req.files.song[0].filename;
-    const imagePath = req.files.image[0].filename;
+    const { cancion: titulo, album, genero, cantante } = req.body;
+    const imagePath = req.files.imageCover[0].filename;
+    const fileUrl = req.files.song[0].path; // ✅ Usar la URL de Cloudinary
 
-    console.log("🔍 Buscando cantante en la base de datos...");
-
-    // Usamos una búsqueda insensible a mayúsculas y espacios extra
-    const cantanteEncontrado = await Cantante.findOne({
-      cantante: { $regex: `^${cantante.trim()}$`, $options: "i" }
-    });
-    
+    console.log("🔍 Buscando o creando cantante en la base de datos...");
+    const cantanteEncontrado = await buscarOCrearCantante(cantante);
 
     console.log("🎤 Resultado de la búsqueda en la base de datos:", cantanteEncontrado);
-
-    // ⚠️ Si no encuentra el cantante, imprimimos todos los cantantes
-    if (!cantanteEncontrado) {
-      const todosLosCantantes = await Cantante.find();
-      console.log("📜 Cantantes en la base de datos:", todosLosCantantes);
-      return res.status(400).json({ message: "❌ El cantante no existe en la base de datos." });
-    }
 
     // 🎵 Crear la canción con el ObjectId del cantante
     const nuevaCancion = new Canciones({
@@ -67,7 +52,7 @@ export const Crear = async (req, res) => {
       genero,
       cantante: cantanteEncontrado._id, // ✅ Guardamos el ID correcto
       imagen: imagePath,
-      fileUrl: `/uploads/${songPath}`,
+      fileUrl, // ✅ Guardar la URL de Cloudinary
     });
 
     await nuevaCancion.save();
