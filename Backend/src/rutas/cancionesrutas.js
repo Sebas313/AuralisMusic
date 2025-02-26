@@ -1,6 +1,7 @@
 import express from "express";
 import cancionesController from "../Controladores/cancionesController.js";
-import upload from "../config/multer.js"; // Middleware Multer con Cloudinary
+import { upload, uploadCloudinary } from "../config/multer.js";
+
 import verificarRoles from "../middlewares/verificarRole.js";
 
 const router = express.Router();

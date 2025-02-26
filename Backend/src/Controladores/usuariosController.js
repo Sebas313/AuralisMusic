@@ -2,7 +2,8 @@ import Usuario from "../Modelos/usuariosModelos.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import upload from '../config/multer.js'; 
+import { upload } from '../config/multer.js';
+
 import Cantante from "../Modelos/cantanteModelos.js"; 
 
 export const Registro = async (req, res) => {
