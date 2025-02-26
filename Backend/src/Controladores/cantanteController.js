@@ -86,7 +86,7 @@ export const eliminarCantante = async (req, res) => {
       return res.status(400).json({ message: "ID no válido" });
     }
 
-    const cantanteEliminado = await Cantante.findByIdAndDelete(id);
+    const cantanteEliminado = await Cantante.findByIdAndDelete(req.params.id);
 
     if (!cantanteEliminado) {
       return res.status(404).json({ message: "Cantante no encontrado" });
