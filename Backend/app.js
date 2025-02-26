@@ -5,7 +5,8 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import upload from "./src/config/multer.js"; // 📌 Importar configuración de Multer
+import { upload } from "./src/config/multer.js";
+
 
 // 📌 Importar rutas
 import usuariosrutas from "./src/rutas/usuariosrutas.js";

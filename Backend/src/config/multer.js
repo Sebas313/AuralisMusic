@@ -1,6 +1,9 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import { v2 as cloudinary } from "cloudinary";
+import cloudinaryPkg from "cloudinary";
+import streamifier from "streamifier";
+
+// ✅ Corregir la importación de Cloudinary
+const cloudinary = cloudinaryPkg.v2;
 
 // 📌 Configurar Cloudinary
 cloudinary.config({
@@ -8,6 +11,9 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// 📌 Configurar almacenamiento en memoria con Multer
+const storage = multer.memoryStorage();
 
 // 📌 Filtro de archivos permitidos
 const fileFilter = (req, file, cb) => {
@@ -18,27 +24,40 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// 📌 Configurar almacenamiento en Cloudinary
-const storageCloudinary = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    let folder = "uploads"; // Carpeta por defecto
-    let resource_type = "auto"; // Permite imágenes y audios
+// 📌 Middleware de subida con Multer
+const upload = multer({ storage, fileFilter });
 
-    if (file.mimetype.startsWith("audio/")) {
-      folder = "audios"; // Guardar audios en una carpeta separada
+// 📌 Función para subir archivos a Cloudinary
+const uploadToCloudinary = (fileBuffer, folder) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: "auto" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+
+    streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+  });
+};
+
+// 📌 Middleware para manejar la subida a Cloudinary
+const uploadCloudinary = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No se ha subido ningún archivo" });
     }
 
-    return {
-      folder,
-      allowed_formats: ["jpg", "png", "jpeg", "gif", "webp", "mp3", "wav", "aac"],
-      resource_type,
-    };
-  },
-});
+    const folder = req.file.mimetype.startsWith("audio/") ? "audios" : "uploads";
+    const result = await uploadToCloudinary(req.file.buffer, folder);
 
-// 📌 Configurar Multer para Cloudinary
-const uploadCloudinary = multer({ storage: storageCloudinary, fileFilter });
+    req.file.cloudinaryUrl = result.secure_url; // ✅ Guarda la URL en la request
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "Error al subir archivo a Cloudinary" });
+  }
+};
 
-// 📌 Exportar el middleware para su uso en otros archivos
-export default uploadCloudinary;
+// 📌 Exportar middleware de subida como exportación nombrada
+export { upload, uploadCloudinary };

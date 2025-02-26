@@ -2,7 +2,7 @@
 import express from "express";
 import * as usuariosController from "../Controladores/usuariosController.js"; // Importa las funciones del controlador
 import sendVerificationEmailMiddleware from "../middlewares/enviarEmail.js";
-import upload from '../config/multer.js';
+import { upload, uploadCloudinary } from '../config/multer.js';
 
 const router = express.Router();
 

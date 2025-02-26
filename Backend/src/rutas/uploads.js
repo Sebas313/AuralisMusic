@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import upload from "../config/multer.js"; // Se importa la configuración de Multer
+import { upload } from "../config/multer.js";
+
 import { uploadSingleImage, uploadMultipleImages, uploadAudioFile } from "../Controladores/uploadsController.js";
 
 const router = express.Router();
