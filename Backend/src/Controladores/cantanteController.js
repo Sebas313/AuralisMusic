@@ -62,7 +62,7 @@ export const actualizarCantante = async (req, res) => {
     }
 
     const cantanteActualizado = await Cantante.findByIdAndUpdate(
-      id,
+      id, 
       { cantante, canciones },
       { new: true }
     );
