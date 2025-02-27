@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
-import { environment } from '../../environments/environment'; // ✅ Importa desde environment.ts
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment'; // Solo importamos lo que usamos
 
 @Injectable({
   providedIn: 'root'
@@ -11,24 +10,52 @@ import { environment } from '../../environments/environment'; // ✅ Importa des
 export class PlaylistService {
   private apiUrl = `${environment.apiUrl}/Api/Playlist`; 
   private http = inject(HttpClient);
-  url: any;
 
+  // Este método obtiene todas las playlists del usuario
   getPlaylists(): Observable<any[]> {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
   
     if (!user || !user._id) {
       throw new Error('Usuario no autenticado');
-    }
+    } 
   
-    return this.http.get<any[]>(`${this.apiUrl}?creadoPor=${user._id}`);
+    return this.http.get<any[]>(`${this.apiUrl}?creadoPor=${user._id}`).pipe(
+      tap(playlists => console.log("🎵 Playlists recibidas:", playlists)),
+      catchError(err => {
+        console.error('❌ Error al obtener playlists:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+  
+  // Este método obtiene una playlist específica por ID
+  getPlaylist(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      tap(playlist => console.log("🎵 Playlist recibida:", playlist)),
+      catchError(err => {
+        console.error(`❌ Error al obtener la playlist con ID ${id}:`, err);
+        return throwError(() => err);
+      })
+    );
 
   }
   
+ addSongToPlaylist(playlistId: string, song: any): Observable<any> {
+    const body = { 
+      canciones: [song._id] // Solo enviamos la lista de canciones
+    };
+    
+    const url = `${this.apiUrl}/${playlistId}`; // Ahora sí incluimos el ID en la URL
+    
+    return this.http.post<any>(url, body).pipe(
+      tap(response => console.log("✅ Canción agregada a la playlist:", response)),
+      catchError(err => {
+        console.error('❌ Error al agregar canción a la playlist:', err);
+        return throwError(() => err);
+      })
+    );
+}
 
-  addSongToPlaylist(playlistName: string, song: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${playlistName}/canciones`, song);
-
-  }
 
   createPlaylist(playlist: any): Observable<any> {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -50,12 +77,22 @@ export class PlaylistService {
     };
   
     // 📡 Realiza la petición POST
-    return this.http.post(`${this.apiUrl}`, playlistWithUser, { headers });
+    return this.http.post(`${this.apiUrl}`, playlistWithUser, { headers }).pipe(
+      tap(response => console.log("✅ Playlist creada:", response)),
+      catchError(err => {
+        console.error('❌ Error al crear playlist:', err);
+        return throwError(() => err);
+      })
+    );
   }
-
 
   guardarPlaylist(playlistData: any): Observable<any> {
-    return this.http.post <any>(`${this.apiUrl}`, playlistData);
+    return this.http.post<any>(`${this.apiUrl}`, playlistData).pipe(
+      tap(response => console.log("✅ Playlist guardada:", response)),
+      catchError(err => {
+        console.error('❌ Error al guardar playlist:', err);
+        return throwError(() => err);
+      })
+    );
   }
-  
 }
