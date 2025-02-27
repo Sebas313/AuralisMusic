@@ -11,4 +11,5 @@ router.put("/Cantante/:id",cantanteController.actualizarCantante);
 
 router.delete("/Cantante/:id",verificarRoles(["administrador"]),cantanteController.eliminarCantante);
 
+
 export default router

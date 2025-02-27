@@ -17,7 +17,7 @@ export const crear = async (req, res) => {
       // Separar ObjectId válidos y nombres
       const objectIds = [];
       const nombresCanciones = [];
-
+      
       cancionesArray.forEach((cancion) => {
         if (mongoose.Types.ObjectId.isValid(cancion)) {
           objectIds.push(cancion); // Es un ObjectId válido

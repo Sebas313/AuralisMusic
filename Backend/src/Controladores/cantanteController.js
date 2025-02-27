@@ -15,6 +15,7 @@ export const crearCantante = async (req, res) => {
       avatar: avatar || null,
     });
 
+    
     const cantanteGuardado = await nuevoCantante.save();
     res.status(201).json({ message: "Cantante guardado con éxito", cantante: cantanteGuardado });
   } catch (error) {

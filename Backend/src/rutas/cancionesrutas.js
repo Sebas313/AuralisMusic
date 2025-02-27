@@ -71,4 +71,5 @@ router.delete("/canciones/:id", verificarRoles(["cantante"]), async (req, res) =
   }
 });
 
+
 export default router;
