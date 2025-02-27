@@ -2,7 +2,6 @@ import Usuario from "../Modelos/usuariosModelos.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import { upload } from '../config/multer.js';
 
 import Cantante from "../Modelos/cantanteModelos.js"; 
 
@@ -87,10 +86,7 @@ export const verifyEmail = async (req, res) => {
     }
 
     // 🔄 Si la solicitud viene del navegador (correo electrónico), redirigir al frontend
-
     res.redirect("/login?verified=true");
-    res.redirect("https://auralis-music.vercel.app/login");
-
 
   } catch (error) {
     console.error(error);
@@ -221,25 +217,7 @@ export const eliminarUsuario = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
-export const updateProfilePhoto = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const avatarPath = `/uploads/avatars/${req.file.filename}`; 
 
-
-    const user = await Usuario.findByIdAndUpdate(id, { avatar: avatarPath }, { new: true });
-
-    if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-
-
-    res.json({ avatar: avatarPath });
-  } catch (error) {
-    console.error('Error al subir el avatar:', error);
-    res.status(500).json({ message: 'Error al actualizar la foto de perfil' });
-  }
-};
 export const updateUserRole = async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
@@ -294,6 +272,5 @@ export default {
   obtenerUsuario,
   eliminarUsuario,
   actualizarUsuario,
-  updateProfilePhoto,
   updateUserRole
 };
