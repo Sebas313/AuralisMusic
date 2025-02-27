@@ -51,7 +51,7 @@ export const Crear = async (req, res) => {
     // 🎵 Crear la canción con el ObjectId del cantante
     const nuevaCancion = new Canciones({
       titulo,
-      album,
+      album, 
       genero,
       cantante: cantanteEncontrado._id, // ✅ Guardamos el ID correcto
       imagen: imageUrl, // ✅ URL de la imagen en Cloudinary

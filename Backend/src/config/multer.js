@@ -54,3 +54,4 @@ const uploadCloudinary = async (req, res, next) => {
 };
 
 export { upload, uploadCloudinary };
+

@@ -23,4 +23,5 @@ router.patch('/usuario/:id/rol', usuariosController.updateUserRole);
 
 router.delete("/Usuario/:id", usuariosController.eliminarUsuario);
 
+
 export default router;
