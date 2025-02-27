@@ -4,19 +4,22 @@ import { PlaylistService } from '../../services/playlist.service';
 import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Cancion } from '../../models/cancion.model';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-playlist',
   imports: [CommonModule, FormsModule],
   templateUrl: './playlist.component.html',
-  styleUrls: ['./playlist.component.css'], // Corregido "styleUrls" en plural
+  styleUrls: ['./playlist.component.css'],
   standalone: true
 })
+export class PlaylistComponent implements OnInit {
+  playlist: any[] = [];
+  selectedPlaylist: any = null;
+  newSong = { title: '', artist: '', url: '', _id: '' }; // Añadido _id para compatibilidad
+  searchTerm: string = '';
 
- export class PlaylistComponent implements OnInit {
-    playlist: any[] = [];
-    newSong = { title: '', artist: '', url: '' };
-    selectedPlaylist = '';
-    searchTerm: string = ''; // Agregamos esta lí
+  constructor(private router: Router) {}
 
   private playlistService = inject(PlaylistService);
 
@@ -28,7 +31,7 @@ import { Cancion } from '../../models/cancion.model';
     this.playlistService.getPlaylists().pipe(
       catchError(error => {
         console.error('Error al cargar playlists:', error);
-        return of([]); // Devuelve un array vacío si hay error
+        return of([]);
       })
     ).subscribe((data) => {
       this.playlist = data;
@@ -41,27 +44,33 @@ import { Cancion } from '../../models/cancion.model';
     );
   }
 
+  goToPlaylist(playlistId: string) {
+    this.selectedPlaylist = this.playlist.find(p => p._id === playlistId);
+    this.router.navigate(['/playlist', playlistId]);
+  }
+
   addSong() {
     if (this.selectedPlaylist && this.newSong.title && this.newSong.artist && this.newSong.url) {
-      this.playlistService.addSongToPlaylist(this.selectedPlaylist, this.newSong).pipe(
+      // Aquí deberías primero crear la canción y obtener su ID
+      // Por ahora, asumimos que ya tienes el ID o que tu API puede manejar
+      // la creación de la canción junto con agregarla a la playlist
+      
+      this.playlistService.addSongToPlaylist(this.selectedPlaylist._id, this.newSong).pipe(
         catchError(error => {
           console.error('Error al agregar canción:', error);
-          return of(null); // Manejo del error sin romper la app
+          return of(null);
         })
       ).subscribe(() => {
-        this.loadPlaylists(); // Actualizamos la lista de playlists
-        this.newSong = { title: '', artist: '', url: '' };
+        this.loadPlaylists();
+        this.newSong = { title: '', artist: '', url: '', _id: '' };
       });
-    
-    
-    
-    
     }
+  }
 
-  } removeFromPlaylist(cancion: Cancion) {
-    this.playlist = this.playlist.filter(item => item._id !== cancion._id);
-    console.log('Canción eliminada:', cancion);
+  removeFromPlaylist(cancion: Cancion) {
+    if (this.selectedPlaylist) {
+      this.selectedPlaylist.songs = this.selectedPlaylist.songs.filter(s => s._id !== cancion._id);
+      console.log('Canción eliminada:', cancion);
+    }
   }
 }
-
-

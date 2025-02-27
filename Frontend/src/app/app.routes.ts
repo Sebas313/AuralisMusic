@@ -9,16 +9,19 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 import { SubirCancionComponent } from './pages/subir-cancion/subir-cancion.component';
 import { VerificarComponent } from './pages/verificar/verificar.component';
+import { PrivatePlaylistComponent } from './pages/private-playlist/private-playlist.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
   { path: 'playlist', component: Playlst, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   { path: 'login', component: LoginComponent}, 
-  { path: 'register', component: RegisterComponent }, 
+  { path: 'register', component: RegisterComponent },
+  { path: 'playlist/:id', component: PrivatePlaylistComponent }, 
   { path: 'subir', component: SubirCancionComponent, canActivate: [CantanteGuard] },           
   {path: 'verificar-email', component:VerificarEmailComponent},
   { path: 'verificar/:token', component: VerificarComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 
   { path: '**', redirectTo: '/home' },   
 ];
+

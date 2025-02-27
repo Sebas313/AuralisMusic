@@ -89,7 +89,7 @@ export class RandomSongListComponent implements OnInit {
       next: (playlists) => {
         if (playlists.length > 0) {
           const playlistName = prompt('🎶 ¿A qué playlist deseas agregar esta canción?');
-          const selectedPlaylist = playlists.find(playlist => playlist.name === playlistName);
+          const selectedPlaylist = playlists.find(playlist => playlist.nombre === playlistName);
 
           if (selectedPlaylist) {
             this.playlistService.addSongToPlaylist(selectedPlaylist._id, song).subscribe({
@@ -97,7 +97,7 @@ export class RandomSongListComponent implements OnInit {
               error: (err) => console.error('❌ Error al agregar canción:', err)
             });
           } else {
-            alert('⚠️ No encontré esa playlist.');
+            alert('⚠️ No se encontro esa playlist.');
           }
         } else {
           const createNewPlaylist = confirm('No tienes playlists. ¿Quieres crear una nueva?');
