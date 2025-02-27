@@ -32,18 +32,21 @@ const buscarOCrearCantante = async (cantanteNombre) => {
 };
 export const Crear = async (req, res) => {
   try {
+    // 📌 Verificar si los archivos fueron subidos correctamente
     if (!req.files || !req.files.song || !req.files.imageCover) {
       return res.status(400).json({ message: "❌ Debes subir una imagen y un archivo de audio." });
     }
 
     const { cancion: titulo, album, genero, cantante } = req.body;
-    const imagePath = req.files.imageCover[0].filename;
-    const fileUrl = req.files.song[0].path; // ✅ Usar la URL de Cloudinary
+    
+    // ✅ Obtener las URLs correctas desde Cloudinary
+    const imageUrl = req.files.imageCover[0].cloudinaryUrl;
+    const audioUrl = req.files.song[0].cloudinaryUrl;
 
     console.log("🔍 Buscando o creando cantante en la base de datos...");
     const cantanteEncontrado = await buscarOCrearCantante(cantante);
 
-    console.log("🎤 Resultado de la búsqueda en la base de datos:", cantanteEncontrado);
+    console.log("🎤 Cantante encontrado o creado:", cantanteEncontrado);
 
     // 🎵 Crear la canción con el ObjectId del cantante
     const nuevaCancion = new Canciones({
@@ -51,8 +54,8 @@ export const Crear = async (req, res) => {
       album,
       genero,
       cantante: cantanteEncontrado._id, // ✅ Guardamos el ID correcto
-      imagen: imagePath,
-      fileUrl, // ✅ Guardar la URL de Cloudinary
+      imagen: imageUrl, // ✅ URL de la imagen en Cloudinary
+      fileUrl: audioUrl, // ✅ URL del audio en Cloudinary
     });
 
     await nuevaCancion.save();
@@ -63,6 +66,7 @@ export const Crear = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor." });
   }
 };
+
 
 
 

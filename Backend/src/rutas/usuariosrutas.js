@@ -2,7 +2,7 @@
 import express from "express";
 import * as usuariosController from "../Controladores/usuariosController.js"; // Importa las funciones del controlador
 import sendVerificationEmailMiddleware from "../middlewares/enviarEmail.js";
-import { upload, uploadCloudinary } from '../config/multer.js';
+
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get("/Usuario/:id", usuariosController.obtenerUsuario);
 router.get("/Usuario", usuariosController.obtenerUsuarios);
 
 router.put("/Usuario/:id", usuariosController.actualizarUsuario);
-router.put('/usuario/:id/avatar', upload.single('avatar'), usuariosController.updateProfilePhoto);
+
 
 router.patch('/usuario/:id/rol', usuariosController.updateUserRole);
 

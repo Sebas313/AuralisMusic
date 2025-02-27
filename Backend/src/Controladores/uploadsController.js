@@ -19,6 +19,7 @@ const uploadToCloudinary = (fileBuffer, folder, resourceType = "auto") => {
   });
 };
 
+
 // 📸 Subir una sola imagen a Cloudinary
 export const uploadSingleImage = async (req, res) => {
   try {
