@@ -81,6 +81,31 @@ export const crear = async (req, res) => {
   };
 
 
+
+  export async function agregarCancion(req, res) {
+    const { id } = req.params; // Playlist ID de la URL
+    const { canciones } = req.body; // Canciones desde el body
+
+    if (!canciones || !Array.isArray(canciones)) {
+        return res.status(400).json({ mensaje: "Formato de canciones inválido" });
+    }
+
+    try {
+      const playlist = await PlayList.findById(id);
+        if (!playlist) {
+            return res.status(404).json({ mensaje: "Playlist no encontrada" });
+        }
+
+        playlist.canciones.push(...canciones);
+        await playlist.save();
+
+        res.json({ mensaje: "✅ Canción(es) agregada(s) a la playlist", playlist });
+    } catch (error) {
+        console.error("❌ Error al agregar canción:", error);
+        res.status(500).json({ mensaje: "Error interno del servidor" });
+    }
+}
+
 export const listar = async (req, res) => {
   try {
     const playlist = await PlayList.find();
@@ -239,4 +264,4 @@ export const Eliminar = async (req, res) => {
   }
 };
 
-export default { crear, listar, ObtenerPorId, Actualizar, Eliminar };
+export default { crear, agregarCancion,listar, ObtenerPorId, Actualizar, Eliminar };

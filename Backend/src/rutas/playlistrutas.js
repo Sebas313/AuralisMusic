@@ -7,6 +7,9 @@ router.post("/Playlist",playlistController.crear);
 router.get("/Playlist",playlistController.listar);
 router.get("/Playlist/:id",playlistController.ObtenerPorId);
 
+router.post("/Playlist/:id", playlistController.agregarCancion);
+
+
 router.put("/Playlist/:id",playlistController.Actualizar);
 
 router.delete("/Playlist/:id",playlistController.Eliminar);
