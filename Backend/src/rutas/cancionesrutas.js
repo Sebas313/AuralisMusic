@@ -78,8 +78,6 @@ router.delete("/canciones/:id", verificarRoles(["cantante"]), async (req, res) =
 
 
 
-router.put("/canciones/:id",verificarRoles(["cantante"]), cancionesController.Actualizar);
-
 
  
 

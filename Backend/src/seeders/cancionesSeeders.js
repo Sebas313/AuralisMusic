@@ -13,7 +13,7 @@ if (!process.env.MONGODB_URI_LOCAL) {
 
 const canciones = [
   {
-    artista: "Billie Eilish",
+    cantante: "Billie Eilish",
     cancion: "Bad Guy",
     album: "When We All Fall Asleep, Where Do We Go?",
     genero: "Pop Alternativo",
@@ -21,7 +21,7 @@ const canciones = [
     fileUrl: "https://example.com/bad-guy.mp3",
   },
   {
-    artista: "The Weeknd",
+    cantante: "The Weeknd",
     cancion: "Save Your Tears",
     album: "After Hours",
     genero: "R&B",
