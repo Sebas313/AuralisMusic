@@ -147,6 +147,15 @@ input:focus {
   font-size: 1.2rem;
   user-select: none;
 }
+.image-section1 {
+  width: 35%; 
+  height: 70vh;
+  padding-left: 50px; 
+  margin: 80px 30px 80px 100px; 
+
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 .image-section2 {
   width: 44%;
   height: 100px; 
@@ -202,13 +211,13 @@ p {
       align-items: center;
   }
 
-  .image-section {
+  .image-section1 {
       display: none; 
   }
 
   .image-section2 {
     width: 100%;
-    max-width: 300px; 
+    max-width: 230px; 
     height: 150px;
     display: flex;
     justify-content: center;

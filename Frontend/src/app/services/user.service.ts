@@ -87,12 +87,7 @@ export class UserService {
     );
   }
 
-  uploadProfilePhoto(formData: FormData): Observable<any> {
-    const userId = localStorage.getItem('userId');
-    return this.http.put<any>(`${this.apiUrl}/usuario/${userId}/avatar`, formData).pipe(
-      catchError(this.handleError<any>('Error al subir la foto de perfil'))
-    );
-  }
+  
 
   updateUserRole(userId: string, role: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/usuario/${userId}/rol`, { role }).pipe(

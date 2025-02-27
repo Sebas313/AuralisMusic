@@ -14,6 +14,8 @@ export class ProfileComponent implements OnInit {
   user: any = {};
   playlists: any[] = [];
   selectedFile: File | null = null;
+  defaultAvatar = 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp';
+
 
   constructor(private userService: UserService) {}
 
@@ -61,42 +63,11 @@ export class ProfileComponent implements OnInit {
   
   
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-    if (this.selectedFile) {
-      this.uploadProfilePhoto();
-    }
-  }
+  
 
-  uploadProfilePhoto() {
-    if (!this.selectedFile) return;
-    const formData = new FormData();
-    formData.append('avatar', this.selectedFile);
 
-    this.userService.uploadProfilePhoto(formData).subscribe({
-      next: (response) => {
-        this.user.avatar = response.avatar;
-        alert('Foto de perfil actualizada con éxito.');
-      },
-      error: (err) => {
-        console.error('Error al actualizar la foto de perfil:', err);
-      }
-    });
-  }
 
-  editProfilePhoto() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.click();
-
-    fileInput.onchange = (event: any) => {
-      this.selectedFile = event.target.files[0];
-      if (this.selectedFile) {
-        this.uploadProfilePhoto();
-      }
-    };
-  }
+  
 
   sendRequest() {
     console.log('Usuario actual:', this.user); // Depuración
