@@ -37,11 +37,13 @@ export const Crear = async (req, res) => {
       return res.status(400).json({ message: "❌ Debes subir una imagen y un archivo de audio." });
     }
 
+
     const { cancion: titulo, album, genero, cantante } = req.body;
     
     // ✅ Obtener las URLs correctas desde Cloudinary
     const imageUrl = req.files.imageCover[0].cloudinaryUrl;
     const audioUrl = req.files.song[0].cloudinaryUrl;
+
 
     console.log("🔍 Buscando o creando cantante en la base de datos...");
     const cantanteEncontrado = await buscarOCrearCantante(cantante);
@@ -50,8 +52,8 @@ export const Crear = async (req, res) => {
 
     // 🎵 Crear la canción con el ObjectId del cantante
     const nuevaCancion = new Canciones({
-      titulo,
       album,
+      cancion,
       genero,
       cantante: cantanteEncontrado._id, // ✅ Guardamos el ID correcto
       imagen: imageUrl, // ✅ URL de la imagen en Cloudinary
