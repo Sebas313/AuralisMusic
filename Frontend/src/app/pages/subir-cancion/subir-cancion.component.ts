@@ -71,24 +71,32 @@ export class SubirCancionComponent implements OnInit {
       this.mensaje = "Por favor, complete todos los campos y seleccione una canción.";
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("cantante", this.cancionForm.get("cantante")?.value);
     formData.append("cancion", this.cancionForm.get("cancion")?.value);
     formData.append("album", this.cancionForm.get("album")?.value);
     formData.append("genero", this.cancionForm.get("genero")?.value);
-    formData.append("song", this.archivoCancion); // ✅ Corregido para coincidir con el backend
-
+    formData.append("song", this.archivoCancion!); // 🔥 Asegura que el archivo existe
+  
     if (this.archivoImagen) {
-      formData.append("imageCover", this.archivoImagen); // ✅ Imagen opcional
+      formData.append("imageCover", this.archivoImagen);
     }
-
+  
+    console.log("📤 Enviando FormData:", formData);
+  
     this.cargando = true;
     this.mensaje = '';
-
+  
     this.songService.subirCancion(formData).subscribe({
       next: (res) => {
-        this.mensaje = "✅ Canción subida con éxito.";
+        console.log("✅ Respuesta del backend:", res);
+        if (res.fileUrl) {
+          this.mensaje = "✅ Canción subida con éxito.";
+        } else {
+          this.mensaje = "⚠ Canción subida, pero no se recibió una URL.";
+        }
+  
         this.cancionForm.reset();
         this.archivoCancion = null;
         this.archivoImagen = null;
@@ -101,4 +109,5 @@ export class SubirCancionComponent implements OnInit {
       },
     });
   }
+  
 }
