@@ -32,7 +32,9 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
   const backendUrl = process.env.NODE_ENV === "production"
     ? process.env.BACKEND_URL_PROD
     : process.env.BACKEND_URL_LOCAL;
-
+    const frontendUrl = process.env.NODE_ENV === "production"
+    ? process.env.FRONTEND_URL_PROD
+    : process.env.FRONTEND_URL_LOCAL;
   // Configuración del correo
   const mailOptions = {
     from: process.env.MAIL_USER, // Usar la dirección de correo desde la variable de entorno
@@ -43,15 +45,10 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
         <h2 style="color: #B2A179;">¡Bienvenido!</h2>
         <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
         
-        <a href="${backendUrl}/Api/verificar/${encodeURIComponent(token)}"
+        <a href="${frontendUrl}/Api/verificar/${encodeURIComponent(token)}"
           style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
           Verificar mi cuenta
         </a>
-
-        <p style="color: #666; font-size: 14px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
-        <p style="color: #007BFF; word-wrap: break-word;">
-          ${backendUrl}/Api/verificar/${encodeURIComponent(token)}
-        </p>
 
         <p style="color: #666; font-size: 14px;">Este enlace es válido por <strong>24 horas</strong>.</p>
       </div>
@@ -76,39 +73,7 @@ app.post('/Registro', sendVerificationEmailMiddleware, async (req, res) => {
   res.status(200).json({ message: 'Usuario registrado y correo enviado.' });
 });
 
-// Ruta para verificar el token cuando el usuario hace clic en el enlace
-app.get('/verificar/:token', async (req, res) => {
-  const { token } = req.params;
-  try {
-    // Verificar si el token es válido
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Buscar al usuario con el correo del token
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado. El correo podría no estar registrado.' });
-    }
-
-    // Verificar si ya está verificado
-    if (user.isVerified) {
-      return res.status(200).json({ message: 'Tu cuenta ya está verificada.' });
-    }
-
-    // Marcar al usuario como verificado
-    user.isVerified = true;
-    await user.save();
-
-    const frontendUrl = process.env.NODE_ENV === "production"
-      ? process.env.FRONTEND_URL_PROD
-      : process.env.FRONTEND_URL_LOCAL;
-
-      return res.redirect(`${process.env.FRONTEND_URL}/login?verified=true`);
-
-
-  } catch (error) {
-    return res.status(400).json({ message: 'Token inválido o expirado.' });
-  }
-});
 
 
 console.log("NODE_ENV:", process.env.NODE_ENV);

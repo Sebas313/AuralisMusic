@@ -80,7 +80,6 @@ export const verifyEmail = async (req, res) => {
         msg: "Cuenta verificada correctamente",
         user: {
           email: user.email,
-          isVerified: user.isVerified
         }
       });
     }
