@@ -6,7 +6,7 @@ https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdy
 ### Frontend:
 - **Framework:** Angular
 - **Estilización:** Tailwind CSS
-- **Librerías adicionales:** Howler.js
+- **Librerías adicionales:** WaveSurfer
 
 ### Backend:
 - **Framework:** Node.js con Express
