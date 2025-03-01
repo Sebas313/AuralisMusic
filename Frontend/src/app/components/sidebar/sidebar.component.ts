@@ -28,8 +28,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(private songService: SongService) {}
 
-  ngOnInit() {
-    this.fetchSongs();
+  ngOnInit(): void {
+    this.getSongs();
   }
 
   ngOnDestroy() {
@@ -38,26 +38,36 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  fetchSongs() {
+  getSongs(): void {
     this.songService.getCanciones().subscribe(
-      (data) => {
+      data => {
+        console.log('Canciones obtenidas:', data);
         this.songs = data;
         this.filteredSongs = [...this.songs];
       },
-      (error) => {
-        console.error('Error al obtener las canciones:', error);
+      error => {
+        console.error('Error al obtener canciones:', error);
       }
     );
   }
 
-  toggleSidebar() {
-    this.isExpanded = !this.isExpanded;
+  filterSongs(): void {
+    const searchTermLower = this.searchQuery.toLowerCase().trim();
+    
+    if (!searchTermLower) {
+      this.filteredSongs = [...this.songs];
+    } else {
+      this.filteredSongs = this.songs.filter(song =>
+        song.cancion?.toLowerCase().includes(searchTermLower) || 
+        song.album?.toLowerCase().includes(searchTermLower)
+      );
+    }
+
+    console.log('Canciones filtradas:', this.filteredSongs);
   }
 
-  filterSongs(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    const searchTerm = inputElement.value.trim().toLowerCase();
-    this.filteredSongs = searchTerm ? this.songs.filter(song => song.cancion?.toLowerCase().includes(searchTerm)) : [...this.songs];
+  toggleSidebar() {
+    this.isExpanded = !this.isExpanded;
   }
 
   toggleSearch() {
@@ -80,39 +90,34 @@ export class SidebarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isPlaying = false; // 🔹 Asegura que el cuadro nunca aparezca
+    if (!this.waveformRef?.nativeElement) {
+      console.error('El elemento waveformRef no está disponible.');
+      return;
+    }
 
-    setTimeout(() => {
-      if (!this.waveformRef || !this.waveformRef.nativeElement) {
-        console.error('El elemento waveformRef aún no está disponible.');
-        return;
-      }
+    if (this.wavesurfer) {
+      this.wavesurfer.destroy();
+    }
 
-      if (this.wavesurfer) {
-        this.wavesurfer.destroy();
-      }
+    this.wavesurfer = WaveSurfer.create({
+      container: this.waveformRef.nativeElement,
+      waveColor: 'lightblue',
+      progressColor: 'blue',
+      barWidth: 2,
+      height: 60
+    });
 
-      this.wavesurfer = WaveSurfer.create({
-        container: this.waveformRef.nativeElement,
-        waveColor: 'lightblue',
-        progressColor: 'blue',
-        barWidth: 2,
-        height: 60
-      });
+    const audioUrl = song.fileUrl.startsWith('http') ? song.fileUrl : `http://localhost:3000/public/${song.fileUrl.replace(/^\/+/, '')}`;
+    this.wavesurfer.load(audioUrl);
+    this.wavesurfer.play();
 
-      const audioUrl = song.fileUrl.startsWith('http') ? song.fileUrl : `http://localhost:3000/public/${song.fileUrl.replace(/^\/+/, '')}`;
+    this.songSelected.emit(song);
 
-      this.wavesurfer.load(audioUrl);
-      this.wavesurfer.play();
+    this.wavesurfer.on('finish', () => {
+      this.isPlaying = false;
+    });
 
-      this.songSelected.emit(song);
-
-      this.wavesurfer.on('finish', () => {
-        this.isPlaying = false;
-      });''
-    }, 100);
     console.log('waveformRef:', this.waveformRef?.nativeElement);
-
   }
 
   @HostListener('document:click', ['$event'])
@@ -121,7 +126,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const searchBar = document.querySelector('.search-bar');
     const songList = document.querySelector('.song-list');
 
-    if (sidebar && !sidebar.contains(event.target as Node) && searchBar && !searchBar.contains(event.target as Node) && songList && !songList.contains(event.target as Node)) {
+    if (
+      sidebar && !sidebar.contains(event.target as Node) &&
+      searchBar && !searchBar.contains(event.target as Node) &&
+      songList && !songList.contains(event.target as Node)
+    ) {
       this.isSearchVisible = false;
     }
   }

@@ -30,15 +30,17 @@ export class PlaylistService {
   
   // Este método obtiene una playlist específica por ID
   getPlaylist(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+    const url = `${this.apiUrl}/${id}`;
+    console.log("📡 Solicitando playlist en:", url);
+    return this.http.get<any>(url).pipe(
       tap(playlist => console.log("🎵 Playlist recibida:", playlist)),
       catchError(err => {
         console.error(`❌ Error al obtener la playlist con ID ${id}:`, err);
         return throwError(() => err);
       })
     );
-
   }
+  
   
  addSongToPlaylist(playlistId: string, song: any): Observable<any> {
     const body = { 

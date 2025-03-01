@@ -13,11 +13,5 @@ export class AppComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      this.router.navigate(['/register']); // Redirige a "register" si no está autenticado
-    }
-  }
+ngOnInit() {}
 }

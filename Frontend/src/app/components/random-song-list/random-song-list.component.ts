@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { SongService } from '../../services/song.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2'; // ✅ Importamos SweetAlert2
 
 @Component({
   selector: 'app-random-song-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, FormsModule],
   templateUrl: './random-song-list.component.html',
   styleUrls: ['./random-song-list.component.css']
 })
@@ -17,6 +19,10 @@ export class RandomSongListComponent implements OnInit {
   isPlaying = false;
   songs: any[] = [];
   audioPlayer = new Audio();
+  playlists: any[] = []; 
+  selectedSong: any = null;
+  showModal = false;
+  newPlaylistName = '';
 
   constructor(
     private songService: SongService,
@@ -25,6 +31,7 @@ export class RandomSongListComponent implements OnInit {
 
   ngOnInit() {
     this.fetchSongs();
+    this.fetchPlaylists();
   }
 
   fetchSongs() {
@@ -37,6 +44,14 @@ export class RandomSongListComponent implements OnInit {
     });
   }
   
+  fetchPlaylists() {
+    this.playlistService.getPlaylists().subscribe({
+      next: (data) => {
+        this.playlists = data || [];
+      },
+      error: (err) => console.error('❌ Error al obtener playlists:', err)
+    });
+  }
 
   playSong(song: any) {
     if (!song.fileUrl) {
@@ -44,9 +59,6 @@ export class RandomSongListComponent implements OnInit {
       return;
     }
 
-    const audioUrl = song.fileUrl; // ✅ Usa la URL de Cloudinary directamente
-
-    // Si hay una canción reproduciéndose, la detenemos antes de cambiar
     if (this.currentSong && this.isPlaying) {
       this.audioPlayer.pause();
       this.audioPlayer.currentTime = 0;
@@ -54,7 +66,7 @@ export class RandomSongListComponent implements OnInit {
 
     this.currentSong = song;
     this.isPlaying = true;
-    this.audioPlayer.src = audioUrl;
+    this.audioPlayer.src = song.fileUrl;
     this.audioPlayer.play();
 
     this.audioPlayer.onended = () => {
@@ -80,46 +92,75 @@ export class RandomSongListComponent implements OnInit {
 
   addToPlaylist(song: any) {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
+
     if (!user || !user._id) {
-      alert('⚠️ Por favor, inicie sesión para agregar canciones a una playlist.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Inicia sesión',
+        text: 'Por favor, inicia sesión para agregar canciones a una playlist.',
+        confirmButtonColor: '#3085d6'
+      });
       return;
     }
 
-    this.playlistService.getPlaylists().subscribe({
-      next: (playlists) => {
-        if (playlists.length > 0) {
-          const playlistName = prompt('🎶 ¿A qué playlist deseas agregar esta canción?');
-          const selectedPlaylist = playlists.find(playlist => playlist.nombre === playlistName);
+    this.selectedSong = song;
+    this.showModal = true;
+  }
 
-          if (selectedPlaylist) {
-            this.playlistService.addSongToPlaylist(selectedPlaylist._id, song).subscribe({
-              next: () => alert('✅ Canción agregada con éxito a la playlist'),
-              error: (err) => console.error('❌ Error al agregar canción:', err)
-            });
-          } else {
-            alert('⚠️ No se encontro esa playlist.');
-          }
-        } else {
-          const createNewPlaylist = confirm('No tienes playlists. ¿Quieres crear una nueva?');
-          if (createNewPlaylist) {
-            const newPlaylistName = prompt('🆕 Escribe el nombre de la nueva playlist');
-            if (newPlaylistName) {
-              const newPlaylist = {
-                nombre: newPlaylistName,
-                creadoPor: user._id,
-                canciones: [song._id]
-              };
-              this.playlistService.createPlaylist(newPlaylist).subscribe({
-                next: () => alert('✅ Playlist creada con éxito y canción añadida'),
-                error: (err) => console.error('❌ Error al crear la playlist:', err)
-              });
-            } else {
-              alert('⚠️ Debes proporcionar un nombre para la playlist.');
-            }
-          }
-        }
+  confirmAddToPlaylist(playlistId: string) {
+    if (!playlistId) return;
+
+    this.playlistService.addSongToPlaylist(playlistId, this.selectedSong).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: '✅ Canción agregada',
+          text: 'La canción se agregó con éxito a la playlist.',
+          confirmButtonColor: '#3085d6'
+        });
+        this.closeModal();
       },
-      error: (err) => console.error('❌ Error al obtener playlists:', err)
+      error: (err) => console.error('❌ Error al agregar canción:', err)
     });
+  }
+
+  createNewPlaylist() {
+    if (!this.newPlaylistName.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: '⚠️ Nombre vacío',
+        text: 'Debes escribir un nombre para la nueva playlist.',
+        confirmButtonColor: '#3085d6'
+      });
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+    const newPlaylist = {
+      nombre: this.newPlaylistName,
+      creadoPor: user._id,
+      canciones: [this.selectedSong._id]
+    };
+
+    this.playlistService.createPlaylist(newPlaylist).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: '🎵 Playlist creada',
+          text: 'La playlist se creó y la canción fue añadida.',
+          confirmButtonColor: '#3085d6'
+        });
+        this.fetchPlaylists();
+        this.closeModal();
+      },
+      error: (err) => console.error('❌ Error al crear la playlist:', err)
+    });
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedSong = null;
+    this.newPlaylistName = '';
   }
 }

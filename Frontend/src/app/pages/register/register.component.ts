@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -35,38 +36,46 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.invalid) {
-      this.errorMessage = '⚠️ Por favor, completa todos los campos correctamente.';
-      setTimeout(() => this.errorMessage = null, 3000);
+      Swal.fire({
+        icon: 'warning',
+        title: '⚠️ Campos incompletos',
+        text: 'Por favor, completa todos los campos correctamente.',
+      });
       return;
     }
   
     this.loading = true;
-    this.errorMessage = null;
-    this.successMessage = null;
   
     const usuario = {
-      nombre: this.registerForm.value?.nombre || '',
-      email: this.registerForm.value?.email || '',
-      password: this.registerForm.value?.password || ''
+      nombre: this.registerForm.value.nombre,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password
     };
   
-    // Llama al microservicio de registro
     this.userService.register(usuario).subscribe({
-      next: (response) => {
-        this.successMessage = '✅ ¡Registro exitoso! Verifica tu email.';
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: '✅ ¡Registro exitoso!',
+          text: 'Hemos enviado un correo de verificación. Por favor, revisa tu bandeja de entrada.',
+          confirmButtonText: 'Aceptar'
+        }).then(() => {
+          this.registerForm.reset(); // Reinicia el formulario
+          this.router.navigate(['/verificar-email']); // Redirige a la verificación
+        });
         this.loading = false;
-  
-        // Redirige a la página de verificación de email
-        this.router.navigate(['/verificar-email']); 
       },
       error: (error) => {
-        console.error("Error al registrar el usuario:", error);
-        this.errorMessage = error.error?.message ? `⚠️ ${error.error.message}` : '❌ Error al registrar el usuario.';
+        Swal.fire({
+          icon: 'error',
+          title: '❌ Error al registrarse',
+          text: error.error?.message || 'Hubo un problema, intenta nuevamente.',
+        });
         this.loading = false;
-        setTimeout(() => this.errorMessage = null, 3000);
       },
     });
   }
+  
   
 
   togglePasswordVisibility() {

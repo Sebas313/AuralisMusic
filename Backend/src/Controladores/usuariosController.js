@@ -176,12 +176,14 @@ export const obtenerUsuario = async (req, res) => {
       return res.status(400).json({ message: "ID no válido" });
     }
 
-   
     const usuario = await Usuario.findById(id).populate("playlists");  
 
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
+
+    // Asegurar que el usuario tenga una propiedad `playlists` como un array vacío si no tiene ninguna
+    usuario.playlists = usuario.playlists || [];
 
     res.status(200).json(usuario); 
   } catch (error) {
@@ -189,6 +191,8 @@ export const obtenerUsuario = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+
 export const actualizarUsuario = async (req, res) => {
   try {
     const { id } = req.params;

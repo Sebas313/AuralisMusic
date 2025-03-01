@@ -1,26 +1,29 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlaylistService } from '../../services/playlist.service';
 import { SongService } from '../../services/song.service';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
-import { PlaylistUserComponent } from '../../components/playlist-user/playlist-user.component';
 
+import { PlaylistSongsComponent } from '../../components/playlist-songs/playlist-songs.component';
+import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 
 @Component({
+  selector: 'app-playlist-user',
+  templateUrl: './playlist-user.component.html',
+  styleUrls: ['./playlist-user.component.css'],
   standalone: true,
-  selector: 'app-private-playlist',
-  templateUrl: './private-playlist.component.html',
-  styleUrls: ['./private-playlist.component.css'],
-  imports: [CommonModule, HeaderComponent, PlaylistUserComponent]
+  imports: [CommonModule, PlaylistSongsComponent, MusicPlayerComponent]
 })
-export class PrivatePlaylistComponent implements OnInit {
-  playlist: any = null;
+export class PlaylistUserComponent {
+  @Input() playlist: any = null; 
+
+
+
   canciones: any[] = [];
   currentSong: any = null;
   isPlaying = false;
   audioPlayer = new Audio();
-  showMusicPlayer = false; // ✅ Para mostrar el reproductor
+  showMusicPlayer = false;
 
   @Output() songSelected = new EventEmitter<any>();
 
@@ -41,15 +44,15 @@ export class PrivatePlaylistComponent implements OnInit {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
         console.log('📥 Respuesta de la API:', data);
-  
+
         if (!data || typeof data !== 'object') {
           console.error('❌ Error: Datos de playlist inválidos');
           return;
         }
-  
+
         this.playlist = data;
         this.canciones = Array.isArray(data.canciones) ? data.canciones : [];
-  
+
         console.log('🎵 Canciones cargadas:', this.canciones);
       },
       error: (err) => console.error('❌ Error al cargar la playlist:', err)
@@ -69,7 +72,7 @@ export class PrivatePlaylistComponent implements OnInit {
 
     this.currentSong = song;
     this.isPlaying = true;
-    this.showMusicPlayer = true; // ✅ Mostrar el reproductor
+    this.showMusicPlayer = true;
 
     console.log('🎶 Reproduciendo:', this.currentSong);
     console.log('🎵 Mostrando MusicPlayer:', this.showMusicPlayer);
@@ -96,6 +99,6 @@ export class PrivatePlaylistComponent implements OnInit {
     this.audioPlayer.currentTime = 0;
     this.isPlaying = false;
     this.currentSong = null;
-    this.showMusicPlayer = false; // ✅ Ocultar el reproductor
+    this.showMusicPlayer = false;
   }
 }

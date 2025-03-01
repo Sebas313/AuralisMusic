@@ -34,9 +34,14 @@
         <button type="submit" class="btn">Iniciar sesión</button>
       </form>
       <div class="register-link">
-        <p>¿No tienes una cuenta? <a [routerLink]="['/register']">Regístrate aquí</a></p>
+        <p *ngIf="failedAttempts <= 2">
+          ¿No tienes una cuenta? <a [routerLink]="['/register']">Regístrate aquí</a>
+        </p>
+        <p *ngIf="failedAttempts > 2">
+          ¿Olvidaste tu contraseña? <a [routerLink]="['/forgot-password']">Restablecer contraseña</a>
+        </p>
       </div>
-    </div>
+    </div>      
   </section>
 </main>
 

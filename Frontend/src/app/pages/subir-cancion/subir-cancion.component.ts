@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SongService } from '../../services/song.service';
 import { HeaderComponent } from "../../components/header/header.component";
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-subir-cancion',
@@ -19,7 +21,7 @@ export class SubirCancionComponent implements OnInit {
   archivoCancion: File | null = null;  // Archivo de la canción
   archivoImagen: File | null = null;  // Imagen de la canción
 
-  constructor(private fb: FormBuilder, private songService: SongService) {
+  constructor(private fb: FormBuilder, private songService: SongService, private router: Router) {
     this.cancionForm = this.fb.group({
       cantante: ['', Validators.required],
       cancion: ['', Validators.required],
@@ -68,7 +70,11 @@ export class SubirCancionComponent implements OnInit {
    */
   subirCancion() {
     if (this.cancionForm.invalid || !this.archivoCancion) {
-      this.mensaje = "Por favor, complete todos los campos y seleccione una canción.";
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor, complete todos los campos y seleccione una canción.',
+      });
       return;
     }
   
@@ -77,25 +83,26 @@ export class SubirCancionComponent implements OnInit {
     formData.append("cancion", this.cancionForm.get("cancion")?.value);
     formData.append("album", this.cancionForm.get("album")?.value);
     formData.append("genero", this.cancionForm.get("genero")?.value);
-    formData.append("song", this.archivoCancion!); // 🔥 Asegura que el archivo existe
+    formData.append("song", this.archivoCancion!);
   
     if (this.archivoImagen) {
       formData.append("imageCover", this.archivoImagen);
     }
   
-    console.log("📤 Enviando FormData:", formData);
-  
     this.cargando = true;
-    this.mensaje = '';
   
     this.songService.subirCancion(formData).subscribe({
       next: (res) => {
         console.log("✅ Respuesta del backend:", res);
-        if (res.fileUrl) {
-          this.mensaje = "✅ Canción subida con éxito.";
-        } else {
-          this.mensaje = "⚠ Canción subida, pero no se recibió una URL.";
-        }
+        
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La canción se ha subido correctamente.',
+          confirmButtonText: 'Ir a la Home'
+        }).then(() => {
+          this.router.navigate(['/home']); // 🔥 Redirección después de la alerta
+        });
   
         this.cancionForm.reset();
         this.archivoCancion = null;
@@ -103,11 +110,19 @@ export class SubirCancionComponent implements OnInit {
         this.cargando = false;
       },
       error: (err) => {
-        this.mensaje = "❌ Error al subir la canción. Intente nuevamente.";
         console.error('Error en la subida:', err);
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al subir la canción. Intente nuevamente.',
+        });
+  
         this.cargando = false;
       },
     });
   }
+  
+  
   
 }

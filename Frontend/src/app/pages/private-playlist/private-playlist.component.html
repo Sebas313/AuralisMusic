@@ -1,22 +1,3 @@
-<ul *ngIf="canciones?.length" class="song-list">
-    <li *ngFor="let song of canciones" class="song-item">
-      <img 
-        *ngIf="song.imagen" 
-        [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
-        alt="{{ song.album || 'Sin título' }} Cover" 
-        class="song-image" 
-      />
-      
-      <div class="song-info">
-        <h4>{{ song.album || 'Álbum desconocido' }}</h4>
-        <p>{{ song.cantante?.nombre || 'Artista desconocido' }}</p>
-      </div>
-  
-      <!-- 🎵 Botón para reproducir la canción -->
-      <button (click)="playSong(song)">▶ Reproducir</button>
-    </li>
-  </ul>
-  
-  <!-- 🚨 Mensaje cuando la playlist no tiene canciones -->
-  <p *ngIf="!canciones?.length">🚫 No hay canciones en esta playlist.</p>
-  
+<app-header></app-header>
+
+<app-playlist-user></app-playlist-user>

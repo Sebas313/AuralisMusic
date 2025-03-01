@@ -15,6 +15,32 @@
     padding: 10px;
     border-radius: 8px;
   }
+  .playlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px; /* Aumenta un poco el padding */
+    border-radius: 8px;
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+  
+  .playlist-name {
+    font-size: 16px;
+    margin-bottom: 5px; 
+  }
+  
+  .song-count {
+    font-size: 13px;
+    color: #aaa;
+    margin-left: 2px; 
+  }
+  
+  .arrow {
+    font-size: 22px;
+    color: #aaa;
+    margin-left: 10px; /* Separa la flecha del texto */
+  }
   
   .search-bar input {
     flex-grow: 1;

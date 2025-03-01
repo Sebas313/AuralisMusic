@@ -1,26 +1,23 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PlaylistService } from '../../services/playlist.service';
 import { SongService } from '../../services/song.service';
+import { PlaylistService } from '../../services/playlist.service';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
-import { PlaylistUserComponent } from '../../components/playlist-user/playlist-user.component';
-
+import { forkJoin } from 'rxjs';
 
 @Component({
+  selector: 'app-playlist-songs',
+  templateUrl: './playlist-songs.component.html',
+  styleUrls: ['./playlist-songs.component.css'],
   standalone: true,
-  selector: 'app-private-playlist',
-  templateUrl: './private-playlist.component.html',
-  styleUrls: ['./private-playlist.component.css'],
-  imports: [CommonModule, HeaderComponent, PlaylistUserComponent]
+  imports: [CommonModule]
 })
-export class PrivatePlaylistComponent implements OnInit {
+export class PlaylistSongsComponent implements OnInit {
   playlist: any = null;
   canciones: any[] = [];
   currentSong: any = null;
   isPlaying = false;
   audioPlayer = new Audio();
-  showMusicPlayer = false; // ✅ Para mostrar el reproductor
 
   @Output() songSelected = new EventEmitter<any>();
 
@@ -37,7 +34,7 @@ export class PrivatePlaylistComponent implements OnInit {
     }
   }
 
-  cargarPlaylist(id: string) {
+  cargarPlaylist(id: string): void {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
         console.log('📥 Respuesta de la API:', data);
@@ -48,54 +45,73 @@ export class PrivatePlaylistComponent implements OnInit {
         }
   
         this.playlist = data;
-        this.canciones = Array.isArray(data.canciones) ? data.canciones : [];
   
-        console.log('🎵 Canciones cargadas:', this.canciones);
+        if (Array.isArray(data.canciones) && data.canciones.length > 0) {
+          if (typeof data.canciones[0] === 'string') {
+            this.obtenerDetallesCanciones(data.canciones);
+          } else {
+            this.canciones = [...data.canciones];
+          }
+        } else {
+          console.warn('⚠️ La playlist no tiene canciones.');
+          this.canciones = [];
+        }
       },
       error: (err) => console.error('❌ Error al cargar la playlist:', err)
     });
   }
 
-  playSong(song: any) {
-    if (!song || !song.fileUrl) {
+  obtenerDetallesCanciones(cancionIds: string[]): void {
+    if (!cancionIds.length) {
+      console.warn('⚠️ No hay canciones para cargar.');
+      return;
+    }
+
+    const requests = cancionIds.map(id => this.songService.getCancionById(id));
+
+    forkJoin(requests).subscribe({
+      next: (songsData) => {
+        console.log('🎵 Canciones completas:', songsData);
+        this.canciones = songsData;
+      },
+      error: (err) => console.error('❌ Error al obtener detalles de canciones:', err)
+    });
+  }
+
+  playSong(song: any): void {
+    if (!song?.fileUrl) {
       console.error('❌ La canción no tiene URL de audio');
       return;
     }
 
     if (this.currentSong && this.isPlaying) {
-      this.audioPlayer.pause();
-      this.audioPlayer.currentTime = 0;
+      this.stopCurrentSong();
     }
 
     this.currentSong = song;
     this.isPlaying = true;
-    this.showMusicPlayer = true; // ✅ Mostrar el reproductor
-
-    console.log('🎶 Reproduciendo:', this.currentSong);
-    console.log('🎵 Mostrando MusicPlayer:', this.showMusicPlayer);
-
     this.audioPlayer.src = song.fileUrl;
     this.audioPlayer.play();
 
     this.audioPlayer.onended = () => {
       this.isPlaying = false;
+      this.currentSong = null;
     };
 
     this.songSelected.emit(song);
   }
 
-  pauseSong() {
+  pauseSong(): void {
     if (this.isPlaying) {
       this.audioPlayer.pause();
       this.isPlaying = false;
     }
   }
 
-  stopCurrentSong() {
+  stopCurrentSong(): void {
     this.audioPlayer.pause();
     this.audioPlayer.currentTime = 0;
     this.isPlaying = false;
     this.currentSong = null;
-    this.showMusicPlayer = false; // ✅ Ocultar el reproductor
   }
 }

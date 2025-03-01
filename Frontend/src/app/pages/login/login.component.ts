@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import Swal from 'sweetalert2'; // ✅ Importamos SweetAlert2
 
 @Component({
   selector: 'app-login',
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Detectar si el usuario acaba de verificar su correo
     this.route.queryParams.subscribe(params => {
       if (params['verified']) {
-        this.mensaje = "✅ Cuenta verificada. Ahora puedes iniciar sesión.";
+        Swal.fire('Cuenta Verificada', '✅ Ahora puedes iniciar sesión.', 'success');
       }
     });
 
@@ -59,24 +60,24 @@ export class LoginComponent implements OnInit, OnDestroy {
             localStorage.setItem('token', res.token);
             localStorage.setItem('user', JSON.stringify(res.user));
             localStorage.setItem('userRol', res.user.rol); // ✅ Guarda el rol correctamente
-  
-            console.log("🔐 Token guardado en localStorage:", res.token);
-            console.log("👤 Usuario guardado en localStorage:", res.user);
-            console.log("🎭 Rol guardado en localStorage:", res.user.rol);
-  
-            this.mensaje = "✅ Inicio de sesión exitoso. Redirigiendo...";
+
+            Swal.fire({
+              title: 'Inicio de sesión exitoso',
+              text: '✅ Redirigiendo a la página principal...',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
             console.log('➡️ Redirigiendo a Home...');
   
             this.router.navigate(['/home']).then((navigated) => {
-              if (navigated) {
-                console.log('✅ Redirección exitosa');
-              } else {
-                console.error('❌ Redirección fallida');
+              if (!navigated) {
+                Swal.fire('Error', '❌ No se pudo redirigir a la página principal.', 'error');
               }
             });
-  
           } else {
-            this.errorMessage = "⚠️ Respuesta inesperada del servidor.";
+            Swal.fire('Error', '⚠️ Respuesta inesperada del servidor.', 'warning');
           }
         },
         error: (err) => {
@@ -85,19 +86,26 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.failedAttempts++;
   
           if (this.failedAttempts > 2) {
-            this.mensaje = '¿Olvidaste tu contraseña?';
+            Swal.fire({
+              title: '¿Olvidaste tu contraseña?',
+              text: 'Puedes restablecerla ahora.',
+              icon: 'info',
+              confirmButtonText: 'Restablecer',
+              showCancelButton: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.router.navigate(['/reset-password']); // Redirigir a la página de restablecimiento
+              }
+            });
           } else {
-            this.mensaje = '⚠️ Credenciales incorrectas.';
+            Swal.fire('Error', '⚠️ Credenciales incorrectas.', 'error');
           }
         }
       });
     } else {
-      this.errorMessage = '⚠️ Por favor, completa todos los campos correctamente.';
+      Swal.fire('Error', '⚠️ Por favor, completa todos los campos correctamente.', 'error');
     }
   }
-  
-  
-  
 
   // Método para alternar la visibilidad de la contraseña
   togglePasswordVisibility() {
