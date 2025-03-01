@@ -53,23 +53,12 @@ export class AuthService {
       tap(response => {
         console.log('📥 Respuesta del servidor:', response);
   
-        if (!response?.token || !response?.user) {
-          console.error('⚠️ Error: No se recibió token o usuario en la respuesta.');
-          throw new Error('No se pudo autenticar el usuario.');
-        }
-  
-        if (!response.user.isVerified) {
-          console.warn('⚠️ El correo aún no ha sido verificado.');
-          this.router.navigate(['/verificar-email'], { queryParams: { email: response.user.email } });
-          throw new Error('El correo aún no ha sido verificado.');
-        }
-  
-        console.log('✅ Usuario verificado, iniciando sesión.');
+    
+
   
       
         this.setToken(response.token);
   
-    
         const userData = {
           _id: response.user._id || 'SIN_ID',
           nombre: response.user.nombre || 'Desconocido',

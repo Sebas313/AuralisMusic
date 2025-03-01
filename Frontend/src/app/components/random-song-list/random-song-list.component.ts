@@ -77,10 +77,10 @@ export class RandomSongListComponent implements OnInit {
   }
 
   pauseSong() {
-    if (this.isPlaying) {
+    if (this.audioPlayer && this.isPlaying) {
       this.audioPlayer.pause();
-      this.isPlaying = false;
-    }
+      this.isPlaying = false;
+    }
   }
 
   stopCurrentSong() {
