@@ -45,7 +45,7 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
         <h2 style="color: #B2A179;">¡Bienvenido!</h2>
         <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el botón:</p>
         
-        <a href="${frontendUrl}login"
+        <a href="https://auralis-music.vercel.app/login"
           style="display: inline-block; background-color: #B2A179; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 5px;">
           Verificar mi cuenta
         </a>
