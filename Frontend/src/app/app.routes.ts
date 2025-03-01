@@ -21,7 +21,9 @@ export const routes: Routes = [
   { path: 'subir', component: SubirCancionComponent, canActivate: [CantanteGuard] },           
   { path: 'verificar-email', component: VerificarEmailComponent }, // Ruta para la página de verificación
   { path: 'verificar/:token', component: VerificarComponent }, // Ruta para el proceso de verificación con token
-  { path: 'verificacion-exitosa', component: VerificacionExitosaComponent }, 
+  { path: 'verificacion-exitosa', component: VerificacionExitosaComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' }, 
+  { path: '**', redirectTo: '/home' },   
 ];
 
 
