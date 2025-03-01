@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators'
-import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
 import { environment } from '../../environments/environment'; // ✅ Importa desde environment.ts
 
 @Injectable({

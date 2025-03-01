@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Cancion } from '../models/cancion.model';
-import { API_URL } from '../../config'; // ✅ Importa la URL desde config.ts
+ Importa la URL desde config.ts
 import { environment } from '../../environments/environment'; // 👈 Importa desde environments
 
 @Injectable({
