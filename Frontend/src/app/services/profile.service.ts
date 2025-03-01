@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_URL } from '../../config'; // 
+
 import { environment } from '../../environments/environment'; // ✅ Importa desde environment.ts
 
 @Injectable({

@@ -5,7 +5,6 @@ import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/u
 import { tap, catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-import { API_URL } from '../../config'; // 👈 Importa la URL desde config.ts
 import { environment } from '../../environments/environment'
 
 @Injectable({
