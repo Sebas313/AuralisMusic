@@ -1,25 +1,45 @@
+// verificar.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-verificar',
-  template: '<p>Redirigiendo...</p>', // Pantalla de carga opcional
+  templateUrl: './verificar.component.html',
+  styleUrls: ['./verificar.component.css']
 })
 export class VerificarComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  loading: boolean = true; // Variable para manejar el estado de carga
+  error: string | null = null; // Mensaje de error, si lo hay
 
-  ngOnInit(): void {
-    // Obtener el token desde los queryParams
-    this.route.queryParams.subscribe(params => {
-      const token = params['token']; // 🔍 Aquí tomamos el token correctamente
+  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) {}
 
-      if (token) {
-        console.log('🔑 Redirigiendo con el token:', token);
-        // Redirigir a verificar-email con el token en los queryParams
-        this.router.navigate(['/verificar-email'], { queryParams: { token } });
-      } else {
-        console.warn('⚠️ No se encontró el token en la URL.');
+  ngOnInit() {
+    // Obtener el token desde la URL
+    const token = this.route.snapshot.paramMap.get('token');
+    
+    if (token) {
+      // Verificar el token
+      this.verificarEmail(token);
+    } else {
+      this.error = 'No se encontró un token en la URL.';
+      this.loading = false;
+    }
+  }
+
+  verificarEmail(token: string) {
+    this.userService.verifyEmail(token).subscribe(
+      (response) => {
+        // Si la verificación fue exitosa, redirigir al login
+        this.loading = false;
+        this.router.navigate(['/login'], { queryParams: { verified: true } });
+      },
+      (error) => {
+        // Si hay un error, mostrar el mensaje de error
+        this.loading = false;
+        this.error = 'Hubo un error al verificar tu correo. Por favor, inténtalo de nuevo.';
+        console.error('Error al verificar el correo', error);
       }
-    });
+    );
   }
 }

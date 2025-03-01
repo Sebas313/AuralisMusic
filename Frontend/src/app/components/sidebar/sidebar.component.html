@@ -9,24 +9,29 @@
     <input 
       type="text" 
       [(ngModel)]="searchQuery" 
-      placeholder="Buscar canción..."
-      [readonly]="!isSearchVisible"
-      (click)="toggleSearch()"
-      (input)="filterSongs($event)"
+      placeholder="Buscar canción..." 
+      [readonly]="!isSearchVisible" 
+      (click)="toggleSearch()" 
+      (input)="filterSongs()"
     />
   </div>
 
   <!-- Lista de canciones -->
   <ul class="song-list" *ngIf="isSearchVisible && filteredSongs.length > 0">
     <li *ngFor="let song of filteredSongs | slice:0:6" class="song-item">
-      <img [src]="'http://localhost:3000/public/uploads/' + song.imagen" alt="Cover" class="song-image" />
+      <img 
+        *ngIf="song.imagen" 
+        [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
+        [alt]="song.album || 'Sin título' + ' Cover'" 
+        class="song-image" 
+      />
       <div class="song-info">
-        <h4>{{ song.cancion }}</h4>
-        <p>{{ song.cantante }}</p>
+        <h4>{{ song.album || 'Álbum desconocido' }}</h4>
+        <p>{{ song.cancion }}</p>
       </div>
       <div class="song-actions">
         <button title="Reproducir" (click)="playSong(song)">▶️</button>
-        <button title="Sumar a tu playlist" (click)="addToPlaylist(song)">➕</button>
+        <button title="Añadir a tu playlist" (click)="addToPlaylist(song)">➕</button>
       </div>
     </li>
   </ul>

@@ -43,7 +43,13 @@ export class SongService {
       .get<Cancion>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
-
+  getCancionesByIds(ids: string[]): Observable<Cancion[]> {
+    const url = `${this.apiUrl}/canciones/getByIds`; // Endpoint en tu backend
+    return this.http
+      .post<Cancion[]>(url, { ids }, { headers: this.getHeaders() }) // Enviar array de IDs
+      .pipe(catchError(this.handleError));
+  }
+  
   /**
    * 🎵 Obtener la URL de audio de una canción
    */

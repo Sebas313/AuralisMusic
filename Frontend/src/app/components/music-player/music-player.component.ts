@@ -17,7 +17,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   @Input() currentSong: Cancion | null = null;
   @Input() isPlaying: boolean = false;
   @Input() playlist: Cancion[] = [];
-
+  @Input() song: any = null;
   sound: Howl | null = null;
   songSubscription!: Subscription;
   playSubscription!: Subscription;

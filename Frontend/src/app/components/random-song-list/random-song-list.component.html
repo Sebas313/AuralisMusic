@@ -1,6 +1,5 @@
 <div *ngIf="currentSong" class="now-playing">
   <p>🎵 Reproduciendo: {{ currentSong?.album || 'Desconocido' }} - {{ currentSong?.cantante?.nombre || 'Artista desconocido' }}</p>
-  <div #waveform class="waveform"></div>
 </div>
 
 <ul class="song-list">
@@ -15,8 +14,6 @@
     <div class="song-info">
       <h4>{{ song.album || 'Álbum desconocido' }}</h4>
       <p>{{ song.cantante?.cantante || 'Artista desconocido' }}</p>
-
-
     </div>
     
     <div class="song-actions">
@@ -26,3 +23,24 @@
     </div>
   </li>
 </ul>
+
+<!-- Modal para agregar a playlist -->
+<div *ngIf="showModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Selecciona una playlist</h3>
+    
+    <ul *ngIf="playlists.length > 0" class="playlist-list">
+      <li *ngFor="let playlist of playlists">
+        <button (click)="confirmAddToPlaylist(playlist._id)">{{ playlist.nombre }}</button>
+      </li>
+    </ul>
+
+    <div class="new-playlist">
+      <h4>O crea una nueva:</h4>
+      <input type="text" [(ngModel)]="newPlaylistName" placeholder="Nombre de la playlist">
+      <button (click)="createNewPlaylist()">Crear Playlist</button>
+    </div>
+
+    <button class="close-btn" (click)="closeModal()">Cancelar</button>
+  </div>
+</div>
