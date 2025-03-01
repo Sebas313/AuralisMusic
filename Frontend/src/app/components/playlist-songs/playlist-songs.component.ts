@@ -18,7 +18,7 @@ export class PlaylistSongsComponent implements OnInit {
   currentSong: any = null;
   isPlaying = false;
   audioPlayer = new Audio();
-
+  showMusicPlayer = false;
   @Output() songSelected = new EventEmitter<any>();
 
   constructor(

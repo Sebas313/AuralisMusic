@@ -16,9 +16,6 @@ import { MusicPlayerComponent } from '../../components/music-player/music-player
 })
 export class PlaylistUserComponent {
   @Input() playlist: any = null; 
-
-
-
   canciones: any[] = [];
   currentSong: any = null;
   isPlaying = false;
