@@ -14,10 +14,7 @@ const usuarioSchema = new mongoose.Schema({
     enum: ["administrador", "usuario", "cantante"],
     default: "usuario",
   },
-  isVerified: { 
-    type: Boolean, 
-    default: false 
-  }, // 👈 Agregamos este campo para manejar la verificación de email
+  // 👈 Agregamos este campo para manejar la verificación de email
 });
 
 const Usuario = mongoose.model("Usuario", usuarioSchema);
