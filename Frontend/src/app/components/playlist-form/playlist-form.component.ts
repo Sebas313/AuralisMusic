@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { PlaylistService } from '../../services/playlist.service';  // Cambia a PlaylistService
+import { PlaylistService } from '../../services/playlist.service'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 @Component({
@@ -14,15 +14,15 @@ export class PlaylistFormComponent {
 
   @Output() playlistCreated = new EventEmitter<any>();
 
-  constructor(private playlistService: PlaylistService) {}  // Cambia a PlaylistService
+  constructor(private playlistService: PlaylistService) {}  
 
   createPlaylist() {
     const userId = localStorage.getItem('userId');
     if (userId && this.newPlaylistName) {
       this.playlistService.createPlaylist({ userId, name: this.newPlaylistName }).subscribe({
         next: (response) => {
-          this.playlistCreated.emit(response);  // Emitir el evento con la nueva playlist
-          this.newPlaylistName = '';  // Resetear el campo
+          this.playlistCreated.emit(response);
+          this.newPlaylistName = '';
           alert('Playlist creada con éxito');
         },
         error: (err) => {

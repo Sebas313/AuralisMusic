@@ -37,7 +37,6 @@ export class PlaylistSongsComponent implements OnInit {
   cargarPlaylist(id: string): void {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
-        console.log('📥 Respuesta de la API:', data);
   
         if (!data || typeof data !== 'object') {
           console.error('❌ Error: Datos de playlist inválidos');
@@ -71,7 +70,6 @@ export class PlaylistSongsComponent implements OnInit {
 
     forkJoin(requests).subscribe({
       next: (songsData) => {
-        console.log('🎵 Canciones completas:', songsData);
         this.canciones = songsData;
       },
       error: (err) => console.error('❌ Error al obtener detalles de canciones:', err)

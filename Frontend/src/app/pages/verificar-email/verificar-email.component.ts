@@ -9,8 +9,8 @@ import { UserService } from '../../services/user.service';
 })
 export class VerificarEmailComponent implements OnInit {
   
-  isLoading: boolean = false; // Indicador de carga
-  errorMessage: string = '';   // Mensaje de error
+  isLoading: boolean = false; 
+  errorMessage: string = ''; 
 
   constructor(
     private route: ActivatedRoute,
@@ -23,23 +23,21 @@ export class VerificarEmailComponent implements OnInit {
       const token = params['token'];
   
       if (token) {
-        this.isLoading = true; // Activar el indicador de carga
+        this.isLoading = true; 
         
         this.userService.verifyEmail(token).subscribe({
           next: (response) => {
-            console.log('📥 Respuesta del backend:', response);
-            this.isLoading = false; // Desactivar el indicador de carga
+            this.isLoading = false;
             if (response?.success && response?.token) {
               localStorage.setItem('authToken', response.token);
-              this.router.navigate(['/login']); // ✅ Redirige al login
+              this.router.navigate(['/login']); 
             } else {
               this.errorMessage = '⚠️ El token es inválido o ha expirado. Intenta de nuevo.';
-              console.log('⚠️ Token inválido o expirado');
-              this.router.navigate(['/register']); // 🚨 Redirige si el token no sirve
+              this.router.navigate(['/register']); 
             }
           },
           error: (error) => {
-            this.isLoading = false; // Desactivar el indicador de carga
+            this.isLoading = false; 
             this.errorMessage = '❌ Ocurrió un error al verificar tu cuenta. Intenta de nuevo.';
             console.error("❌ Error al verificar:", error);
             this.router.navigate(['/register']);

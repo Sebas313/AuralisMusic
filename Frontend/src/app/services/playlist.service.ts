@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment'; // Solo importamos lo que usamos
+import { environment } from '../../environments/environment'; 
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,6 @@ export class PlaylistService {
   private apiUrl = `${environment.apiUrl}/Api/Playlist`; 
   private http = inject(HttpClient);
 
-  // Este método obtiene todas las playlists del usuario
   getPlaylists(): Observable<any[]> {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
   
@@ -27,8 +26,6 @@ export class PlaylistService {
       })
     );
   }
-  
-  // Este método obtiene una playlist específica por ID
   getPlaylist(id: string): Observable<any> {
     const url = `${this.apiUrl}/${id}`;
     console.log("📡 Solicitando playlist en:", url);
@@ -44,10 +41,10 @@ export class PlaylistService {
   
  addSongToPlaylist(playlistId: string, song: any): Observable<any> {
     const body = { 
-      canciones: [song._id] // Solo enviamos la lista de canciones
+      canciones: [song._id] 
     };
     
-    const url = `${this.apiUrl}/${playlistId}`; // Ahora sí incluimos el ID en la URL
+    const url = `${this.apiUrl}/${playlistId}`; 
     
     return this.http.post<any>(url, body).pipe(
       tap(response => console.log("✅ Canción agregada a la playlist:", response)),
@@ -61,24 +58,22 @@ export class PlaylistService {
 
   createPlaylist(playlist: any): Observable<any> {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
-    const userId = user?._id; // 👉 Obtén el ID del usuario
+    const userId = user?._id; 
   
     if (!userId) {
       throw new Error('ID de usuario no encontrado');
     }
   
-    // 👉 Configura las cabeceras (sin token)
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
   
-    // 📂 Incluye el userId en el cuerpo de la playlist
+
     const playlistWithUser = {
       ...playlist,
-      creadoPor: userId // 👈 Añade el ID al objeto enviado
+      creadoPor: userId
     };
-  
-    // 📡 Realiza la petición POST
     return this.http.post(`${this.apiUrl}`, playlistWithUser, { headers }).pipe(
       tap(response => console.log("✅ Playlist creada:", response)),
       catchError(err => {

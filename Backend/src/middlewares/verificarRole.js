@@ -1,4 +1,4 @@
-// Middleware para verificar roles
+
 export const verificarRoles = (rolesPermitidos) => {
   return (req, res, next) => {
       if (!req.usuario) {

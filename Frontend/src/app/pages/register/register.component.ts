@@ -60,8 +60,8 @@ export class RegisterComponent {
           text: 'Hemos enviado un correo de verificación. Por favor, revisa tu bandeja de entrada.',
           confirmButtonText: 'Aceptar'
         }).then(() => {
-          this.registerForm.reset(); // Reinicia el formulario
-          this.router.navigate(['/verificar-email']); // Redirige a la verificación
+          this.registerForm.reset(); 
+          this.router.navigate(['/verificar-email']); 
         });
         this.loading = false;
       },

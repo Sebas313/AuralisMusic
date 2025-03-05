@@ -17,8 +17,7 @@ export class UserService {
     private http: HttpClient, 
     private authService: AuthService, 
     private router: Router
-  ) { console.log('🔍 API URL:', environment.apiUrl);
-    console.log('🔍 FRONTEND URL:', environment.frontendUrl);}
+  ) {}
   
 
   register(registerData: RegisterData): Observable<RegisterResponse> {
@@ -40,31 +39,28 @@ export class UserService {
         console.log('📥 Respuesta del backend (verificación de email):', response);
   
         if (response?.success && response?.token && response?.user) {
-          console.log('🔑 Token válido. Guardando datos del usuario...');
   
-          // Guarda el token y el rol en localStorage
           localStorage.setItem('authToken', response.token);
           localStorage.setItem('user', JSON.stringify({
             _id: response.user._id,
             nombre: response.user.nombre,
             email: response.user.email,
-            rol: response.user.rol || 'usuario', // Guarda el rol del usuario
+            rol: response.user.rol || 'usuario', 
           }));
   
-          console.log('✅ Usuario guardado en localStorage:', JSON.parse(localStorage.getItem('user')!));
+       
   
           // Redirige según el entorno
           const redirectUrl = environment.production
             ? `${environment.frontendUrl}/login`
-            : '/login'; // URL para desarrollo
+            : '/login'; 
           console.log(environment.frontendUrl)
-          console.log("Redirigiendo a:", redirectUrl);  // Agrega un log para ver si la redirección se está llamando
-          setTimeout(() => {  // Agrega un pequeño retardo para asegurar que se complete la operación
+          console.log("Redirigiendo a:", redirectUrl); 
+          setTimeout(() => {  
             this.router.navigate([redirectUrl]);
           }, 500);
   
         } else {
-          console.log('⚠️ Token inválido o expirado');
           this.router.navigate(['/register']);
         }
       }),
@@ -79,7 +75,6 @@ export class UserService {
   fetchUserProfile(userId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/usuario/${userId}`).pipe(
       map(response => {
-        console.log('Response:', response);
         return response;
       }),
       catchError(this.handleError<any>('Error al obtener el perfil'))
@@ -97,10 +92,6 @@ export class UserService {
 
   private handleError<T>(defaultMessage: string) {
     return (error: any): Observable<T> => {
-      console.error("Error completo:", error); // Ver todo el error
-      console.log("Error status:", error.status); // Ver código de estado HTTP
-      console.log("Error body:", error.error); // Ver mensaje del backend
-      
       const errorMessage = error.error ? JSON.stringify(error.error) : defaultMessage;
       return throwError(() => new Error(errorMessage));
     };

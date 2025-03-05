@@ -6,7 +6,6 @@ import Cantante from "../Modelos/cantanteModelos.js";
 
  const Registro = async (req, res) => {
   try {
-    console.log("📥 Datos recibidos en el registro:", req.body);
     const { nombre, email, password, rol } = req.body;
 
     if (!nombre || !email || !password) {
@@ -31,7 +30,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
 
  const login = async (req, res) => {
   try {
-    console.log("📥 Datos recibidos en login:", req.body);
+   
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: "Email y contraseña son requeridos." });
 
@@ -49,7 +48,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
         _id: usuario._id, 
         nombre: usuario.nombre, 
         email: usuario.email, 
-        rol: usuario.rol // Corregido el acceso a la propiedad `rol`
+        rol: usuario.rol 
       } 
     });
       } catch (error) {

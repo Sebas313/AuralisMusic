@@ -1,8 +1,8 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken'; // Importar JWT
-import User from '../Modelos/usuariosModelos.js'; // Importa el modelo User desde donde lo tengas
+import jwt from 'jsonwebtoken';
+import User from '../Modelos/usuariosModelos.js';
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
     : process.env.FRONTEND_URL_LOCAL;
   // Configuración del correo
   const mailOptions = {
-    from: process.env.MAIL_USER, // Usar la dirección de correo desde la variable de entorno
+    from: process.env.MAIL_USER, 
     to: email,
     subject: 'Verificación de cuenta',
     html: `
@@ -58,7 +58,6 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
   try {
     // Enviar correo
     await transporter.sendMail(mailOptions);
-    console.log('Correo de verificación enviado a:', email);
     next();
   } catch (error) {
     console.error('Error al enviar el correo:', error);
@@ -66,10 +65,7 @@ const sendVerificationEmailMiddleware = async (req, res, next) => {
   }
 };
 
-// Ruta de registro con middleware
 app.post('/Registro', sendVerificationEmailMiddleware, async (req, res) => {
-  // Aquí puedes registrar al usuario, lo cual no estaba en el código original, solo se muestra el correo de verificación.
-  // Supongo que el registro ya se maneja en otra parte, por lo que solo se envía el correo de verificación aquí.
   res.status(200).json({ message: 'Usuario registrado y correo enviado.' });
 });
 

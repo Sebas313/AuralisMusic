@@ -49,8 +49,6 @@ export class PlaylistUserComponent {
 
         this.playlist = data;
         this.canciones = Array.isArray(data.canciones) ? data.canciones : [];
-
-        console.log('🎵 Canciones cargadas:', this.canciones);
       },
       error: (err) => console.error('❌ Error al cargar la playlist:', err)
     });
@@ -70,9 +68,6 @@ export class PlaylistUserComponent {
     this.currentSong = song;
     this.isPlaying = true;
     this.showMusicPlayer = true;
-
-    console.log('🎶 Reproduciendo:', this.currentSong);
-    console.log('🎵 Mostrando MusicPlayer:', this.showMusicPlayer);
 
     this.audioPlayer.src = song.fileUrl;
     this.audioPlayer.play();

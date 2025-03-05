@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export const crearCantante = async (req, res) => {
   try {
-    const { cantante, canciones, avatar } = req.body; // 🛠️ Cambié "nombre" a "cantante"
+    const { cantante, canciones, avatar } = req.body; 
 
     if (!cantante) {
       return res.status(400).json({ message: "El nombre del cantante es requerido" });
@@ -11,7 +11,7 @@ export const crearCantante = async (req, res) => {
 
     const nuevoCantante = new Cantante({
       cantante,
-      canciones: canciones || [], // Si no se envían canciones, inicializar con un array vacío
+      canciones: canciones || [], 
       avatar: avatar || null,
     });
 
@@ -81,7 +81,7 @@ export const actualizarCantante = async (req, res) => {
 export const eliminarCantante = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("ID recibido", id);
+   
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID no válido" });

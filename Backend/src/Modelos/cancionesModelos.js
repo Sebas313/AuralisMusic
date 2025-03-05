@@ -5,8 +5,8 @@ const cancionesSchema = new mongoose.Schema({
     cancion: String,
     album: String,
     genero: String,
-    imagen: { type: String },  // Imagen de la canción (si la tienes)
-    fileUrl: { type: String, required: true }  // URL del archivo de audio
+    imagen: { type: String },  
+    fileUrl: { type: String, required: true } 
   });
 
 
