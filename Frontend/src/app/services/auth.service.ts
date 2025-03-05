@@ -4,33 +4,33 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators'
-import { environment } from '../../environments/environment'; // ✅ Importa desde environment.ts
+import { environment } from '../../environments/environment'; 
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/Api`;
-  private authStatus = new BehaviorSubject<boolean>(this.isLogged()); // Estado inicial basado en localStorage
-  isLogged$ = this.authStatus.asObservable(); // Observable para actualizar la UI en tiempo real
+  private authStatus = new BehaviorSubject<boolean>(this.isLogged()); 
+  isLogged$ = this.authStatus.asObservable(); 
 
   constructor(private http: HttpClient, private router: Router) {}
 
   setToken(token: string): void {
     localStorage.setItem('user_token', token);
-    this.authStatus.next(true); // 🚀 Notifica que el usuario está autenticado
+    this.authStatus.next(true);
   }
 
   removeToken(): void {
     localStorage.removeItem('user_token');
     localStorage.removeItem('userId');
     localStorage.removeItem('user');
-    this.authStatus.next(false); // ❌ Notifica que el usuario cerró sesión
+    this.authStatus.next(false);
   }
 
   getToken(): string | null {
     const token = localStorage.getItem('user_token');
-    console.log('🔑 Token desde localStorage:', token); // Ahora sí se ejecutará
+    console.log('🔑 Token desde localStorage:', token); 
     return token;
   }
   
@@ -51,12 +51,7 @@ export class AuthService {
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
-        console.log('📥 Respuesta del servidor:', response);
-  
-    
-
-  
-      
+        console.log('📥 Respuesta del servidor:', response);   
         this.setToken(response.token);
   
         const userData = {

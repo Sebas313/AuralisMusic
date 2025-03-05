@@ -20,7 +20,7 @@ export class PrivatePlaylistComponent implements OnInit {
   currentSong: any = null;
   isPlaying = false;
   audioPlayer = new Audio();
-  showMusicPlayer = false; // ✅ Para mostrar el reproductor
+  showMusicPlayer = false; 
 
   @Output() songSelected = new EventEmitter<any>();
 
@@ -40,7 +40,7 @@ export class PrivatePlaylistComponent implements OnInit {
   cargarPlaylist(id: string) {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
-        console.log('📥 Respuesta de la API:', data);
+    
   
         if (!data || typeof data !== 'object') {
           console.error('❌ Error: Datos de playlist inválidos');
@@ -50,7 +50,6 @@ export class PrivatePlaylistComponent implements OnInit {
         this.playlist = data;
         this.canciones = Array.isArray(data.canciones) ? data.canciones : [];
   
-        console.log('🎵 Canciones cargadas:', this.canciones);
       },
       error: (err) => console.error('❌ Error al cargar la playlist:', err)
     });
@@ -69,10 +68,7 @@ export class PrivatePlaylistComponent implements OnInit {
 
     this.currentSong = song;
     this.isPlaying = true;
-    this.showMusicPlayer = true; // ✅ Mostrar el reproductor
-
-    console.log('🎶 Reproduciendo:', this.currentSong);
-    console.log('🎵 Mostrando MusicPlayer:', this.showMusicPlayer);
+    this.showMusicPlayer = true; 
 
     this.audioPlayer.src = song.fileUrl;
     this.audioPlayer.play();
@@ -96,6 +92,6 @@ export class PrivatePlaylistComponent implements OnInit {
     this.audioPlayer.currentTime = 0;
     this.isPlaying = false;
     this.currentSong = null;
-    this.showMusicPlayer = false; // ✅ Ocultar el reproductor
+    this.showMusicPlayer = false; 
   }
 }

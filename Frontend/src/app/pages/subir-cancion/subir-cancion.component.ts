@@ -18,8 +18,8 @@ export class SubirCancionComponent implements OnInit {
   cancionForm: FormGroup;
   cargando: boolean = false;
   mensaje: string = '';
-  archivoCancion: File | null = null;  // Archivo de la canción
-  archivoImagen: File | null = null;  // Imagen de la canción
+  archivoCancion: File | null = null;  
+  archivoImagen: File | null = null; 
 
   constructor(private fb: FormBuilder, private songService: SongService, private router: Router) {
     this.cancionForm = this.fb.group({
@@ -32,15 +32,13 @@ export class SubirCancionComponent implements OnInit {
 
   ngOnInit() {}
 
-  /**
-   * Maneja la selección de archivos y valida tipo y tamaño.
-   */
+ 
   seleccionarArchivo(event: any, tipo: 'song' | 'image') {
     const file = event.target.files[0];
 
     if (!file) return;
 
-    const maxSize = 10 * 1024 * 1024; // 10MB máximo
+    const maxSize = 10 * 1024 * 1024; 
     if (file.size > maxSize) {
       this.mensaje = `El archivo ${file.name} es demasiado grande.`;
       return;
@@ -64,10 +62,6 @@ export class SubirCancionComponent implements OnInit {
 
     console.log(`📂 Archivo seleccionado (${tipo}):`, file.name);
   }
-
-  /**
-   * 📤 Subir la canción al backend.
-   */
   subirCancion() {
     if (this.cancionForm.invalid || !this.archivoCancion) {
       Swal.fire({
@@ -101,7 +95,7 @@ export class SubirCancionComponent implements OnInit {
           text: 'La canción se ha subido correctamente.',
           confirmButtonText: 'Ir a la Home'
         }).then(() => {
-          this.router.navigate(['/home']); // 🔥 Redirección después de la alerta
+          this.router.navigate(['/home']);
         });
   
         this.cancionForm.reset();

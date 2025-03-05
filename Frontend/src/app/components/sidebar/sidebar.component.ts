@@ -62,8 +62,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
         song.album?.toLowerCase().includes(searchTermLower)
       );
     }
-
-    console.log('Canciones filtradas:', this.filteredSongs);
   }
 
   toggleSidebar() {
@@ -86,12 +84,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   playSong(song: any) {
     if (!song.fileUrl) {
-      console.error('La canción no tiene URL de audio');
       return;
     }
 
     if (!this.waveformRef?.nativeElement) {
-      console.error('El elemento waveformRef no está disponible.');
       return;
     }
 
@@ -116,8 +112,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.wavesurfer.on('finish', () => {
       this.isPlaying = false;
     });
-
-    console.log('waveformRef:', this.waveformRef?.nativeElement);
   }
 
   @HostListener('document:click', ['$event'])

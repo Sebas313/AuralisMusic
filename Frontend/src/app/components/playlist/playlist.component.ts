@@ -5,8 +5,7 @@ import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Cancion } from '../../models/cancion.model';
 import { Router } from '@angular/router';
-import { SongService } from '../../services/song.service'; // Importa el servicio de canciones
-
+import { SongService } from '../../services/song.service'; 
 @Component({
   selector: 'app-playlist',
   imports: [CommonModule, FormsModule],
@@ -15,11 +14,11 @@ import { SongService } from '../../services/song.service'; // Importa el servici
   standalone: true
 })
 export class PlaylistComponent implements OnInit {
-  playlists: any[] = []; // Ahora es un array de playlists
+  playlists: any[] = []; 
   selectedPlaylist: any = null;
   newSong = { title: '', artist: '', url: '', _id: '' }; 
   searchTerm: string = '';
-  selectedSongs: any[] = []; // Agregar esta propiedad
+  selectedSongs: any[] = []; 
 
   private playlistService = inject(PlaylistService);
   constructor(private router: Router, private songService: SongService) {}
@@ -29,7 +28,7 @@ export class PlaylistComponent implements OnInit {
     this.loadPlaylists();
   }
 
-  /** Cargar todas las playlists */
+ 
   loadPlaylists() {
     this.playlistService.getPlaylists().pipe(
       catchError(error => {
@@ -41,14 +40,12 @@ export class PlaylistComponent implements OnInit {
     });
   }
 
-  /** Filtrar playlists según el término de búsqueda */
   get filteredPlaylists() {
     return this.playlists.filter(playlist =>
       playlist.nombre?.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
-  /** Seleccionar una playlist y navegar a su ruta */
   goToPlaylist(playlistId: string) {
     this.selectedPlaylist = this.playlists.find(p => p._id === playlistId);
     if (this.selectedPlaylist) {
@@ -56,7 +53,7 @@ export class PlaylistComponent implements OnInit {
     }
   }
 
-  /** Agregar una nueva canción a la playlist seleccionada */
+
   addSong() {
     if (this.selectedPlaylist && this.newSong.title && this.newSong.artist && this.newSong.url) {
       this.playlistService.addSongToPlaylist(this.selectedPlaylist._id, this.newSong).pipe(
@@ -66,7 +63,7 @@ export class PlaylistComponent implements OnInit {
         })
       ).subscribe(() => {
         this.loadPlaylists();
-        this.newSong = { title: '', artist: '', url: '', _id: '' }; // Resetear inputs
+        this.newSong = { title: '', artist: '', url: '', _id: '' };
       });
     }
   }

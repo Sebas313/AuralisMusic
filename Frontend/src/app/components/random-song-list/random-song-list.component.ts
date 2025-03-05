@@ -4,8 +4,7 @@ import { SongService } from '../../services/song.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import Swal from 'sweetalert2'; // ✅ Importamos SweetAlert2
-
+import Swal from 'sweetalert2'; 
 @Component({
   selector: 'app-random-song-list',
   standalone: true,
@@ -37,7 +36,6 @@ export class RandomSongListComponent implements OnInit {
   fetchSongs() {
     this.songService.getCanciones().subscribe({
       next: (data) => {
-        console.log("📥 Canciones recibidas:", data);
         this.songs = data.filter(song => song.fileUrl);
       },
       error: (err) => console.error('❌ Error al obtener canciones:', err)
