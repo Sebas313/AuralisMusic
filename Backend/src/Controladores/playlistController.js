@@ -8,37 +8,28 @@ export const crear = async (req, res) => {
   try {
     let { creadoPor, canciones, nombre } = req.body;
 
-    console.log("Datos recibidos:", { creadoPor, canciones, nombre });
-
-    // Asegurarse de que 'canciones' sea siempre un array
     const cancionesArray = Array.isArray(canciones) ? canciones : [canciones];
-    console.log("Canciones procesadas:", cancionesArray);
 
-    // Separar ObjectId válidos y nombres
     const objectIds = [];
     const nombresCanciones = [];
     
     cancionesArray.forEach((cancion) => {
       if (mongoose.Types.ObjectId.isValid(cancion)) {
-        objectIds.push(cancion); // Es un ObjectId válido
+        objectIds.push(cancion);
       } else {
-        nombresCanciones.push(cancion); // Es un nombre
+        nombresCanciones.push(cancion); 
       }
     });
 
-    console.log("IDs detectados:", objectIds);
-    console.log("Nombres detectados:", nombresCanciones);
 
-    // Buscar las canciones por `_id` o `nombre`
     const cancionesEncontradas = await Canciones.find({
       $or: [{ _id: { $in: objectIds } }, { nombre: { $in: nombresCanciones } }],
     });
 
     console.log("Canciones encontradas:", cancionesEncontradas);
 
-    // Validar existencia del usuario
+
     const usuarioEncontrado = await Usuario.findById(creadoPor);
-    console.log("Usuario encontrado:", usuarioEncontrado);
 
     if (!usuarioEncontrado) {
       return res.status(400).json({ message: `No se encontró el usuario: ${creadoPor}` });
@@ -46,33 +37,29 @@ export const crear = async (req, res) => {
 
     if (cancionesEncontradas.length === 0) {
       const nuevasCanciones = await Canciones.insertMany(
-        cancionesArray.map(cancion => ({ nombre: cancion })) // Crear objetos con el formato adecuado
+        cancionesArray.map(cancion => ({ nombre: cancion })) 
       );
 
-      console.log("🎶 Nuevas canciones creadas:", nuevasCanciones);
-      cancionesEncontradas.push(...nuevasCanciones); // Agregar las nuevas canciones al array
+     
+      cancionesEncontradas.push(...nuevasCanciones); 
     }
 
-    // Crear la nueva playlist
     const nuevaPlaylist = new PlayList({
-      canciones: cancionesEncontradas.map((c) => c._id), // Guardar los `_id` encontrados
+      canciones: cancionesEncontradas.map((c) => c._id), 
       creadoPor: usuarioEncontrado._id,
       nombre,
     });
 
-    console.log("Nueva playlist a guardar:", nuevaPlaylist);
 
-    // Guardar la playlist en la base de datos
     await nuevaPlaylist.save();
 
-    // 🔹 Agregar la playlist al array de playlists del usuario
     await Usuario.findByIdAndUpdate(
       usuarioEncontrado._id,
-      { $push: { playlists: nuevaPlaylist._id } }, // Agregar el ID de la playlist
-      { new: true } // Devolver el documento actualizado
+      { $push: { playlists: nuevaPlaylist._id } },
+      { new: true } 
     );
 
-    console.log("✅ Playlist agregada al usuario:", nuevaPlaylist._id);
+
 
     res.status(201).json({
       message: "Playlist guardada con éxito",
@@ -90,8 +77,8 @@ export const crear = async (req, res) => {
 
 
   export async function agregarCancion(req, res) {
-    const { id } = req.params; // Playlist ID de la URL
-    const { canciones } = req.body; // Canciones desde el body
+    const { id } = req.params;
+    const { canciones } = req.body; 
 
     if (!canciones || !Array.isArray(canciones)) {
         return res.status(400).json({ mensaje: "Formato de canciones inválido" });

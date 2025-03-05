@@ -5,7 +5,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
 
 dotenv.config();
 
-// Verificar que la URI está definida
+
 if (!process.env.MONGODB_URI_LOCAL) {
   console.error("❌ No se encontró la URI de conexión a MongoDB. Revisa tu archivo .env");
   process.exit(1);
