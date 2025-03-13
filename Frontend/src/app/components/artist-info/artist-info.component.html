@@ -1,0 +1,9 @@
+<div class="artist-info-container">
+    <img [src]="avatarUrl" [alt]="name" class="artist-image" />
+    <div class="artist-details">
+      <h2>{{ name }}</h2>
+      <p *ngIf="bio">{{ bio }}</p>
+      <p *ngIf="!bio">No hay información disponible</p>
+    </div>
+  </div>
+  

@@ -1,38 +1,143 @@
+/* Estilos generales */
 .player {
-    position: fixed;      
-    bottom: 0;             
-    left: 0;
-    width: 100%;           
-    background-color: #222;
-    color: white;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;          
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3); 
-  }
-  
-  .player .song-image {
-    width: 50px;           
-    height: 50px;
-    object-fit: cover;      
-    margin-right: 10px;
-  }
-  
-  .player .song-info {
-    flex-grow: 1;           
-  }
-  
-  .player .controls button {
-    background: none;      
-    border: none;           
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  .player .controls button:hover {
-    opacity: 0.7;          
-  }
-  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #141414;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+}
+
+/* Imagen y detalles de la canción */
+.song-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 25%;
+}
+
+.song-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: white;
+}
+
+.song-info h4 {
+  font-size: 14px;
+  margin: 0;
+}
+
+.song-info p {
+  font-size: 12px;
+  margin: 0;
+  color: #b3b3b3;
+}
+
+/* Controles y barra de progreso */
+.player-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+}
+
+/* Botones encima de la barra */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 0px; /* Mueve los botones más arriba */
+  z-index: 10;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  opacity: 0.7;
+}
+
+/* Barra de progreso */
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  position: relative;
+  margin-top: 5px;
+}
+
+.progress-container span {
+  font-size: 12px;
+  color: #b3b3b3;
+}
+
+.progress-container input[type="range"] {
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  background: #535353;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.progress-container input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Control de volumen a la derecha con icono */
+.volume-control {
+  width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.volume-control i {
+  font-size: 16px;
+  color: white;
+}
+
+.volume-control input[type="range"] {
+  appearance: none;
+  width: 80px;  /* Tamaño más pequeño */
+  height: 4px;  /* Barra más delgada */
+  background: #535353;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}

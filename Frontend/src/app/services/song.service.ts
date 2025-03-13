@@ -16,7 +16,6 @@ export class SongService {
   private playlistSubject = new BehaviorSubject<Cancion[]>(this.playlist);
   playlist$ = this.playlistSubject.asObservable();
 
-
   private currentSongSource = new BehaviorSubject<Cancion | null>(null);
   currentSong$ = this.currentSongSource.asObservable();
 
@@ -25,20 +24,21 @@ export class SongService {
 
   constructor(private http: HttpClient) {}
 
-
-   
+  // ✅ Obtener todas las canciones
   getCanciones(): Observable<Cancion[]> {
     return this.http
       .get<Cancion[]>(this.apiUrl, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
-
+  // ✅ Obtener canción por ID
   getCancionById(id: string): Observable<Cancion> {
     return this.http
       .get<Cancion>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
+
+  // ✅ Obtener canciones por un listado de IDs
   getCancionesByIds(ids: string[]): Observable<Cancion[]> {
     const url = `${this.apiUrl}/canciones/getByIds`;
     return this.http
@@ -46,6 +46,21 @@ export class SongService {
       .pipe(catchError(this.handleError));
   }
 
+  // ✅ Obtener canciones más escuchadas
+  getMostPlayedSongs(): Observable<Cancion[]> {
+    return this.http
+      .get<Cancion[]>(`${this.apiUrl}/mas-escuchadas`, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  // ✅ Obtener canciones más recientes
+  getRecentSongs(): Observable<Cancion[]> {
+    return this.http
+      .get<Cancion[]>(`${this.apiUrl}/recientes`, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  // ✅ Obtener la URL del archivo de audio de una canción
   getSongAudioUrl(id: string): Observable<string> {
     return this.getCancionById(id).pipe(
       map((song) => {
@@ -59,28 +74,28 @@ export class SongService {
     );
   }
 
-
+  // ✅ Subir una nueva canción
   subirCancion(formData: FormData): Observable<Cancion> {
     return this.http
       .post<Cancion>(this.apiUrl, formData, { headers: this.getHeaders(true) })
       .pipe(catchError(this.handleError));
   }
 
-
+  // ✅ Editar una canción
   updateSong(id: string, formData: FormData): Observable<Cancion> {
     return this.http
       .put<Cancion>(`${this.apiUrl}/${id}`, formData, { headers: this.getHeaders(true) })
       .pipe(catchError(this.handleError));
   }
 
-
+  // ✅ Eliminar una canción
   deleteSong(id: string): Observable<any> {
     return this.http
       .delete<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
-  
+  // ✅ Remover canción de la playlist
   removeFromPlaylist(cancion: Cancion) {
     if (!cancion._id) {
       console.error('La canción no tiene un ID válido:', cancion);
@@ -96,17 +111,17 @@ export class SongService {
     console.log('Canción eliminada:', cancion);
   }
 
-
+  // ✅ Establecer la canción actual
   setCurrentSong(song: Cancion) {
     this.currentSongSource.next(song);
   }
 
-
+  // ✅ Reproducir o pausar la música
   setIsPlaying(state: boolean) {
     this.isPlayingSource.next(state);
   }
 
- 
+  // ✅ Ir a la canción anterior
   prevSong() {
     const currentSong = this.currentSongSource.getValue();
     if (!currentSong || this.playlist.length === 0) return;
@@ -119,19 +134,21 @@ export class SongService {
     }
   }
 
-  
+  // ✅ Ir a la siguiente canción
   nextSong() {
-    const currentSong = this.currentSongSource.getValue();
-    if (!currentSong || this.playlist.length === 0) return;
-
-    const currentIndex = this.playlist.findIndex((song) => song._id === currentSong._id);
-    if (currentIndex < this.playlist.length - 1) {
-      this.setCurrentSong(this.playlist[currentIndex + 1]);
-    } else {
-      console.warn('Ya estás en la última canción.');
-    }
+    this.getCanciones().subscribe((songs) => {
+      if (songs.length === 0) return;
+  
+      const randomIndex = Math.floor(Math.random() * songs.length);
+      const randomSong = songs[randomIndex];
+  
+      this.setCurrentSong(randomSong);
+      this.setIsPlaying(true);
+    });
   }
+  
 
+  // ✅ Reproducir una canción aleatoria
   playRandomSong() {
     if (this.playlist.length === 0) return;
 
@@ -142,7 +159,7 @@ export class SongService {
     this.setIsPlaying(true); 
   }
 
- 
+  // ✅ Obtener headers para peticiones HTTP
   private getHeaders(isFormData: boolean = false): HttpHeaders {
     const token = localStorage.getItem('token') || '';
     let headers = new HttpHeaders({
@@ -155,7 +172,7 @@ export class SongService {
     return headers;
   }
 
- 
+  // ✅ Manejo de errores en peticiones HTTP
   private handleError(error: any): Observable<never> {
     console.error('Error en la petición HTTP:', error);
     return throwError(() => error);

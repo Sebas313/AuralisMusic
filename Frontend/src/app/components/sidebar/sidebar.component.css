@@ -11,7 +11,7 @@
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  z-index: 100; /* Asegura que esté sobre otros elementos */
+ 
 }
 
 /* Barra de búsqueda */

@@ -3,10 +3,10 @@ export interface Cancion {
     cantante: {
       _id: string;
       nombre: string;
+      imagen?: string; 
     };
     album: string;
     genero: string;
     imagen: string;
     fileUrl: string;
   }
-  
