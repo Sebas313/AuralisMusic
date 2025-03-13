@@ -102,13 +102,18 @@ export const crear = async (req, res) => {
 
 export const listar = async (req, res) => {
   try {
-    const playlist = await PlayList.find();
-    res.status(200).json(playlist);
+    const { userId } = req.query; // Obtener el ID del usuario desde la consulta
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "ID de usuario inválido" });
+    }
+
+    const playlists = await PlayList.find({ creadoPor: userId }); // Filtrar por usuario
+
+    res.status(200).json(playlists);
   } catch (error) {
-    console.error("Error al obtener las canciones", error.message);
-    res
-      .status(500)
-      .json({ message: "Error al obtener la playlist", error: error.message });
+    console.error("Error al obtener las playlists", error.message);
+    res.status(500).json({ message: "Error al obtener las playlists", error: error.message });
   }
 };
 

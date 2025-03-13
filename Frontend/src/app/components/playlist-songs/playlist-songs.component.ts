@@ -15,10 +15,7 @@ import { forkJoin } from 'rxjs';
 export class PlaylistSongsComponent implements OnInit {
   playlist: any = null;
   canciones: any[] = [];
-  currentSong: any = null;
-  isPlaying = false;
-  audioPlayer = new Audio();
-  showMusicPlayer = false;
+
   @Output() songSelected = new EventEmitter<any>();
 
   constructor(
@@ -37,14 +34,13 @@ export class PlaylistSongsComponent implements OnInit {
   cargarPlaylist(id: string): void {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
-  
         if (!data || typeof data !== 'object') {
           console.error('❌ Error: Datos de playlist inválidos');
           return;
         }
-  
+
         this.playlist = data;
-  
+
         if (Array.isArray(data.canciones) && data.canciones.length > 0) {
           if (typeof data.canciones[0] === 'string') {
             this.obtenerDetallesCanciones(data.canciones);
@@ -76,40 +72,13 @@ export class PlaylistSongsComponent implements OnInit {
     });
   }
 
-  playSong(song: any): void {
+  seleccionarCancion(song: any): void {
     if (!song?.fileUrl) {
       console.error('❌ La canción no tiene URL de audio');
       return;
     }
 
-    if (this.currentSong && this.isPlaying) {
-      this.stopCurrentSong();
-    }
-
-    this.currentSong = song;
-    this.isPlaying = true;
-    this.audioPlayer.src = song.fileUrl;
-    this.audioPlayer.play();
-
-    this.audioPlayer.onended = () => {
-      this.isPlaying = false;
-      this.currentSong = null;
-    };
-
+    // ✅ Emitimos la canción sin reproducirla
     this.songSelected.emit(song);
-  }
-
-  pauseSong(): void {
-    if (this.isPlaying) {
-      this.audioPlayer.pause();
-      this.isPlaying = false;
-    }
-  }
-
-  stopCurrentSong(): void {
-    this.audioPlayer.pause();
-    this.audioPlayer.currentTime = 0;
-    this.isPlaying = false;
-    this.currentSong = null;
   }
 }
