@@ -1,9 +1,8 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlaylistService } from '../../services/playlist.service';
 import { SongService } from '../../services/song.service';
 import { CommonModule } from '@angular/common';
-
 import { PlaylistSongsComponent } from '../../components/playlist-songs/playlist-songs.component';
 import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 
@@ -14,15 +13,11 @@ import { MusicPlayerComponent } from '../../components/music-player/music-player
   standalone: true,
   imports: [CommonModule, PlaylistSongsComponent, MusicPlayerComponent]
 })
-export class PlaylistUserComponent {
-  @Input() playlist: any = null; 
+export class PlaylistUserComponent implements OnInit {
+  @Input() playlist: any = null;
   canciones: any[] = [];
   currentSong: any = null;
-  isPlaying = false;
-  audioPlayer = new Audio();
   showMusicPlayer = false;
-
-  @Output() songSelected = new EventEmitter<any>();
 
   constructor(
     private route: ActivatedRoute,
@@ -60,37 +55,10 @@ export class PlaylistUserComponent {
       return;
     }
 
-    if (this.currentSong && this.isPlaying) {
-      this.audioPlayer.pause();
-      this.audioPlayer.currentTime = 0;
-    }
-
     this.currentSong = song;
-    this.isPlaying = true;
     this.showMusicPlayer = true;
 
-    this.audioPlayer.src = song.fileUrl;
-    this.audioPlayer.play();
-
-    this.audioPlayer.onended = () => {
-      this.isPlaying = false;
-    };
-
-    this.songSelected.emit(song);
-  }
-
-  pauseSong() {
-    if (this.isPlaying) {
-      this.audioPlayer.pause();
-      this.isPlaying = false;
-    }
-  }
-
-  stopCurrentSong() {
-    this.audioPlayer.pause();
-    this.audioPlayer.currentTime = 0;
-    this.isPlaying = false;
-    this.currentSong = null;
-    this.showMusicPlayer = false;
+    // ✅ Enviar la canción al servicio para que `MusicPlayerComponent` la reciba
+    this.songService.setCurrentSong(song);
   }
 }

@@ -22,6 +22,8 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   private sound: Howl | null = null;
   private songSubscription!: Subscription;
   private interval: any;
+  private history: Cancion[] = []; // Historial de canciones
+  private currentSongIndex: number = -1;
   volume: number = 0.5; // Volumen inicial (50%)
   currentTime: number = 0;
   duration: number = 0;
@@ -46,25 +48,24 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   private playCurrentSong() {
     if (!this.currentSong?.fileUrl) return;
-
+  
     this.sound = new Howl({
       src: [this.currentSong.fileUrl],
       html5: true,
-      volume: this.volume, // Aplica el volumen actual
+      volume: this.volume,
       onplay: () => {
         this.isPlaying = true;
         this.isPlayingChange.emit(this.isPlaying);
         this.trackProgress();
       },
       onend: () => {
-        this.isPlaying = false;
-        this.isPlayingChange.emit(this.isPlaying);
-        clearInterval(this.interval);
+        this.nextSong(); // 🔥 Asegura que llame a nextSong()
       }
     });
-
+  
     this.sound.play();
   }
+  
 
   togglePlay() {
     if (!this.sound) return;
@@ -106,23 +107,48 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     }
   }
   
-
   nextSong() {
     this.destroySound();
     this.songService.getCanciones().pipe(take(1)).subscribe(canciones => {
       if (canciones.length) {
-        const randomSong = canciones[Math.floor(Math.random() * canciones.length)];
+        let randomSong;
+  
+        // Evitar repetir la misma canción inmediatamente
+        do {
+          randomSong = canciones[Math.floor(Math.random() * canciones.length)];
+        } while (this.currentSong && randomSong._id === this.currentSong._id);
+  
+        // Guardar la canción actual en el historial antes de cambiar
+        if (this.currentSong) {
+          this.history.push(this.currentSong);
+          this.currentSongIndex = this.history.length - 1;
+        }
+  
+        this.currentSong = randomSong;
         this.songService.setCurrentSong(randomSong);
+        this.playCurrentSong();
       }
     });
   }
+  
+  
 
   playRandom() {
     this.nextSong();
   }
 
   prevSong() {
-    console.log('Función de canción anterior aún no implementada');
+    if (this.history.length > 0 && this.currentSongIndex >= 0) {
+      this.destroySound();
+
+      // Obtener la canción anterior del historial
+      this.currentSong = this.history[this.currentSongIndex];
+      // Ajustar el índice para seguir retrocediendo si es necesario
+      this.currentSongIndex = Math.max(this.currentSongIndex - 1, 0);
+
+      this.songService.setCurrentSong(this.currentSong);
+      this.playCurrentSong();
+    } else {}
   }
 
   private destroySound() {

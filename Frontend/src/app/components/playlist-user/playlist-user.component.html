@@ -1,8 +1,5 @@
-
-
 <app-playlist-songs (songSelected)="playSong($event)"></app-playlist-songs>
+
 <app-music-player 
-  *ngIf="showMusicPlayer" 
-  [currentSong]="currentSong" 
-  [isPlaying]="isPlaying">
+  *ngIf="showMusicPlayer">
 </app-music-player>

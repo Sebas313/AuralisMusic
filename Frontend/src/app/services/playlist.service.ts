@@ -18,7 +18,7 @@ export class PlaylistService {
       throw new Error('Usuario no autenticado');
     } 
   
-    return this.http.get<any[]>(`${this.apiUrl}?creadoPor=${user._id}`).pipe(
+  return this.http.get<any[]>(`${this.apiUrl}?userId=${user._id}`).pipe(
       tap(playlists => console.log("🎵 Playlists recibidas:", playlists)),
       catchError(err => {
         console.error('❌ Error al obtener playlists:', err);
