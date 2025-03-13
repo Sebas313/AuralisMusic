@@ -1,9 +1,5 @@
-<div *ngIf="currentSong" class="now-playing">
-  <p>🎵 Reproduciendo: {{ currentSong?.album || 'Desconocido' }} - {{ currentSong?.cantante?.nombre || 'Artista desconocido' }}</p>
-</div>
-
 <ul class="song-list">
-  <li *ngFor="let song of songs" class="song-item">
+  <li *ngFor="let song of songs" class="song-item" (click)="selectSong(song)">
     <img 
       *ngIf="song.imagen" 
       [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
@@ -17,9 +13,7 @@
     </div>
     
     <div class="song-actions">
-      <button title="Reproducir" (click)="playSong(song)">▶️</button>
-      <button title="Pausar" (click)="pauseSong()" [disabled]="!isPlaying">⏸️</button>
-      <button title="Añadir a playlist" (click)="addToPlaylist(song)">➕</button>
+      <button title="Añadir a playlist" (click)="addToPlaylist(song); $event.stopPropagation()">➕</button>
     </div>
   </li>
 </ul>
@@ -29,15 +23,19 @@
   <div class="modal-content">
     <h3>Selecciona una playlist</h3>
     
-    <ul *ngIf="playlists.length > 0" class="playlist-list">
+    <ul *ngIf="playlists.length > 0; else noPlaylists" class="playlist-list">
       <li *ngFor="let playlist of playlists">
         <button (click)="confirmAddToPlaylist(playlist._id)">{{ playlist.nombre }}</button>
       </li>
     </ul>
 
+    <ng-template #noPlaylists>
+      <p>No tienes playlists creadas.</p>
+    </ng-template>
+
     <div class="new-playlist">
       <h4>O crea una nueva:</h4>
-      <input type="text" [(ngModel)]="newPlaylistName" placeholder="Nombre de la playlist">
+      <input type="text" [(ngModel)]="newPlaylistName" (keyup.enter)="createNewPlaylist()" placeholder="Nombre de la playlist">
       <button (click)="createNewPlaylist()">Crear Playlist</button>
     </div>
 

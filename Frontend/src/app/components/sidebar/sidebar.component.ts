@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Output, HostListener, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import WaveSurfer from 'wavesurfer.js';
 import { SongService } from '../../services/song.service';
 
 @Component({
@@ -12,36 +11,38 @@ import { SongService } from '../../services/song.service';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent implements OnInit {
   @Output() songSelected = new EventEmitter<any>();
-  @ViewChild('waveform', { static: false }) waveformRef!: ElementRef;
 
   isExpanded = false;
-  isSearchVisible = false;
+  isSearchVisible = true; // Inicia visible
+  isScrolled = false; // 🔥 Nuevo estado para saber si hizo scroll
   searchQuery = '';
-  currentSong: any = null;
-  isPlaying = false;
   playlist: any[] = [];
   songs: any[] = [];
   filteredSongs: any[] = [];
-  wavesurfer: WaveSurfer | null = null;
-
+  currentSong: any = null;
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    const searchBar = document.querySelector('.search-bar');
+    const songList = document.querySelector('.song-list');
+  
+    if (searchBar && songList && !searchBar.contains(event.target as Node) && !songList.contains(event.target as Node)) {
+      this.isSearchVisible = false;
+      this.searchQuery = '';
+      this.filteredSongs = [...this.songs];
+    }
+  }
+  
   constructor(private songService: SongService) {}
 
   ngOnInit(): void {
     this.getSongs();
   }
 
-  ngOnDestroy() {
-    if (this.wavesurfer) {
-      this.wavesurfer.destroy();
-    }
-  }
-
   getSongs(): void {
     this.songService.getCanciones().subscribe(
       data => {
-        console.log('Canciones obtenidas:', data);
         this.songs = data;
         this.filteredSongs = [...this.songs];
       },
@@ -64,16 +65,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleSidebar() {
-    this.isExpanded = !this.isExpanded;
-  }
-
-  toggleSearch() {
-    this.isSearchVisible = !this.isSearchVisible;
-    if (!this.isSearchVisible) {
-      this.searchQuery = '';
-      this.filteredSongs = [...this.songs];
-    }
+  playSong(song: any) {
+    this.currentSong = song;
+    this.songSelected.emit(song);
   }
 
   addToPlaylist(song: any) {
@@ -82,50 +76,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  playSong(song: any) {
-    if (!song.fileUrl) {
-      return;
-    }
-
-    if (!this.waveformRef?.nativeElement) {
-      return;
-    }
-
-    if (this.wavesurfer) {
-      this.wavesurfer.destroy();
-    }
-
-    this.wavesurfer = WaveSurfer.create({
-      container: this.waveformRef.nativeElement,
-      waveColor: 'lightblue',
-      progressColor: 'blue',
-      barWidth: 2,
-      height: 60
-    });
-
-    const audioUrl = song.fileUrl.startsWith('http') ? song.fileUrl : `http://localhost:3000/public/${song.fileUrl.replace(/^\/+/, '')}`;
-    this.wavesurfer.load(audioUrl);
-    this.wavesurfer.play();
-
-    this.songSelected.emit(song);
-
-    this.wavesurfer.on('finish', () => {
-      this.isPlaying = false;
-    });
+  // 🔥 Detectar scroll en la página
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    this.isScrolled = window.scrollY > 50; // Si baja más de 50px, cambia el estado
   }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    const sidebar = document.querySelector('.sidebar');
-    const searchBar = document.querySelector('.search-bar');
-    const songList = document.querySelector('.song-list');
-
-    if (
-      sidebar && !sidebar.contains(event.target as Node) &&
-      searchBar && !searchBar.contains(event.target as Node) &&
-      songList && !songList.contains(event.target as Node)
-    ) {
-      this.isSearchVisible = false;
+  toggleSearch() {
+    this.isSearchVisible = !this.isSearchVisible;
+    if (!this.isSearchVisible) {
+      this.searchQuery = '';
+      this.filteredSongs = [...this.songs];
     }
   }
 }
