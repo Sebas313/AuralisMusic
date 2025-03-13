@@ -138,12 +138,33 @@ export const Eliminar = async (req, res) => {
     res.status(500).json({ message: "Error al eliminar la canción", error: error.message });
   }
 };
+export const ObtenerMasEscuchadas = async (req, res) => {
+  try {
+    const canciones = await Canciones.find().sort({ plays: -1 }).limit(10).populate("cantante");
+    res.status(200).json(canciones);
+  } catch (error) {
+    console.error("❌ Error al obtener canciones más escuchadas:", error.message);
+    res.status(500).json({ message: "Error al obtener canciones más escuchadas", error: error.message });
+  }
+};
 
+// Obtener las canciones más recientes (ordenadas por fecha de creación)
+export const ObtenerRecientes = async (req, res) => {
+  try {
+    const canciones = await Canciones.find().sort({ createdAt: -1 }).limit(10).populate("cantante");
+    res.status(200).json(canciones);
+  } catch (error) {
+    console.error("❌ Error al obtener canciones recientes:", error.message);
+    res.status(500).json({ message: "Error al obtener canciones recientes", error: error.message });
+  }
+};
 export default {
   buscarOCrearCantante,
   Crear,
   ObtenerTodas,
   ObtenerPorId,
   Actualizar,
-  Eliminar
+  Eliminar,
+  ObtenerMasEscuchadas,
+  ObtenerRecientes
 };
