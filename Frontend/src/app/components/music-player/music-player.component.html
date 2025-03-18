@@ -1,0 +1,43 @@
+<div class="player" *ngIf="currentSong">
+  <!-- Imagen de la canción -->
+  <div class="song-details">
+    <img class="song-image" [src]="currentSong?.imagen || 'assets/default-image.jpg'" alt="Portada" />
+    <div class="song-info">
+      <h4 *ngIf="currentSong?.album">{{ currentSong.album }}</h4>
+      <p *ngIf="currentSong?.cantante?.nombre">{{ currentSong.cantante.nombre }}</p>
+    </div>
+  </div>
+
+  <!-- Controles y barra de progreso -->
+  <div class="player-controls">
+    <div class="controls">
+      <button (click)="playRandom()" aria-label="Reproducir aleatorio">🔀</button>
+      <button (click)="prevSong()" aria-label="Canción anterior">⏮️</button>
+      <button (click)="togglePlay()" aria-label="Reproducir/Pausar">
+        {{ isPlaying ? '⏸️' : '▶️' }}
+      </button>
+      <button (click)="nextSong()" aria-label="Siguiente canción">⏭️</button>
+    </div>
+
+    <div class="progress-container">
+      <span>{{ formatTime(currentTime) }}</span>
+      <input type="range" min="0" [max]="duration" [value]="currentTime" (input)="seekTo($event)" />
+      <span>{{ formatTime(duration) }}</span>
+    </div>
+  </div>
+
+  <!-- Control de volumen -->
+  <div class="volume-control">
+    <i>🎤</i> <!-- Icono de micrófono -->
+    <input 
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      [(ngModel)]="volume"
+      (input)="adjustVolume()"
+    />
+  </div>
+  
+</div>
+

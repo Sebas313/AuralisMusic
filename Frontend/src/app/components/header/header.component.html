@@ -1,0 +1,23 @@
+<header class="header">
+
+  <img src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png" 
+       alt="Logo" 
+       class="logo" />
+
+  <div class="logo"></div>
+
+  <a href="/home" class="btn">HOME</a>
+
+  <div class="header-buttons">
+    <div class="dropdown">
+      <button class="btn" (click)="toggleMenu()">MI CUENTA</button>
+      <div class="dropdown-menu" [class.show]="menuOpen">
+        <a href="/profile" class="dropdown-item">Mi perfil</a>
+        <a href="/playlist" class="dropdown-item">Mi playlist</a>
+        <a (click)="logout()" class="dropdown-item">Cerrar sesión</a>
+      </div>
+    </div>
+  </div>
+  
+</header>
+

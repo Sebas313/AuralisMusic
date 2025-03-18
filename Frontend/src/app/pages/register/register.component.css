@@ -1,0 +1,241 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+
+
+
+  
+
+  color: #000000;
+
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#register {
+  display: flex;
+  flex-wrap: wrap; 
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh; 
+  background-color: #000000;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+
+
+  min-height: 100%;
+
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem; 
+}
+.form-container {
+  min-width: 350px; /* Ajusta el mínimo para evitar que se haga muy pequeño */
+  max-width: 500px; /* Ajusta según el diseño */
+  flex: 1;
+
+}
+
+.image-section {
+  width: 45%; 
+  height: 90vh; 
+  margin: 30px 0 30px 70px; 
+
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+
+}
+
+
+/* Sección del formulario */
+.form-section {
+  flex: 1.2;
+  min-width: 350px;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  align-items: flex-start;
+  text-align: left;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: auto;
+}
+
+
+/* Ajustes de texto */
+h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #B2A179;
+}
+
+input {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-bottom: 2px solid rgb(66, 65, 65); 
+  font-size: 14px;
+  background-color: transparent; 
+  color: #fff; 
+  width: 100%;
+  outline: none; 
+  transition: border-color 0.3s; 
+}
+input:focus {
+  border-bottom: 2px solid #B2A179; 
+}
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%;
+  padding-right: 2.5rem; 
+}
+
+.input-container .password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 32%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  user-select: none;
+}
+.image-section1 {
+  width: 35%; 
+  height: 70vh;
+  padding-left: 50px; 
+  margin: 80px 30px 80px 100px; 
+
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.image-section2 {
+  width: 44%;
+  height: 100px; 
+  min-height: 70px; 
+  margin: 30px 0 30px 70px;
+
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10; 
+}
+
+
+.btn {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding: 8px; 
+  padding-left: 8px;
+  padding-right: 7px;
+  background-color: #B2A179;
+  color: white;
+  border: none;
+  border-radius: 30px; 
+  cursor: pointer;
+  font-size: 14px; 
+  transition: background-color 0.3s;
+ 
+}
+
+.btn:hover {
+  background-color: #A09068;
+}
+
+/* Estilos para enlaces */
+a {
+  margin-top: 15px;
+  color: #B2A179;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+p {
+  color: #B2A179;
+}
+@media (max-width: 768px) {
+  #register {
+      flex-direction: column;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .image-section1 {
+      display: none; 
+  }
+
+  .image-section2 {
+    width: 100%;
+    max-width: 230px; 
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding-top: 20px;
+
+    background-size: contain;
+}
+
+
+  .form-section {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+  }
+}

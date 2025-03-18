@@ -1,0 +1,44 @@
+<ul class="song-list">
+  <li *ngFor="let song of songs" class="song-item" (click)="selectSong(song)">
+    <img 
+      *ngIf="song.imagen" 
+      [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
+      alt="{{ song.album || 'Sin título' }} Cover" 
+      class="song-image" 
+    />
+    
+    <div class="song-info">
+      <h4>{{ song.album || 'Álbum desconocido' }}</h4>
+      <p>{{ song.cantante?.cantante || 'Artista desconocido' }}</p>
+    </div>
+    
+    <div class="song-actions">
+      <button title="Añadir a playlist" (click)="addToPlaylist(song); $event.stopPropagation()">➕</button>
+    </div>
+  </li>
+</ul>
+
+<!-- Modal para agregar a playlist -->
+<div *ngIf="showModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Selecciona una playlist</h3>
+    
+    <ul *ngIf="playlists.length > 0; else noPlaylists" class="playlist-list">
+      <li *ngFor="let playlist of playlists">
+        <button (click)="confirmAddToPlaylist(playlist._id)">{{ playlist.nombre }}</button>
+      </li>
+    </ul>
+
+    <ng-template #noPlaylists>
+      <p>No tienes playlists creadas.</p>
+    </ng-template>
+
+    <div class="new-playlist">
+      <h4>O crea una nueva:</h4>
+      <input type="text" [(ngModel)]="newPlaylistName" (keyup.enter)="createNewPlaylist()" placeholder="Nombre de la playlist">
+      <button (click)="createNewPlaylist()">Crear Playlist</button>
+    </div>
+
+    <button class="close-btn" (click)="closeModal()">Cancelar</button>
+  </div>
+</div>

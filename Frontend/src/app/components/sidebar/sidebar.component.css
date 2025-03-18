@@ -1,0 +1,97 @@
+/* Sidebar centrada */
+.sidebar {
+  width: 300px; /* Ancho fijo */
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+  overflow: visible;
+  position: fixed; /* Fija la sidebar en el centro */
+  top: 20px; /* Espacio desde arriba */
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+ 
+}
+
+/* Barra de búsqueda */
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #000000;
+  padding: 15px;
+  border-radius: 5px;
+  position: relative; /* Importante para la lista */
+  width: 100%;
+  max-width: 250px;
+  z-index: 150;
+}
+
+.search-bar input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: white;
+  width: 100%;
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+/* Lista de canciones debajo del buscador */
+.song-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 5px; /* Espacio entre la barra de búsqueda y la lista */
+  position: absolute; /* Se posiciona en relación con la search-bar */
+  top: 100%; /* Aparece justo debajo de la barra */
+  left: 0;
+  width: 100%;
+  max-width: 250px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  max-height: 300px; /* Para evitar que crezca demasiado */
+  overflow-y: auto; /* Agrega scroll si hay muchas canciones */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  z-index: 50;
+}
+
+.song-list li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.song-list li:last-child {
+  border-bottom: none;
+}
+
+.song-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.song-info {
+  flex: 1;
+  color: white;
+}
+
+.song-actions button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.song-actions button:hover {
+  color: #ccc;
+}

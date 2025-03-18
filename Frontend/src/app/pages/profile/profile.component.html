@@ -1,0 +1,44 @@
+<app-header></app-header>
+<div class="profile-container">
+  <div class="profile-photo-container">
+    <img 
+      [src]="user.avatar ? user.avatar : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp'" 
+      alt="Foto de perfil" 
+      class="profile-photo" 
+    />
+  
+  
+  </div>
+
+  <div class="user-info">
+    <h2 class="user-name">{{ user.nombre }}</h2>
+  </div>
+
+  <!-- Solo se muestra si NO es cantante -->
+  <div *ngIf="!esCantante()" class="become-singer">
+    <p class="singer-question">¿Quieres ser cantante?</p>
+    <button (click)="sendRequest()" class="become-singer-btn">Enviar solicitud</button>
+  </div>
+
+  <!-- Solo se muestra si ES cantante -->
+  <div *ngIf="esCantante()" class="upload-song">
+    <p class="upload-song-question">¿Quieres subir una canción?</p>
+    <a href="/subir" class="upload-song-btn">Ir a subir canción</a>
+  </div>
+
+  <div class="user-playlists">
+    <h3 class="playlist-title">Tus Playlists</h3>
+  
+    <!-- Solo mostrar si hay playlists disponibles -->
+    <ul class="playlist-list" *ngIf="playlist && playlist.length > 0; else noPlaylists">
+      <app-playlist></app-playlist>
+
+    </ul>
+  
+    <!-- Mensaje cuando no hay playlists -->
+    <ng-template #noPlaylists>
+      <p class="no-playlists">❌ No hay canciones en esta playlist.</p>
+    </ng-template>
+  </div>
+  
+</div>

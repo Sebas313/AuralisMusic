@@ -1,0 +1,151 @@
+.random-song-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.song-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 80%;
+    max-width: 600px;
+}
+
+.song-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e1e1e;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Efecto al pasar el mouse */
+.song-list li:hover {
+    transform: scale(1.05); /* Hace que el elemento crezca un poco */
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3); /* Le da más sombra para resaltar */
+}
+
+
+/* Estilos de la canción en reproducción */
+.now-playing {
+    display: none;
+    visibility: hidden;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #222;
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.now-playing {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Mostrar waveform solo si hay una canción sonando */
+.waveform-container {
+    width: 100%;
+    height: 100px;
+    background: #eee;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+/* Ocultar cuando no hay canción */
+.hidden {
+    display: none;
+}
+
+.song-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.song-info {
+    flex-grow: 1;
+}
+
+.song-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.song-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.song-actions button:hover {
+    opacity: 0.7;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: rgb(17, 17, 17);
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+  }
+  
+  .playlist-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .playlist-list li button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: #1c3044;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .new-playlist input {
+    width: 80%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .close-btn {
+    margin-top: 10px;
+    background: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

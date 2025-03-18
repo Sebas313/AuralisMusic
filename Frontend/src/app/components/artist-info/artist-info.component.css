@@ -1,0 +1,28 @@
+.artist-info-container {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #0c0c0c;
+    max-width: 300px; /* Ancho opcional */
+  }
+  
+  .artist-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+  }
+  
+  .artist-details h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  
+  .artist-details p {
+    margin: 0;
+    color: #e2e2e2;
+  }
+  

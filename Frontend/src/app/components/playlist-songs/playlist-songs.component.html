@@ -1,0 +1,23 @@
+<ul *ngIf="canciones?.length" class="song-list">
+  <li 
+    *ngFor="let song of canciones" 
+    class="song-item"
+    (click)="seleccionarCancion(song)" 
+  >
+    <!-- ✅ Verifica si la imagen es válida antes de mostrarla -->
+    <img 
+      *ngIf="song.imagen && typeof song.imagen === 'string'" 
+      [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
+      [alt]="(song.album || 'Sin título') + ' Cover'" 
+      class="song-image" 
+    />
+
+    <div class="song-info">
+      <h4>{{ song.album || 'Álbum desconocido' }}</h4>
+      <p>{{ song.cantante?.cantante || 'Artista desconocido' }}</p>
+    </div>
+  </li>
+</ul>
+
+<!-- 🚨 Mensaje cuando la playlist no tiene canciones -->
+<p *ngIf="!canciones || canciones.length === 0">🚫 No hay canciones en esta playlist.</p>

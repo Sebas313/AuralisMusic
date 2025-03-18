@@ -1,0 +1,5 @@
+
+app-playlist-songs {
+    display: block;  /* Asegurar que respeta los márgenes */
+    margin-top: 50px; /* Ajusta este valor según lo necesites */
+}

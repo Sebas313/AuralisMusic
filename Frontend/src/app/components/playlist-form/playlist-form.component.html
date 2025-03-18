@@ -1,0 +1,11 @@
+<div class="create-playlist">
+    <h3>Crear Nueva Playlist</h3>
+    <input 
+      type="text" 
+      [(ngModel)]="newPlaylistName" 
+      placeholder="Nombre de la playlist" 
+      class="playlist-name-input"
+    />
+    <button (click)="createPlaylist()" class="create-playlist-btn">Crear Playlist</button>
+  </div>
+  

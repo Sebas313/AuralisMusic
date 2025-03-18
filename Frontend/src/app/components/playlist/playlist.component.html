@@ -1,0 +1,34 @@
+<main class="container">
+  <!-- Listas de reproducción -->
+  <h2 class="title">LISTAS DE REPRODUCCIÓN</h2>
+  <ul class="playlist-list">
+    <li *ngFor="let playlistItem of playlists" 
+        class="playlist-item" 
+        (click)="goToPlaylist(playlistItem._id)">
+      
+      <img src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740703886/uploads/v0soab7wlwb54wtaichp.jpg" 
+           alt="Playlist Cover" 
+           class="playlist-img">
+      
+      <div class="playlist-info">
+        <h3 class="playlist-name">{{ playlistItem.nombre }}</h3>
+        <p class="song-count">{{ playlistItem.canciones?.length || 0 }} canciones</p>
+      </div>
+
+      <span class="arrow">›</span>
+      
+    </li>
+  </ul>
+
+  <!-- Playlist seleccionada -->
+  <div class="playlist" *ngIf="selectedPlaylist">
+    <h3>Tu Playlist 🎵</h3>
+    <ul>
+      <li *ngFor="let song of selectedSongs">
+        <img src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740703886/uploads/v0soab7wlwb54wtaichp.jpg" 
+             alt="Cover" 
+             class="playlist-img"> 
+      </li>
+    </ul>
+  </div>
+</main>
